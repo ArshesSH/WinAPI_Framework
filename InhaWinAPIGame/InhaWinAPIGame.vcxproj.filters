@@ -144,9 +144,6 @@
     <ClInclude Include="Scene.h">
       <Filter>헤더 파일\Engine\Scene</Filter>
     </ClInclude>
-    <ClInclude Include="DynamicActor.h">
-      <Filter>헤더 파일\Engine\Actor</Filter>
-    </ClInclude>
     <ClInclude Include="CoordinateTransformer.h">
       <Filter>헤더 파일\Engine\Utilities</Filter>
     </ClInclude>
@@ -155,6 +152,15 @@
     </ClInclude>
     <ClInclude Include="Ray.h">
       <Filter>헤더 파일\Engine\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="Rect.h">
+      <Filter>헤더 파일\Engine\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics.h">
+      <Filter>헤더 파일\Engine\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="CoordSH.h">
+      <Filter>헤더 파일\Engine\Utilities</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -6,33 +6,11 @@
 #include "Vec2.h"
 #include "Surface.h"
 #include "Ray.h"
+#include "CoordSH.h"
 
 namespace ArshesSH
 {
-	struct PointConversion
-	{
-		Vec2<int> operator()( const Gdiplus::Point& src ) const
-		{
-			return { src.X, src.Y };
-		}
-
-		Gdiplus::Point operator()( const Vec2<int>& src ) const
-		{
-			return { src.x, src.y };
-		}
-
-		std::vector<Gdiplus::Point> operator()( const std::vector<Vec2<int>>& src ) const
-		{
-			std::vector<Gdiplus::Point> points;
-			PointConversion conversion;
-			points.resize( src.size() );
-			for ( int i = 0; i < (int)src.size(); ++i )
-			{
-				points[i] = conversion( src[i] );
-			}
-			return points;
-		}
-	};
+	
 
 
 	class Polygon
@@ -64,7 +42,7 @@ namespace ArshesSH
 		}
 		static std::vector<Gdiplus::Point> ConvertToVectorOfPoint( const Polygon& src )
 		{
-			PointConversion conversion;
+			CoordSH::PointConversion<int> conversion;
 			return conversion( src.vertices );
 		}
 

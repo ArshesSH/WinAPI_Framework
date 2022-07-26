@@ -146,7 +146,7 @@
     <ClInclude Include="Actor.h" />
     <ClInclude Include="Codex.h" />
     <ClInclude Include="CoordinateTransformer.h" />
-    <ClInclude Include="DynamicActor.h" />
+    <ClInclude Include="Graphics.h" />
     <ClInclude Include="FileManager.h" />
     <ClInclude Include="FrameTimer.h" />
     <ClInclude Include="GDIPlusManager.h" />
@@ -159,6 +159,7 @@
     <ClInclude Include="PatternMatchingListener.h" />
     <ClInclude Include="Polygon.h" />
     <ClInclude Include="Ray.h" />
+    <ClInclude Include="Rect.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="ImageCodex.h" />
@@ -169,6 +170,7 @@
     <ClInclude Include="Vec3.h" />
     <ClInclude Include="UtilSH.h" />
     <ClInclude Include="DrawManager.h" />
+    <ClInclude Include="CoordSH.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FileManager.cpp" />

@@ -22,7 +22,6 @@ void Game::ComposeFrame(HDC hdc)
 			drawManager.DrawMain( hdc, screenRect, isScreenChanged,
 				[this]( HDC hdc )
 				{
-					stage.Draw( hdc );
 				}
 			);
 
@@ -61,7 +60,6 @@ void Game::UpdateModel()
 		{
 			float dt = ft.Mark();
 			RefreshScreen();
-			stage.Update( dt, *this );
 		}
 		break;
 	case Game::SceneType::SceneTest:

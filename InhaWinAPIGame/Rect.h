@@ -47,10 +47,10 @@ public:
 	}
 	inline	void ClipTo( const _Rect& rect )
 	{
-		top = std::max( top, rect.top );
-		bottom = std::min( bottom, rect.bottom );
-		left = std::max( left, rect.left );
-		right = std::min( right, rect.right );
+		top = (std::max)( top, rect.top );
+		bottom = (std::min)( bottom, rect.bottom );
+		left = (std::max)( left, rect.left );
+		right = (std::min)( right, rect.right );
 	}
 	inline	T GetWidth() const
 	{
