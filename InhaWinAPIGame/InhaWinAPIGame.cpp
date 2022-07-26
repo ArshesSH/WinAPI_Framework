@@ -137,21 +137,14 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 //
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-    if ( game.IsGameFinished() && !isEndGame )
-    {
-        isEndGame = true;
-    }
     switch (message)
     {
     case WM_CREATE:
-        GetClientRect( hWnd, &game.screenRect );
+        game.SetScreenSize( hWnd );
         SetTimer( hWnd, 0, 0, TimerProc );
-        if ( game.IsInitialGame() && isStartGame )
-        {
-        }
         break;
     case WM_SIZE:
-        GetClientRect( hWnd, &game.screenRect );
+        game.SetScreenSize( hWnd );
         break;
     case WM_COMMAND:
         {

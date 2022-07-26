@@ -11,6 +11,7 @@
 class Game
 {
 public:
+	// For Scene Change
 	enum class SceneType
 	{
 		SceneStart,
@@ -25,20 +26,19 @@ public:
 
 	void RefreshScreen();
 
-	bool IsInitialGame() const;
-	bool IsGameFinished() const;
-	bool IsScreenChanged() const;
-
+	void SetScreenSize( HWND hWnd )
+	{
+		GetClientRect( hWnd, &screenRect );
+	}
 public:
 	RECT screenRect;
 private:
+	// For Check ScreenSize
+	
 	RECT oldScreenSize = screenRect;
 	FrameTimer ft;
 	DrawManager drawManager;
 
 	bool isScreenChanged = true;
-	float time = 0.0f;
 	SceneType sceneType = SceneType::SceneStage;
-
-	bool isFinishedResult = false;
 };
