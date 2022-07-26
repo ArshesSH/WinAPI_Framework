@@ -27,9 +27,6 @@ public:
 
 		FillRect( hMemDC, &clientRECT, (HBRUSH)GetStockObject( BLACK_BRUSH ) );
 
-		/*Surface a;
-		a.DrawString( hMemDC, L"Hello", pos, {255,255,0,0} );*/
-
 		// Call Actual Draw functions
 		drawFunc(hMemDC);
 
