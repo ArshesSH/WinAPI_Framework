@@ -1,160 +1,86 @@
 #pragma once
 
-#include "GeometricObject.h"
+#include "Vec2.h"
+#include <algorithm>
 
-
-template<typename T>
-class Rect : public GeometricObject<T>
+template < typename T >
+class _Rect
 {
 public:
-	Rect()
+	inline	_Rect() {}
+	inline	_Rect( T top, T bottom, T left, T right )
 		:
-		GeometricObject<T>( (T)0, (T)0 ),
-		width( (T)1 ),
-		height( (T)1 ),
-		halfWidth( (T)(width / 2) ),
-		halfHeight( (T)(height / 2) )
-	{
-		GeometricObject<T>::vertices.resize( 4 );
-		SetVertices();
-	}
-	Rect( const Vec2<T>& center, T width, T height )
+		top( top ),
+		bottom( bottom ),
+		left( left ),
+		right( right )
+	{}
+	inline	_Rect( const _Rect& rect )
 		:
-		GeometricObject<T>( center ),
-		width( width ),
-		height( height ),
-		halfWidth( (T)(width / 2) ),
-		halfHeight( (T)(height / 2) )
-	{
-		GeometricObject<T>::vertices.resize( 4 );
-		SetVertices();
-	}
-	Rect( T x, T y, T width, T height )
+		top( rect.top ),
+		bottom( rect.bottom ),
+		left( rect.left ),
+		right( rect.right )
+	{}
+	inline	_Rect( Vec2<T> p0, Vec2<T> p1 )
 		:
-		GeometricObject<T>( x, y ),
-		width( width ),
-		height( height ),
-		halfWidth( (T)(width / 2) ),
-		halfHeight( (T)(height / 2) )
+		_Rect( min( p0.y, p1.y ),
+			max( p0.y, p1.y ),
+			min( p0.x, p1.x ),
+			max( p0.x, p1.x ) )
+	{}
+	inline	void Translate( Vec2<T> d )
 	{
-		GeometricObject<T>::vertices.resize( 4 );
-		SetVertices();
+		Translate( d.x, d.y );
 	}
-	Rect( const Vec2<T>& topLeft, const Vec2<T>& bottomRight )
-		:
-		GeometricObject<T>( (topLeft + bottomRight)* (T)0.5 ),
-		width( bottomRight.x - topLeft.x ),
-		height( bottomRight.y - topLeft.y ),
-		halfWidth( (T)(width / 2) ),
-		halfHeight( (T)(height / 2) )
+	inline	void Translate( T dx, T dy )
 	{
-		GeometricObject<T>::vertices.resize( 4 );
-		SetVertices();
+		top += dy;
+		bottom += dy;
+		left += dx;
+		right += dx;
 	}
-
-	~Rect() {}
-
-	T GetRadius() const override
+	template <typename T2>
+	inline	operator _Rect<T2>() const
 	{
-		return (T)std::sqrt( halfWidth * halfWidth + halfWidth * halfWidth );
+		return { (T2)top,(T2)bottom,(T2)left,(T2)right };
 	}
-	T GetWidth() const override
+	inline	void ClipTo( const _Rect& rect )
 	{
-		return width;
+		top = std::max( top, rect.top );
+		bottom = std::min( bottom, rect.bottom );
+		left = std::max( left, rect.left );
+		right = std::min( right, rect.right );
 	}
-	T GetHeight() const override
+	inline	T GetWidth() const
 	{
-		return height;
+		return right - left;
 	}
-	Vec2<T> GetLeftTop() const override
+	inline	T GetHeight() const
 	{
-		return { this->center.x - halfWidth, this->center.y - halfHeight };
+		return bottom - top;
 	}
-	Vec2<T> GetRightBottom() const override
+	inline	bool Overlaps( const _Rect& rect ) const
 	{
-		return { this->center.x + halfWidth, this->center.y + halfHeight };
+		return top < rect.bottom&& bottom > rect.top &&
+			left < rect.right&& right > rect.left;
 	}
-	void SetWidth( T width_in )
+	template <typename T2>
+	inline	bool Contains( Vec2<T2> p ) const
 	{
-		width = width_in;
-		SetVertices();
+		return p.y >= top && p.y <= bottom && p.x >= left && p.x <= right;
 	}
-	void SetHeight( T height_in )
+	template <typename T2>
+	inline	bool Contains( _Rect<T2> p ) const
 	{
-		height = height_in;
-		SetVertices();
+		return p.top >= top && p.bottom <= bottom && p.left >= left && p.right <= right;
 	}
-	void SetCenter( const Vec2<T>& center_in ) override
-	{
-		GeometricObject<T>::center = center_in;
-		SetVertices();
-	}
-	void SetCenter( T x, T y ) override
-	{
-		SetCenter( { x, y } );
-		SetVertices();
-	}
-	T GetSize() const override
-	{
-		return (std::max)(width, height);
-	}
-	void AddSize( T size_in ) override
-	{
-		width += size_in;
-		height += size_in;
-		SetVertices();
-	}
-	void Draw( HDC hdc ) const override
-	{
-		std::vector<POINT> points;
-		for ( auto e : GeometricObject<T>::vertices )
-		{
-			points.push_back( { (LONG)e.x, (LONG)e.y } );
-		}
-		Polygon( hdc, &points[0], (int)points.size() );
-	}
-	void DrawDebug( HDC hdc ) const override
-	{
-		std::vector<POINT> points;
-		for ( auto e : GeometricObject<T>::vertices )
-		{
-			points.push_back( { (LONG)e.x, (LONG)e.y } );
-		}
-
-		HBRUSH hBrush;
-		HBRUSH oldBrush;
-		hBrush = CreateSolidBrush( 0x0000FF );
-		oldBrush = (HBRUSH)SelectObject( hdc, hBrush );
-		Polygon( hdc, &points[0], (int)points.size() );
-		SelectObject( hdc, oldBrush );
-		DeleteObject( hBrush );
-	}
-	RECT GetRECT() const override
-	{
-		return { (int)left, (int)top, (int)right, (int)bottom };
-	}
-
-private:
-	void SetVertices()
-	{
-		left = GeometricObject<T>::center.x - halfWidth;
-		right = GeometricObject<T>::center.x + halfWidth;
-		top = GeometricObject<T>::center.y - halfHeight;
-		bottom = GeometricObject<T>::center.y + halfHeight;
-
-		GeometricObject<T>::vertices[0] = GeometricObject<T>::transform * (GeometricObject<T>::center - Vec2<T>{ (T)left, (T)top }) + GeometricObject<T>::center;
-		GeometricObject<T>::vertices[1] = GeometricObject<T>::transform * (GeometricObject<T>::center - Vec2<T>{ (T)right, (T)top }) + GeometricObject<T>::center;
-		GeometricObject<T>::vertices[2] = GeometricObject<T>::transform * (GeometricObject<T>::center - Vec2<T> { (T)right, (T)bottom }) + GeometricObject<T>::center;
-		GeometricObject<T>::vertices[3] = GeometricObject<T>::transform * (GeometricObject<T>::center - Vec2<T>{ (T)left, (T)bottom }) + GeometricObject<T>::center;
-	}
-
-private:
-	T width;
-	T height;
-	T left;
-	T right;
+public:
 	T top;
 	T bottom;
-	T halfWidth;
-	T halfHeight;
+	T left;
+	T right;
 };
+
+typedef _Rect< int > RectI;
+typedef _Rect< float > RectF;
