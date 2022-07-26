@@ -144,9 +144,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Actor.h" />
-    <ClInclude Include="Circle.h" />
     <ClInclude Include="Codex.h" />
-    <ClInclude Include="CollisionManager.h" />
     <ClInclude Include="CoordinateTransformer.h" />
     <ClInclude Include="DynamicActor.h" />
     <ClInclude Include="FileManager.h" />
@@ -154,29 +152,18 @@
     <ClInclude Include="GDIPlusManager.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="Game.h" />
-    <ClInclude Include="GeometricObject.h" />
-    <ClInclude Include="IndexedLineList.h" />
     <ClInclude Include="InhaWinAPIGame.h" />
     <ClInclude Include="Mat2.h" />
     <ClInclude Include="Mat3.h" />
     <ClInclude Include="MathSH.h" />
-    <ClInclude Include="PanicPlayer.h" />
     <ClInclude Include="PatternMatchingListener.h" />
-    <ClInclude Include="Physics.h" />
-    <ClInclude Include="PhysicsEntity.h" />
-    <ClInclude Include="PhysicsEntityTypeTraits.h" />
-    <ClInclude Include="PlayerArea.h" />
     <ClInclude Include="Polygon.h" />
     <ClInclude Include="Ray.h" />
-    <ClInclude Include="Rect.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="Scene.h" />
-    <ClInclude Include="SceneStage.h" />
     <ClInclude Include="ImageCodex.h" />
-    <ClInclude Include="Star.h" />
     <ClInclude Include="Surface.h" />
     <ClInclude Include="targetver.h" />
-    <ClInclude Include="TestTriangulationScene.h" />
     <ClInclude Include="Vec2.h" />
     <ClInclude Include="Vec2W.h" />
     <ClInclude Include="Vec3.h" />
@@ -184,18 +171,12 @@
     <ClInclude Include="DrawManager.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="CollisionManager.cpp" />
-    <ClCompile Include="DynamicActor.cpp" />
     <ClCompile Include="FileManager.cpp" />
     <ClCompile Include="FrameTimer.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GDIPlusManager.cpp" />
     <ClCompile Include="InhaWinAPIGame.cpp" />
-    <ClCompile Include="PanicPlayer.cpp" />
-    <ClCompile Include="PhysicsEntity.cpp" />
-    <ClCompile Include="PlayerArea.cpp" />
     <ClCompile Include="Scene.cpp" />
-    <ClCompile Include="SceneStage.cpp" />
     <ClCompile Include="Surface.cpp" />
   </ItemGroup>
   <ItemGroup>

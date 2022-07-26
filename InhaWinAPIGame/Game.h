@@ -3,7 +3,6 @@
 #include "framework.h"
 
 #include "FrameTimer.h"
-#include "SceneStage.h"
 #include "DrawManager.h"
 
 // Test Things
@@ -35,7 +34,6 @@ public:
 private:
 	RECT oldScreenSize = screenRect;
 	FrameTimer ft;
-	SceneStage stage;
 	DrawManager drawManager;
 
 	bool isScreenChanged = true;
@@ -43,10 +41,4 @@ private:
 	SceneType sceneType = SceneType::SceneStage;
 
 	bool isFinishedResult = false;
-
-
-
-
-	// for Test
-	//TestTriangulationScene testTriangulationScene;
 };

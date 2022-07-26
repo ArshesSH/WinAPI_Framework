@@ -5,7 +5,6 @@
 #include <list>
 #include "Vec2.h"
 #include "Surface.h"
-#include "IndexedLineList.h"
 #include "Ray.h"
 
 namespace ArshesSH
