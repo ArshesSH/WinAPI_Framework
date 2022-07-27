@@ -4,6 +4,7 @@
 
 #include "FrameTimer.h"
 #include "DrawManager.h"
+#include "Surface.h"
 
 // Test Things
 //#include "TestTriangulationScene.h"
@@ -41,4 +42,10 @@ private:
 
 	bool isScreenChanged = true;
 	SceneType sceneType = SceneType::SceneStage;
+
+	//Test
+	Surface<float> surf;
+	
+
+
 };

@@ -56,7 +56,7 @@ public:
 		SelectObject( hdc, oldBrush );
 		DeleteObject( hBrush );
 	}
-
+	
 
 	template <typename R>
 	void DrawRectPlus( Gdiplus::Graphics& graphics, Gdiplus::Color color, float penWidth, R rect )
@@ -112,10 +112,6 @@ public:
 
 		Gdiplus::RectF r( { topLeft.x, topLeft.y }, { width, height } );
 		DrawFillRectPlus( graphics, color, r );
-
-		//SolidBrush brush( color );
-		//Gdiplus::RectF r( { topLeft.x, topLeft.y }, { width, height } );
-		//graphics.FillRectangle( &brush, r );
 	}
 
 
@@ -144,6 +140,15 @@ public:
 		graphics.FillPolygon( &brush, &points, pointCnt );
 	}
 
+	void DrawImageNonChromaGDI(HDC hdc, const HBITMAP& hBitmap,  const Vec2<T>& topLeft, const Vec2<T>& bottomRight,
+		const Vec2<T>& imageStart, const Vec2<T>& imageEnd )
+	{
+		HDC hMemDC = CreateCompatibleDC( hdc );
+		HBITMAP hOldBitmap = (HBITMAP)SelectObject( hMemDC, hBitmap );
+		StretchBlt( hdc, topLeft.x, topLeft.y, bottomRight.x, bottomRight.y, hMemDC, imageStart.x, imageStart.y, imageEnd.x, imageEnd.y, SRCCOPY );
+		SelectObject( hMemDC, hOldBitmap );
+		DeleteObject( hMemDC );
+	}
 	void DrawImageNonChromaPlus( Gdiplus::Graphics& graphics, Gdiplus::Image* image, const Vec2<T>& topLeft, const Vec2<T>& bottomRight,
 		const Vec2<T>& imageStart, const Vec2<T>& imageEnd )
 	{
