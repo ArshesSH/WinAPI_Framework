@@ -5,6 +5,7 @@
 #include "FrameTimer.h"
 #include "DrawManager.h"
 #include "Surface.h"
+#include "Image.h"
 
 // Test Things
 //#include "TestTriangulationScene.h"
@@ -45,7 +46,7 @@ private:
 
 	//Test
 	Surface<float> surf;
-	
-
+	Image::ImageGDI<float> imageTest;
+	Image::ImageGDIPlus<float> imageTest2;
 
 };

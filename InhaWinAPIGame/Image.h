@@ -9,6 +9,7 @@
 
 namespace Image
 {
+	template <typename T = int>
 	class ImageGDI
 	{
 	public:
@@ -30,15 +31,16 @@ namespace Image
 		{
 			return bitmapImage;
 		}
-		Vec2<int> GetImageSize() const
+		Vec2<T> GetImageSize() const
 		{
-			return { bitmapImage.bmWidth, bitmapImage.bmHeight };
+			return { (T)bitmapImage.bmWidth, (T)bitmapImage.bmHeight };
 		}
 	private:
 		HBITMAP hImage;
 		BITMAP bitmapImage;
 	};
 
+	template <typename T = int>
 	class ImageGDIPlus
 	{
 	public:
@@ -49,6 +51,10 @@ namespace Image
 		Gdiplus::Image* GetImagePtr() const
 		{
 			return pImage.get();
+		}
+		Vec2<T> GetImageSize() const
+		{
+			return { (T)pImage->GetWidth(), (T)pImage->GetHeight() };
 		}
 	private:
 		std::shared_ptr<Gdiplus::Image> pImage;

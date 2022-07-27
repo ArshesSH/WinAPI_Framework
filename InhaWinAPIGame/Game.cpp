@@ -4,6 +4,9 @@
 #include "Surface.h"
 
 Game::Game()
+	:
+	imageTest( L"Images/awsom.bmp" ),
+	imageTest2( L"Images/awsom.bmp" )
 {
 }
 
@@ -29,6 +32,8 @@ void Game::ComposeFrame(HDC hdc)
 				{
 					Gdiplus::Graphics gfx( hdc );
 					surf.DrawRectGDI( hdc, 30, 30, 100, 100, RGB( 255, 255, 255 ) );
+					surf.DrawImageNonChromaGDI( hdc, imageTest.GetHBitmap(), { 50,50 }, { 100,100 }, { 0,0 }, imageTest.GetImageSize() );
+					surf.DrawImageNonChromaPlus( gfx, imageTest2.GetImagePtr(), { 100,100 }, { 200,200 }, { 0,0 }, imageTest2.GetImageSize() );
 				}
 			);
 
