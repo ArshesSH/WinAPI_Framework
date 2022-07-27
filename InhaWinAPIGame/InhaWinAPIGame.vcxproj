@@ -144,6 +144,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Actor.h" />
+    <ClInclude Include="Camera.h" />
     <ClInclude Include="Codex.h" />
     <ClInclude Include="CoordinateTransformer.h" />
     <ClInclude Include="Graphics.h" />

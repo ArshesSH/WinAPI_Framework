@@ -11,11 +11,18 @@
 #include "Mat3.h"
 #include "Rect.h"
 #include "Image.h"
+#include "CoordSH.h"
 
 template<typename T>
 class Surface
 {
 public:
+	void ApplyTransformation( const Mat3<float>& transformation_in )
+	{
+		transform = transformation_in;
+	}
+
+	// String
 	void DrawStringGDI(HDC hdc, T x, T y, const std::wstring& str )
 	{
 		TextOut( hdc, (int)x, (int)y, str.c_str(), str.size() );
@@ -37,84 +44,111 @@ public:
 		graphics.DrawString( str.c_str(), str.size(), &font, pointF, &brush );
 	}
 
+	// Rect
 	void DrawRectGDI(HDC hdc, T left, T top, T right, T bottom, COLORREF color )
 	{
 		HBRUSH hBrush;
 		HBRUSH oldBrush;
 		hBrush = CreateSolidBrush( color );
 		oldBrush = (HBRUSH)SelectObject( hdc, hBrush );
-		Rectangle( hdc, (int)left, (int)top, (int)right, (int)bottom );
+
+		auto topLeft = transform * Vec3<float>{ left, top, 1 };
+		auto bottomRight = transform * Vec3<float>{ right, bottom, 1 };
+
+		Rectangle( hdc, (int)topLeft.x, (int)topLeft.y, (int)bottomRight.x, (int)bottomRight.y );
 		SelectObject( hdc, oldBrush );
 		DeleteObject( hBrush );
 	}
 	void DrawRectGDI( HDC hdc, const _Rect<T>& rect, COLORREF color )
 	{
-		HBRUSH hBrush;
-		HBRUSH oldBrush;
-		hBrush = CreateSolidBrush( color );
-		oldBrush = (HBRUSH)SelectObject( hdc, hBrush );
-		Rectangle( hdc, (int)rect.left, (int)rect.top, (int)rect.right, (int)rect.bottom );
-		SelectObject( hdc, oldBrush );
-		DeleteObject( hBrush );
+		DrawRectGDI( hdc, (int)rect.left, (int)rect.top, (int)rect.right, (int)rect.bottom, color );
 	}
-	
-
-	template <typename R>
-	void DrawRectPlus( Gdiplus::Graphics& graphics, Gdiplus::Color color, float penWidth, R rect )
+	void DrawRectPlus( Gdiplus::Graphics& graphics, const Vec2<T>& topLeft, const Vec2<T>& bottomRight, const Gdiplus::Color color, float penWidth )
 	{
 		using namespace Gdiplus;
+
+		const auto tl = transform * Vec2<float>( topLeft );
+		const auto br = transform * Vec2<float>( bottomRight );
+		const float width = br.x - tl.x;
+		const float height = br.y - tl.y;
 
 		Pen pen( color, penWidth );
-		graphics.DrawRectangle( &pen, rect );
+		graphics.DrawRectangle( &pen, tl.x, tl.y, width, height );
 	}
-	void DrawRectPlus( Gdiplus::Graphics& graphics, Gdiplus::Color color, float penWidth, const Vec2<T>& topLeft, T width, T height )
-	{
-		using namespace Gdiplus;
-
-		Gdiplus::Rect r( { (int)topLeft.x, (int)topLeft.y }, { (int)width, (int)height } );
-		DrawRectPlus( graphics, color, penWidth, r );
-	}
-	void DrawRectPlus( Gdiplus::Graphics& graphics, Gdiplus::Color color, float penWidth, _Rect<T> rect )
-	{
-		using namespace Gdiplus;
-
-		Gdiplus::Rect r( { (int)rect.left, (int)rect.top }, { (int)rect.GetWidth(), (int)rect.GetHeight() } );
-		DrawRectPlus( graphics, color, penWidth, r );
-	}
-
 	template <typename R>
-	void DrawArcPlus( Gdiplus::Graphics& graphics, Gdiplus::Color color, float penWidth, R rect, float startAngle, float sweepAngle )
+	void DrawRectPlus( Gdiplus::Graphics& graphics, R rect, const Gdiplus::Color& color, float penWidth )
+	{
+		DrawRectPlus( graphics, { rect.X, rect.Y }, { rect.X + rect.Width, rect.Y + rect.Height }, color, penWidth );
+	}
+	void DrawRectPlus( Gdiplus::Graphics& graphics, const Vec2<T>& topLeft, T width, T height, Gdiplus::Color color, float penWidth )
+	{
+		DrawRectPlus( graphics, topLeft, { topLeft.x + width, topLeft.y + height }, color, penWidth );
+	}
+	void DrawRectPlus( Gdiplus::Graphics& graphics, const _Rect<T>& rect, Gdiplus::Color color, float penWidth )
+	{
+		DrawRectPlus( graphics, { rect.left, rect.top }, { rect.right, rect.bottom }, color, penWidth );
+	}
+
+	// Arc
+	void DrawArcPlus( Gdiplus::Graphics& graphics, const Vec2<T>& topLeft, const Vec2<T>& bottomRight,
+		Gdiplus::Color color, float penWidth, float startAngle, float sweepAngle )
 	{
 		using namespace Gdiplus;
 
-		Pen pen( color, penWidth );
-		graphics.DrawArc( &pen, rect, startAngle, sweepAngle );
+		const auto tl = transform * Vec2<float>( topLeft );
+		const auto br = transform * Vec2<float>( bottomRight );
+		const float width = br.x - tl.x;
+		const float height = br.y - tl.y;
+
+		Gdiplus::RectF r( { tl.x, tl.y }, {width, height} );
+		DrawArc( graphics, color, penWidth, r, startAngle, sweepAngle );
+	}
+	template <typename R>
+	void DrawArcPlus( Gdiplus::Graphics& graphics, R rect, Gdiplus::Color color, float penWidth, float startAngle, float sweepAngle )
+	{
+		DrawArcPlus( graphics, { rect.X, rect.Y }, { rect.X + rect.Width, rect.Y + rect.Height }, color, penWidth, startAngle, sweepAngle );
 	}
 	void DrawArcPlus( Gdiplus::Graphics& graphics, Gdiplus::Color color, float penWidth,
 		const Vec2<T>& topLeft, T width, T height, float startAngle, float sweepAngle )
 	{
-		using namespace Gdiplus;
-
-		Gdiplus::Rect r( { (int)topLeft.x, (int)topLeft.y }, { (int)width, (int)height } );
-		DrawArc( graphics, color, penWidth, r, startAngle, sweepAngle );
+		DrawArcPlus( graphics, topLeft, { topLeft.x + width, topLeft.y + height }, color, penWidth, startAngle, sweepAngle );
 	}
 
-	template <typename R>
-	void DrawFillRectPlus( Gdiplus::Graphics& graphics, Gdiplus::Color color, R rect )
+	// Fill Rect
+	void DrawFillRectPlus( Gdiplus::Graphics& graphics, const Vec2<T>& topLeft, const Vec2<T>& bottomRight, Gdiplus::Color color )
 	{
 		using namespace Gdiplus;
+
+		const auto tl = transform * Vec2<float>( topLeft );
+		const auto br = transform * Vec2<float>( bottomRight );
+		const float width = br.x - tl.x;
+		const float height = br.y - tl.y;
+		Gdiplus::RectF r( { tl.x, tl.y }, { width, height } );
 
 		SolidBrush brush( color );
-		graphics.FillRectangle( &brush, rect );
+		graphics.FillRectangle( &brush, r );
 	}
-	void DrawFillRectPlus( Gdiplus::Graphics& graphics, Gdiplus::Color color, const Vec2<T>& topLeft, T width, T height )
+	template <typename R>
+	void DrawFillRectPlus( Gdiplus::Graphics& graphics, R rect, Gdiplus::Color color )
+	{
+		DrawFillRectPlus( graphics, { rect.X, rect.Y }, { rect.X + rect.Width, rect.Y + rect.Height }, color );
+	}
+	void DrawFillRectPlus( Gdiplus::Graphics& graphics, const Vec2<T>& topLeft, T width, T height, Gdiplus::Color color )
+	{
+		DrawFillRectPlus( graphics, topLeft, { topLeft.x + width, topLeft.y + height }, color );
+	}
+
+	// Draw Line
+	void DrawLinePlus( Gdiplus::Graphics& graphics, Gdiplus::Color color, float penWidth,
+		const Vec2<T>& v1, const Vec2<T>& v2 )
 	{
 		using namespace Gdiplus;
+		Pen pen( color, penWidth );
+		
+		// DO THIS
 
-		Gdiplus::RectF r( { topLeft.x, topLeft.y }, { width, height } );
-		DrawFillRectPlus( graphics, color, r );
+		graphics.DrawLine( &pen, p1, p2 );
 	}
-
 
 	void DrawLinePlus( Gdiplus::Graphics& graphics, Gdiplus::Color color, float penWidth,
 		const Gdiplus::Point& v1, const Gdiplus::Point& v2 )
@@ -146,7 +180,8 @@ public:
 	{
 		HDC hMemDC = CreateCompatibleDC( hdc );
 		HBITMAP hOldBitmap = (HBITMAP)SelectObject( hMemDC, hBitmap );
-		StretchBlt( hdc, topLeft.x, topLeft.y, bottomRight.x, bottomRight.y, hMemDC, imageStart.x, imageStart.y, imageEnd.x, imageEnd.y, SRCCOPY );
+		StretchBlt( hdc, (int)topLeft.x, (int)topLeft.y, (int)bottomRight.x, (int)bottomRight.y,
+			hMemDC, (int)imageStart.x, (int)imageStart.y, (int)imageEnd.x, (int)imageEnd.y, SRCCOPY );
 		SelectObject( hMemDC, hOldBitmap );
 		DeleteObject( hMemDC );
 	}
@@ -179,7 +214,7 @@ public:
 		graphics.SetTransform( &mat );
 
 		const Gdiplus::Rect r( (int)topLeft.x, (int)topLeft.y, (int)(bottomRight.x - topLeft.x), (int)(bottomRight.y - topLeft.y) );
-		graphics.DrawImage( image, r, imageStart.x, imageStart.y, imageEnd.x, imageEnd.y, UnitPixel );
+		graphics.DrawImage( image, r, (int)imageStart.x, (int)imageStart.y, (int)imageEnd.x, (int)imageEnd.y, UnitPixel );
 
 		mat.Reset();
 		graphics.SetTransform( &mat );
@@ -253,5 +288,6 @@ public:
 	}
 
 private:
+	Mat3<float> transform = Mat3<float>::Identity();
 };
 
