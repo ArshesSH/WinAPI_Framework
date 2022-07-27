@@ -10,6 +10,7 @@
 #include "Vec2.h"
 #include "Mat3.h"
 #include "Rect.h"
+#include "Image.h"
 
 template<typename T>
 class Surface
@@ -149,6 +150,11 @@ public:
 		SelectObject( hMemDC, hOldBitmap );
 		DeleteObject( hMemDC );
 	}
+	void DrawImageNonChromaGDI( HDC hdc, const Image::ImageGDI<T>& image, const Vec2<T>& topLeft, const Vec2<T>& bottomRight,
+		const Vec2<T>& imageStart, const Vec2<T>& imageEnd )
+	{
+		DrawImageNonChromaGDI( hdc, image.GetHBitmap(), topLeft, bottomRight, imageStart, imageEnd );
+	}
 	void DrawImageNonChromaPlus( Gdiplus::Graphics& graphics, Gdiplus::Image* image, const Vec2<T>& topLeft, const Vec2<T>& bottomRight,
 		const Vec2<T>& imageStart, const Vec2<T>& imageEnd )
 	{
@@ -156,6 +162,11 @@ public:
 
 		const Gdiplus::Rect r( (int)topLeft.x, (int)topLeft.y, (int)(bottomRight.x - topLeft.x), (int)(bottomRight.y - topLeft.y) );
 		graphics.DrawImage( image, r, (int)imageStart.x, (int)imageStart.y, (int)imageEnd.x, (int)imageEnd.y, UnitPixel );
+	}
+	void DrawImageNonChromaPlus( Gdiplus::Graphics& graphics, const Image::ImageGDIPlus<T>& image, const Vec2<T>& topLeft, const Vec2<T>& bottomRight,
+		const Vec2<T>& imageStart, const Vec2<T>& imageEnd )
+	{
+		DrawImageNonChromaPlus( graphics, image.GetImagePtr(), topLeft, bottomRight, imageStart, imageEnd );
 	}
 	void DrawRotateImageNonChromaPlus( Gdiplus::Graphics& graphics, Gdiplus::Image* image,
 		const Vec2<T>& topLeft, const Vec2<T>& bottomRight,
@@ -173,7 +184,29 @@ public:
 		mat.Reset();
 		graphics.SetTransform( &mat );
 	}
+	void DrawRotateImageNonChromaPlus( Gdiplus::Graphics& graphics, const Image::ImageGDIPlus<T>& image,
+		const Vec2<T>& topLeft, const Vec2<T>& bottomRight,
+		const Vec2<T>& imageStart, const Vec2<T>& imageEnd, const Vec2<T>& rotateCenter, float angle )
+	{
+		DrawRotateImageNonChromaPlus( graphics, image.GetImagePtr(), topLeft, bottomRight, imageStart, imageEnd, rotateCenter, angle );
+	}
 
+	void DrawImageChromaGDI( HDC hdc, const HBITMAP& hBitmap, const Vec2<T>& topLeft, const Vec2<T>& bottomRight,
+		const Vec2<T>& imageStart, const Vec2<T>& imageEnd, COLORREF chroma = RGB(255,0,255) )
+	{
+		HDC hMemDC = CreateCompatibleDC( hdc );
+		HBITMAP hOldBitmap = (HBITMAP)SelectObject( hMemDC, hBitmap );
+		StretchBlt( hdc, topLeft.x, topLeft.y, bottomRight.x, bottomRight.y, hMemDC, imageStart.x, imageStart.y, imageEnd.x, imageEnd.y, SRCCOPY );
+		TransparentBlt( hdc, topLeft.x, topLeft.y, bottomRight.x, bottomRight.y, hMemDC,
+			imageStart.x, imageStart.y, imageEnd.x, imageEnd.y, chroma );
+		SelectObject( hMemDC, hOldBitmap );
+		DeleteObject( hMemDC );
+	}
+	void DrawImageChromaGDI( HDC hdc, const Image::ImageGDI<T>& image, const Vec2<T>& topLeft, const Vec2<T>& bottomRight,
+		const Vec2<T>& imageStart, const Vec2<T>& imageEnd, COLORREF chroma = RGB( 255, 0, 255 ) )
+	{
+		DrawImageChromaGDI( hdc, image.GetHBitmap(), topLeft, bottomRight, imageStart, imageEnd, chroma );
+	}
 	void DrawImageChromaPlus( Gdiplus::Graphics& graphics, Gdiplus::Image* image, const Vec2<T>& topLeft, const Vec2<T>& bottomRight,
 		const Vec2<T>& imageStart, const Vec2<T>& imageEnd, int angle = 0,
 		Gdiplus::Color lowChroma = { 245, 0, 245 }, Gdiplus::Color highChroma = { 255,10,255 } )
@@ -186,7 +219,12 @@ public:
 		const Gdiplus::Rect r( (int)topLeft.x, (int)topLeft.y, (int)(bottomRight.x - topLeft.x), (int)(bottomRight.y - topLeft.y) );
 		graphics.DrawImage( image, r, imageStart.x, imageStart.y, imageEnd.x, imageEnd.y, UnitPixel, &imgAttr );
 	}
-
+	void DrawImageChromaPlus( Gdiplus::Graphics& graphics, const Image::ImageGDIPlus<T>& image, const Vec2<T>& topLeft, const Vec2<T>& bottomRight,
+		const Vec2<T>& imageStart, const Vec2<T>& imageEnd, int angle = 0,
+		Gdiplus::Color lowChroma = { 245, 0, 245 }, Gdiplus::Color highChroma = { 255,10,255 } )
+	{
+		DrawImageChromaPlus( graphics, image.GetImagePtr(), topLeft, bottomRight, imageStart, imageEnd, angle, lowChroma, highChroma );
+	}
 	void DrawRotateImageChromaPlus( Gdiplus::Graphics& graphics, Gdiplus::Image* image, const Vec2<T>& topLeft, const Vec2<T>& bottomRight,
 		const Vec2<T>& imageStart, const Vec2<T>& imageEnd, const Vec2<T>& rotateCenter, float angle,
 		Gdiplus::Color lowChroma = { 245, 0, 245 }, Gdiplus::Color highChroma = { 255,10,255 } )
@@ -207,7 +245,13 @@ public:
 		graphics.SetTransform( &mat );
 	}
 
+	void DrawRotateImageChromaPlus( Gdiplus::Graphics& graphics, const Image::ImageGDIPlus<T>& image, const Vec2<T>& topLeft, const Vec2<T>& bottomRight,
+		const Vec2<T>& imageStart, const Vec2<T>& imageEnd, const Vec2<T>& rotateCenter, float angle,
+		Gdiplus::Color lowChroma = { 245, 0, 245 }, Gdiplus::Color highChroma = { 255,10,255 } )
+	{
+		DrawRotateImageChromaPlus( graphics, image.GetImagePtr(), topLeft, bottomRight, imageStart, imageEnd, rotateCenter, angle, lowChroma, highChroma );
+	}
+
 private:
-	Mat3<float> transform = Mat3<float>::Identity();
 };
 
