@@ -17,10 +17,6 @@ namespace CoordSH
 			return { (T)src.X, (T)src.Y };
 		}
 
-		Gdiplus::Point operator()( const Vec2<T>& src ) const
-		{
-			return { (int)src.x, (int)src.y };
-		}
 		Gdiplus::PointF operator()( const Vec2<T>& src ) const
 		{
 			return { (float)src.x, (float)src.y };

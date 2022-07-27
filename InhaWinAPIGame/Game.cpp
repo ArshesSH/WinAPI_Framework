@@ -38,6 +38,8 @@ void Game::ComposeFrame(HDC hdc)
 					auto transform = Mat3<float>::Translation( { 100, 100 } ) * Mat3<float>::Scale( 2 );
 					surf.ApplyTransformation( transform );
 					surf.DrawRectGDI( hdc, 0, 0, 100, 100, RGB( 255, 255, 255 ) );
+					surf.DrawRectGDI( hdc, 100, 100, 300, 300, RGB( 255, 0, 0 ) );
+					surf.DrawFillRectPlus( gfx, { 300,0 }, { 400,100 }, Gdiplus::Color{ 255,255,255,255 } );
 				}
 			);
 
