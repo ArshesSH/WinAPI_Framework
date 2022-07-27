@@ -30,7 +30,7 @@ void Game::ComposeFrame(HDC hdc)
 			drawManager.DrawMain( hdc, screenRect, isScreenChanged,
 				[this]( HDC hdc )
 				{
-					Gdiplus::Graphics gfx( hdc );
+					
 					//surf.DrawRectGDI( hdc, 30, 30, 100, 100, RGB( 255, 255, 255 ) );
 					//surf.DrawImageNonChromaGDI( hdc, imageTest.GetHBitmap(), { 50,50 }, { 100,100 }, { 0,0 }, imageTest.GetImageSize() );
 					//surf.DrawImageNonChromaPlus( gfx, imageTest2.GetImagePtr(), { 100,100 }, { 200,200 }, { 0,0 }, imageTest2.GetImageSize() );
