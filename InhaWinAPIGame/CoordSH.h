@@ -37,17 +37,5 @@ namespace CoordSH
 			}
 			return points;
 		}
-
-		std::vector<Gdiplus::Point> operator()( const std::vector<Vec2<T>>& src ) const
-		{
-			std::vector<Gdiplus::PointF> points;
-			PointConversion conversion;
-			points.resize( src.size() );
-			for ( int i = 0; i < (int)src.size(); ++i )
-			{
-				points[i] = conversion( src[i] );
-			}
-			return points;
-		}
 	};
 }
