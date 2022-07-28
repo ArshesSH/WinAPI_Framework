@@ -58,7 +58,7 @@ public:
 	template <typename F>
 	void Draw( HDC hdc, const Vec2<float>& originPos, F drawFunc )
 	{
-		auto transform = ( Mat3<float>::Rotation( angle )  * Mat3<float>::Translation( -pos )* Mat3<float>::Scale( scale ) );
+		auto transform = (Mat3<float>::Translation( -pos ) * Mat3<float>::Rotation( angle )  * Mat3<float>::Scale( scale ) );
 		ct.Draw( hdc, transform, originPos, std::move(drawFunc) );
 	}
 	const RectF& GetScreenRect(int screenWidth, int screenHeight) const
