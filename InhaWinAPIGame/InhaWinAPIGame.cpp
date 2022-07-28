@@ -5,6 +5,7 @@
 #include "GDIPlusManager.h"
 #include "InhaWinAPIGame.h"
 #include "Game.h"
+#include <memory>
 
 
 #define MAX_LOADSTRING 100
@@ -22,7 +23,7 @@ INT_PTR CALLBACK    About(HWND, UINT, WPARAM, LPARAM);
 VOID    CALLBACK    TimerProc( HWND, UINT, WPARAM, DWORD );
 
 GDIPlusManager gdi;
-Game game;
+std::unique_ptr<Game> pGame;
 
 bool isStartGame = true;
 bool isEndGame = false;
@@ -50,6 +51,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
     HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_INHAWINAPIGAME));
 
+    pGame = std::make_unique<Game>();
+
     // Window Process Message
     MSG msg;
     while ( true )
@@ -65,7 +68,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
         }
         //else
         {
-            game.UpdateModel();
+            pGame->UpdateModel();
         }
     }
     return (int)msg.wParam;
@@ -140,11 +143,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     switch (message)
     {
     case WM_CREATE:
-        game.SetScreenSize( hWnd );
+        pGame->SetScreenSize( hWnd );
         SetTimer( hWnd, 0, 0, TimerProc );
         break;
     case WM_SIZE:
-        game.SetScreenSize( hWnd );
+        pGame->SetScreenSize( hWnd );
         break;
     case WM_COMMAND:
         {
@@ -169,7 +172,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             HDC hdc = BeginPaint(hWnd, &ps);
             // TODO: 여기에 hdc를 사용하는 그리기 코드를 추가합니다...
             
-            game.ComposeFrame(hdc);
+            pGame->ComposeFrame(hdc);
             EndPaint(hWnd, &ps);
         }
         break;
