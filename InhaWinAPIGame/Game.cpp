@@ -6,7 +6,8 @@
 Game::Game()
 	:
 	imageTest( L"Images/awsom.bmp" ),
-	imageTest2( L"Images/awsom.bmp" )
+	imageTest2( L"Images/awsom.bmp" ),
+	cam(ct)
 {
 }
 
@@ -35,13 +36,32 @@ void Game::ComposeFrame(HDC hdc)
 					//surf.DrawImageNonChromaGDI( hdc, imageTest.GetHBitmap(), { 50,50 }, { 100,100 }, { 0,0 }, imageTest.GetImageSize() );
 					//surf.DrawImageNonChromaPlus( gfx, imageTest2.GetImagePtr(), { 100,100 }, { 200,200 }, { 0,0 }, imageTest2.GetImageSize() );
 					
+					
 
-					auto transform = Mat3<float>::Translation( { 100, 100 } ) * Mat3<float>::Scale( 2 );
-					surf.ApplyTransformation( transform );
-					surf.DrawRectGDI( hdc, 0, 0, 100, 100, RGB( 255, 255, 255 ) );
-					surf.DrawRectGDI( hdc, 100, 100, 300, 300, RGB( 255, 0, 0 ) );
-					surf2.DrawFillRectPlus( gfx, { 300,0 }, { 400,100 }, Gdiplus::Color{ 255,255,255,255 } );
+					auto draws = [&]( HDC hdc, const Mat3<float>& camTransform )
+					{
+						auto transform1 = Mat3<float>::Translation( { 100, 100 } ) * Mat3<float>::Scale( 1 );
+						//auto transform2 = Mat3<float>::Translation( { 200,200 } );
+						surf.SetTransformation( camTransform  );
+						surf2.SetTransformation( camTransform  );
+						surf.DrawRectGDI( hdc, 0, 0, 100, 100, RGB( 255, 255, 255 ) );
+						surf.DrawRectGDI( hdc, 100, 100, 300, 300, RGB( 255, 0, 0 ) );
+ 						//surf2.DrawImageNonChromaGDI( hdc, imageTest.GetHBitmap(), { 0,0 }, { 20,20 }, { 0,0 }, imageTest.GetImageSize() );
+						surf.DrawFillRectPlus( gfx, { 300,0 }, { 400,100 }, Gdiplus::Color{ 255,255,255,0} );
+						surf.DrawRectGDI( hdc, 300, 0, 400, 100, RGB( 255, 255, 0 ) );
+					};
 
+					const float screenX = (screenRect.right - screenRect.left) / 2.0f;
+					const float screenY = (screenRect.bottom - screenRect.top) / 2.0f;
+					cam.Draw( hdc, { screenX, screenY }, draws);
+					
+					Surface<float> s;
+					const auto camPos = cam.GetPos();
+					const auto camScale = cam.GetScale();
+					const std::wstring camPosStr = L"camPos: (" + std::to_wstring( camPos.x ) + L", " + std::to_wstring( camPos.y ) + L")";
+					const std::wstring camScaleStr = L"camScale: " + std::to_wstring( cam.GetScale() );
+					s.DrawStringPlus( gfx, camPosStr, { 0,0 }, {255,255,255,255} );
+					s.DrawStringPlus( gfx, camScaleStr, { 0,20 }, { 255,255,255,255 } );
 				}
 			);
 
@@ -81,6 +101,32 @@ void Game::UpdateModel()
 		{
 			float dt = ft.Mark();
 			RefreshScreen();
+
+			if ( GetAsyncKeyState( 'A' ) & 0x8001 )
+			{
+				cam.MoveBy( dirLeft * dt * 100 );
+			}
+			else if ( GetAsyncKeyState( 'D' ) & 0x8001 )
+			{
+				cam.MoveBy( dirRight * dt * 100 );
+			}
+			if ( GetAsyncKeyState( 'W' ) & 0x8001 )
+			{
+				cam.MoveBy( dirUp * dt * 100 );
+			}
+			else if ( GetAsyncKeyState( 'S' ) & 0x8001 )
+			{
+				cam.MoveBy( dirDown * dt * 100 );
+			}
+
+			if ( GetAsyncKeyState( 'Q' ) & 0x8001 )
+			{
+				cam.SetScale( cam.GetScale() - (2.0f  * dt) );
+			}
+			else if ( GetAsyncKeyState( 'E' ) & 0x8001 )
+			{
+				cam.SetScale( cam.GetScale() + (2.0f * dt) );
+			}
 		}
 		break;
 	case Game::SceneType::SceneTest:

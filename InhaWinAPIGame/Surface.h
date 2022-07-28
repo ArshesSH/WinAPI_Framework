@@ -17,9 +17,17 @@ template<typename T>
 class Surface
 {
 public:
-	void ApplyTransformation( const Mat3<float>& transformation_in )
+	void SetTransformation( const Mat3<float>& transformation_in )
 	{
 		transform = transformation_in;
+	}
+	void ApplyTransformation( const Mat3<float>& transformation_in )
+	{
+		transform = transformation_in * transform;
+	}
+	const Mat3<float>& GetTransformation() const
+	{
+		return transform;
 	}
 
 	// String
@@ -52,7 +60,7 @@ public:
 		hBrush = CreateSolidBrush( color );
 		oldBrush = (HBRUSH)SelectObject( hdc, hBrush );
 
-		const auto topLeft = transform * Vec3<float>{ left, top, 1 };
+		const auto topLeft =  transform * Vec3<float>{ left, top, 1 };
 		const auto bottomRight = transform * Vec3<float>{ right, bottom, 1 };
 
 		Rectangle( hdc, (int)topLeft.x, (int)topLeft.y, (int)bottomRight.x, (int)bottomRight.y );

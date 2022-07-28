@@ -52,7 +52,13 @@ private:
 	//Test
 	Surface<float> surf;
 	Surface<float> surf2;
-		
+	CoordinateTransformer ct;
+	Camera cam;
+
+	const Vec2<float> dirLeft = { -1.0f, 0.0f };
+	const Vec2<float> dirUp = { 0.0f, 1.0f };
+	const Vec2<float> dirRight = { 1.0f, 0.0f };
+	const Vec2<float> dirDown = { 0.0f, -1.0f };
 
 	Image::ImageGDI<float> imageTest;
 	Image::ImageGDIPlus<float> imageTest2;

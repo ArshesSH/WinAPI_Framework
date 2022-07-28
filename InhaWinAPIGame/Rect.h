@@ -75,6 +75,13 @@ public:
 	{
 		return p.top >= top && p.bottom <= bottom && p.left >= left && p.right <= right;
 	}
+
+	static _Rect<T> FromCenter( const Vec2<T>& center, float halfWidth, float halfHeight )
+	{
+		const Vec2<T> half( halfWidth, halfHeight );
+		return _Rect<T>( center - half, center + half );
+	}
+
 public:
 	T top;
 	T bottom;

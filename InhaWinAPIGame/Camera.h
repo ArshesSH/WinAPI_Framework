@@ -4,6 +4,8 @@
 #include "Rect.h"
 #include "Vec2.h"
 #include "Mat3.h"
+#include "MathSH.h"
+#include "Rect.h"
 
 class Camera
 {
@@ -54,21 +56,21 @@ public:
 	}
 
 	template <typename F>
-	void Draw( const Vec2<float>& originPos, F drawFunc )
+	void Draw( HDC hdc, const Vec2<float>& originPos, F drawFunc )
 	{
-		surf.ApplyTransformation( Mat3<float>::Rotation( angle ) * Mat3<float>::Scale( scale ) * Mat3<float>::Translation( -pos ) );
-		ct.Draw( std::move(surf), originPos, std::move(drawFunc) );
+		auto transform = ( Mat3<float>::Rotation( angle )  * Mat3<float>::Translation( -pos )* Mat3<float>::Scale( scale ) );
+		ct.Draw( hdc, transform, originPos, std::move(drawFunc) );
 	}
-	//const RectF& GetScreenRect()
-	//{
-	//	const float zoom = 1.0f / scale;
+	const RectF& GetScreenRect(int screenWidth, int screenHeight) const
+	{
+		const float zoom = 1.0f / scale;
 
-	//	const float digonal = sqrt(
-	//		sq( float( Graphics::ScreenWidth / 2 ) * zoom ) +
-	//		sq( float( Graphics::ScreenHeight / 2 ) * zoom )
-	//	);
-	//	return RectF::FromCenter( pos, digonal, digonal );
-	//}*/
+		const float digonal = sqrt(
+			MathSH::sq( float( screenWidth / 2 ) * zoom ) +
+			MathSH::sq( float( screenHeight / 2 ) * zoom )
+		);
+		return RectF::FromCenter( pos, digonal, digonal );
+	}
 
 private:
 	CoordinateTransformer& ct;
