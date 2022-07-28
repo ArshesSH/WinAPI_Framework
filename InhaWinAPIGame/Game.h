@@ -6,6 +6,7 @@
 #include "DrawManager.h"
 #include "Surface.h"
 #include "Image.h"
+#include "Camera.h"
 
 // Test Things
 //#include "TestTriangulationScene.h"
@@ -27,16 +28,20 @@ public:
 	void UpdateModel();
 
 	void RefreshScreen();
-
 	void SetScreenSize( HWND hWnd )
 	{
 		GetClientRect( hWnd, &screenRect );
 	}
+
+	void SetClientSize( HWND hWnd, int width = screenWidth, int height = screenHeight );
+
 public:
 	RECT screenRect;
 private:
+	static constexpr int screenWidth = 1600;
+	static constexpr int screenHeight = 900;
+
 	// For Check ScreenSize
-	
 	RECT oldScreenSize = screenRect;
 	FrameTimer ft;
 	DrawManager drawManager;
@@ -46,6 +51,9 @@ private:
 
 	//Test
 	Surface<float> surf;
+	Surface<float> surf2;
+		
+
 	Image::ImageGDI<float> imageTest;
 	Image::ImageGDIPlus<float> imageTest2;
 };

@@ -147,7 +147,6 @@
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Codex.h" />
     <ClInclude Include="CoordinateTransformer.h" />
-    <ClInclude Include="Graphics.h" />
     <ClInclude Include="FileManager.h" />
     <ClInclude Include="FrameTimer.h" />
     <ClInclude Include="GDIPlusManager.h" />
@@ -175,6 +174,7 @@
     <ClInclude Include="CoordSH.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="CoordinateTransformer.cpp" />
     <ClCompile Include="FileManager.cpp" />
     <ClCompile Include="FrameTimer.cpp" />
     <ClCompile Include="Game.cpp" />

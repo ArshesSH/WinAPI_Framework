@@ -35,11 +35,13 @@ void Game::ComposeFrame(HDC hdc)
 					//surf.DrawImageNonChromaGDI( hdc, imageTest.GetHBitmap(), { 50,50 }, { 100,100 }, { 0,0 }, imageTest.GetImageSize() );
 					//surf.DrawImageNonChromaPlus( gfx, imageTest2.GetImagePtr(), { 100,100 }, { 200,200 }, { 0,0 }, imageTest2.GetImageSize() );
 					
+
 					auto transform = Mat3<float>::Translation( { 100, 100 } ) * Mat3<float>::Scale( 2 );
 					surf.ApplyTransformation( transform );
 					surf.DrawRectGDI( hdc, 0, 0, 100, 100, RGB( 255, 255, 255 ) );
 					surf.DrawRectGDI( hdc, 100, 100, 300, 300, RGB( 255, 0, 0 ) );
-					surf.DrawFillRectPlus( gfx, { 300,0 }, { 400,100 }, Gdiplus::Color{ 255,255,255,255 } );
+					surf2.DrawFillRectPlus( gfx, { 300,0 }, { 400,100 }, Gdiplus::Color{ 255,255,255,255 } );
+
 				}
 			);
 
@@ -105,4 +107,29 @@ void Game::RefreshScreen()
 		oldScreenSize.right = screenRect.right;
 		oldScreenSize.bottom = screenRect.bottom;
 	}
+}
+
+void Game::SetClientSize( HWND hWnd, int width, int height )
+{
+	SetWindowPos( hWnd, nullptr, 0, 0, width, height, SWP_NOMOVE );
+
+	RECT winRect;
+	RECT screenRect;
+
+	GetWindowRect( hWnd, &winRect );
+	GetClientRect( hWnd, &screenRect );
+
+	const int clientWidth = screenRect.right - screenRect.left;
+	const int clientHeight = screenRect.bottom - screenRect.top;
+	int winWidth = winRect.right - winRect.left;
+	int winHeight = winRect.bottom - winRect.top;
+
+	winWidth += winWidth - clientWidth;
+	winHeight += winHeight - clientHeight;
+
+	const int resolutionX = GetSystemMetrics( SM_CXSCREEN );
+	const int resolutionY = GetSystemMetrics( SM_CYSCREEN );
+
+	SetWindowPos( hWnd, nullptr, ((resolutionX / 2) - (winWidth / 2)),
+		((resolutionY / 2) - (winHeight / 2)), winWidth, winHeight, NULL );
 }

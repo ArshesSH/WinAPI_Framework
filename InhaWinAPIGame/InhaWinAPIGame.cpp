@@ -25,8 +25,8 @@ VOID    CALLBACK    TimerProc( HWND, UINT, WPARAM, DWORD );
 GDIPlusManager gdi;
 std::unique_ptr<Game> pGame;
 
-bool isStartGame = true;
-bool isEndGame = false;
+
+
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
                      _In_opt_ HINSTANCE hPrevInstance,
                      _In_ LPWSTR    lpCmdLine,
@@ -50,8 +50,6 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     }
 
     HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_INHAWINAPIGAME));
-
-
 
     // Window Process Message
     MSG msg;
@@ -145,7 +143,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     case WM_CREATE:
         if ( pGame )
         {
-            pGame->SetScreenSize( hWnd );
+            //pGame->SetScreenSize( hWnd );
+            pGame->SetClientSize( hWnd );
             SetTimer( hWnd, 0, 0, TimerProc );
         }
 

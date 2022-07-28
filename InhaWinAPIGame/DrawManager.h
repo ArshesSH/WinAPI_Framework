@@ -35,6 +35,9 @@ public:
 		DeleteObject( hMemDC );
 	}
 
+public:
+	RECT screenRECT;
+
 private:
 	HBITMAP hDoubleBufferImage = nullptr;
 };

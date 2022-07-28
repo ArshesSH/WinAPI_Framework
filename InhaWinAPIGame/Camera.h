@@ -51,25 +51,28 @@ public:
 	void ScaledBy( float scale_in )
 	{
 		scale *= scale_in;
-	}/*
-	void Draw( Drawble& drawble )
-	{
-		drawble.ApplyTransformation( Mat3::Rotation( angle ) * Mat3::Scale( scale ) * Mat3::Translation( -pos ) );
-		ct.Draw( std::move( drawble ) );
 	}
-	const RectF& GetScreenRect()
-	{
-		const float zoom = 1.0f / scale;
 
-		const float digonal = sqrt(
-			sq( float( Graphics::ScreenWidth / 2 ) * zoom ) +
-			sq( float( Graphics::ScreenHeight / 2 ) * zoom )
-		);
-		return RectF::FromCenter( pos, digonal, digonal );
-	}*/
+	template <typename F>
+	void Draw( const Vec2<float>& originPos, F drawFunc )
+	{
+		surf.ApplyTransformation( Mat3<float>::Rotation( angle ) * Mat3<float>::Scale( scale ) * Mat3<float>::Translation( -pos ) );
+		ct.Draw( std::move(surf), originPos, std::move(drawFunc) );
+	}
+	//const RectF& GetScreenRect()
+	//{
+	//	const float zoom = 1.0f / scale;
+
+	//	const float digonal = sqrt(
+	//		sq( float( Graphics::ScreenWidth / 2 ) * zoom ) +
+	//		sq( float( Graphics::ScreenHeight / 2 ) * zoom )
+	//	);
+	//	return RectF::FromCenter( pos, digonal, digonal );
+	//}*/
 
 private:
 	CoordinateTransformer& ct;
+	Surface<float> surf;
 	Vec2<float> pos = { 0.0f, 0.0f };
 	float scale = 1.0f;
 	float angle = 0.0f;

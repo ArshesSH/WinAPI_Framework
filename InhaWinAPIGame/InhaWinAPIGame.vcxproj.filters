@@ -153,9 +153,6 @@
     <ClInclude Include="Rect.h">
       <Filter>헤더 파일\Engine\Utilities</Filter>
     </ClInclude>
-    <ClInclude Include="Graphics.h">
-      <Filter>헤더 파일\Engine\Graphics</Filter>
-    </ClInclude>
     <ClInclude Include="CoordSH.h">
       <Filter>헤더 파일\Engine\Utilities</Filter>
     </ClInclude>
@@ -190,6 +187,9 @@
     </ClCompile>
     <ClCompile Include="Scene.cpp">
       <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="CoordinateTransformer.cpp">
+      <Filter>소스 파일\Engine\Utility</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
