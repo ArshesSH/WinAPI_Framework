@@ -48,5 +48,4 @@ private:
 	Surface<float> surf;
 	Image::ImageGDI<float> imageTest;
 	Image::ImageGDIPlus<float> imageTest2;
-	Gdiplus::Graphics gfx;
 };

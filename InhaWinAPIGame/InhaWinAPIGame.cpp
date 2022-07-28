@@ -32,7 +32,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
                      _In_ LPWSTR    lpCmdLine,
                      _In_ int       nCmdShow)
 {
-
+    pGame = std::make_unique<Game>();
     UNREFERENCED_PARAMETER(hPrevInstance);
     UNREFERENCED_PARAMETER(lpCmdLine);
 
@@ -51,7 +51,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
     HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_INHAWINAPIGAME));
 
-    pGame = std::make_unique<Game>();
+
 
     // Window Process Message
     MSG msg;
@@ -143,11 +143,18 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     switch (message)
     {
     case WM_CREATE:
-        pGame->SetScreenSize( hWnd );
-        SetTimer( hWnd, 0, 0, TimerProc );
+        if ( pGame )
+        {
+            pGame->SetScreenSize( hWnd );
+            SetTimer( hWnd, 0, 0, TimerProc );
+        }
+
         break;
     case WM_SIZE:
-        pGame->SetScreenSize( hWnd );
+        if ( pGame )
+        {
+            pGame->SetScreenSize( hWnd );
+        }
         break;
     case WM_COMMAND:
         {
@@ -171,8 +178,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             PAINTSTRUCT ps;
             HDC hdc = BeginPaint(hWnd, &ps);
             // TODO: 여기에 hdc를 사용하는 그리기 코드를 추가합니다...
-            
-            pGame->ComposeFrame(hdc);
+            if ( pGame )
+            {
+                pGame->ComposeFrame( hdc );
+            }
             EndPaint(hWnd, &ps);
         }
         break;
