@@ -9,7 +9,7 @@ Game::Game()
 	imageTest2( L"Images/awsom.bmp" ),
 	cam( ct ),
 	dudeGravity( 9.8f ),
-	testCollider( { 0.0f, -30.0f }, RectF( 0, 20, -1000, 1000 ) )
+	testCollider( testRect )
 {
 }
 
@@ -38,8 +38,6 @@ void Game::ComposeFrame(HDC hdc)
 					//surf.DrawImageNonChromaGDI( hdc, imageTest.GetHBitmap(), { 50,50 }, { 100,100 }, { 0,0 }, imageTest.GetImageSize() );
 					//surf.DrawImageNonChromaPlus( gfx, imageTest2.GetImagePtr(), { 100,100 }, { 200,200 }, { 0,0 }, imageTest2.GetImageSize() );
 					
-					
-
 					auto draws = [&]( HDC hdc, const Mat3<float>& camTransform )
 					{
 						auto transform1 = Mat3<float>::Translation( { 100, 100 } ) * Mat3<float>::Scale( 1 );
@@ -51,6 +49,7 @@ void Game::ComposeFrame(HDC hdc)
  						surf2.DrawImageNonChromaGDI( hdc, imageTest.GetHBitmap(), { 0,0 }, { 100,100 }, { 0,0 }, imageTest.GetImageSize() );
 						surf.DrawFillRectPlus( gfx, { 300,0 }, { 100,100 }, Gdiplus::Color{ 255,255,255,0} );
 						surf2.DrawImageChromaPlus( gfx, imageTest2, dudePos, dudeSize, { 0,0 }, imageTest2.GetImageSize() );
+						surf2.DrawFillRectPlus( gfx, { testRect.left, testRect.top }, testRect.GetWidth(), testRect.GetHeight(), Gdiplus::Color{ 255,255,255,255 } );
 					};
 
 					const float screenX = (screenRect.right - screenRect.left) / 2.0f;

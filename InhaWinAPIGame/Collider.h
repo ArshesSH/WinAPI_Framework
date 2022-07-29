@@ -4,6 +4,9 @@
 #include "Rect.h"
 #include <vector>
 
+#include "framework.h"
+#include "Surface.h"
+
 template <typename T>
 class Collider
 {
@@ -15,25 +18,27 @@ public:
 		Line
 	};
 public:
-	Collider(const Vec2<T>& pos, Type type)
+	Collider( Type type )
 		:
-		pos(pos),
-		type(type)
+		type( type )
 	{
 	}
-	void UpdatePos( const Vec2<T>& pos_in )
+	void UpdateMatrix( const Mat3<float>& transform )
 	{
-		pos = pos_in;
+		surf.ApplyTransformation( transform );
 	}
-
 	virtual bool IsCollideWith( const Collider<T>& other ) const = 0;
-	virtual const std::vector<Vec2<T>>& GetVertice() const = 0;
-
+	virtual std::vector<Vec2<T>> GetVertices() const = 0;
+	virtual void Draw( Gdiplus::Graphics& gfx ) = 0;
+	Type GetType() const
+	{
+		return type;
+	}
 protected:
 	bool CheckVerticesSAT( const Collider<T>& other ) const
 	{
-		const auto refObjVertices = GetVertice();
-		const auto otherVertices = other.GetVertice();
+		const auto refObjVertices = GetVertices();
+		const auto otherVertices = other.GetVertices();
 
 		// Create Translate things
 		float minTranslateScalar = INFINITY;
@@ -71,11 +76,18 @@ protected:
 		return true;
 	}
 
-	bool CheckConvexOverlapWitchCircle( const Collider& convex, const Collider& circle ) const
+	bool CheckCircleOverlap( const Collider<T>& other )
 	{
-		if ( CheckCircleOverlap( convex, circle ) )
+		//const Vec2<float> distance = c1.GetCenter() - c2.GetCenter();
+		//const float sumOfRadius = c1.GetRadius() + c2.GetRadius();
+		//return fabs( distance.x * distance.x + distance.y * distance.y ) < sumOfRadius * sumOfRadius;
+	}
+	/*
+	bool CheckConvexOverlapWithCircle( const Collider<T>& convex, const Collider<T>& circle ) const
+	{
+		//if ( CheckCircleOverlap( convex, circle ) )
 		{
-			const auto convexVertices = convex.GetVertices();
+			const Vec2<T> convexVertices = convex.GetVertices();
 
 			for ( int vIdx = 0; vIdx < convexVertices.size(); ++vIdx )
 			{
@@ -84,7 +96,7 @@ protected:
 
 				float minThis = INFINITY;
 				float maxThis = -INFINITY;
-				for ( auto e : convexVertices )
+				for ( Vec2<T> e : convexVertices )
 				{
 					const float p = e * axisProj;
 					minThis = (std::min)(minThis, p);
@@ -112,10 +124,11 @@ protected:
 		}
 		return false;
 	}
-
+	*/
 protected:
-	Vec2<T> pos;
 	Type type;
+	Surface<T> surf;
+	Gdiplus::Color debugColor = { 255,255,0,255 };
 };
 
 
@@ -123,9 +136,9 @@ template <typename T>
 class ConvexCollider : Collider<T>
 {
 public:
-	ConvexCollider(const Vec2<T>& pos, const _Rect<T>& rect)
+	ConvexCollider(const _Rect<T>& rect)
 		:
-		Collider(pos, Collider<T>::Type::Convex )
+		Collider<T>( Collider<T>::Type::Convex )
 	{
 		vertices.reserve( 4 );
 		vertices.emplace_back( rect.left, rect.top );
@@ -133,36 +146,43 @@ public:
 		vertices.emplace_back( rect.right, rect.bottom );
 		vertices.emplace_back( rect.left, rect.bottom );
 	}
-	ConvexCollider( const Vec2<T>& pos, const std::vector<Vec2<T>>& vertices )
+	ConvexCollider( const std::vector<Vec2<T>>& vertices )
 		:
-		Collider( pos ),
 		vertices( vertices )
 	{}
 
 	bool IsCollideWith( const Collider<T>& other ) const override
 	{
-		switch ( other.type )
+		bool isCollide = false;
+		switch ( other.GetType() )
 		{
 		case Collider<T>::Type::Convex:
 			{
-				this->CheckVerticesSAT( other );
+				isCollide = this->CheckVerticesSAT( other );
 			}
 			break;
 		case Collider<T>::Type::Circle:
 			{
-				this->CheckConvexOverlapWitchCircle( *this, other );
+				//this->CheckConvexOverlapWitchCircle( *this, other );
 			}
 			break;
 		case Collider<T>::Type::Line:
 			{
-				this->CheckVerticesSAT( other );
+				isCollide = this->CheckVerticesSAT( other );
 			}
 			break;
 		}
+		return isCollide;
 	}
-	const std::vector<Vec2<T>>& GetVertice() const override
+
+	std::vector<Vec2<T>> GetVertices() const override
 	{
 		return vertices;
+	}
+
+	void Draw( Gdiplus::Graphics& gfx ) override
+	{
+		this->surf.DrawPolygonPlus( gfx, this->debugColor, 1, vertices, (int)vertices.size() );
 	}
 
 private:

@@ -144,7 +144,7 @@ public:
 	}
 	void DrawFillRectPlus( Gdiplus::Graphics& graphics, const Vec2<T>& topLeft, T width, T height, Gdiplus::Color color )
 	{
-		DrawFillRectPlus( graphics, topLeft, { topLeft.x + width, topLeft.y + height }, color );
+		DrawFillRectPlus( graphics, topLeft, { width, height }, color );
 	}
 
 	// Draw Line
