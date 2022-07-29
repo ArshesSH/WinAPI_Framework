@@ -8,6 +8,7 @@
 #include "Image.h"
 #include "Camera.h"
 #include "Gravity.h"
+#include "Collider.h"
 
 // Test Things
 //#include "TestTriangulationScene.h"

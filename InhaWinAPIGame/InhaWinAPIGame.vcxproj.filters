@@ -168,11 +168,17 @@
     <ClInclude Include="Gravity.h">
       <Filter>헤더 파일\Engine\Physics</Filter>
     </ClInclude>
-    <ClInclude Include="Collider.h">
-      <Filter>헤더 파일\Engine\Utilities</Filter>
-    </ClInclude>
     <ClInclude Include="Jump.h">
       <Filter>헤더 파일\Contents</Filter>
+    </ClInclude>
+    <ClInclude Include="PatternMatching.h">
+      <Filter>헤더 파일\Engine\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="Collider.h">
+      <Filter>헤더 파일\Engine\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="CollisionManager.h">
+      <Filter>헤더 파일\Engine\Physics</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

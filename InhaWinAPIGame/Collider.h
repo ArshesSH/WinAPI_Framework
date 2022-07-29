@@ -7,24 +7,116 @@
 template <typename T>
 class Collider
 {
-
 public:
-	Collider(const Vec2<T>& pos)
+	enum class Type
+	{
+		Box,
+		Circle,
+		Line
+	};
+public:
+	Collider(const Vec2<T>& pos, Type type)
 		:
-		pos(pos)
-	{}
+		pos(pos),
+		type(type)
+	{
+	}
 	
 	void UpdatePos( const Vec2<T>& pos_in )
 	{
 		pos = pos_in;
 	}
 
-	virtual bool IsOverlapWith( const Collider& other ) const = 0;
+	virtual bool IsCollideWith( const Collider<T>& other ) const = 0;
+	virtual const std::vector<Vec2<T>>& GetVertice() const = 0;
 
-private:
+protected:
+	bool CheckVerticesSAT( const Collider<T>& other ) const
+	{
+		const auto refObjVertices = GetVertice();
+		const auto otherVertices = other.GetVertice();
+
+		// Create Translate things
+		float minTranslateScalar = INFINITY;
+		Vec2<float> minTranslateNormalVec;
+
+		// Check for each axis
+		for ( int vIdx = 0; vIdx < refObjVertices.size(); ++vIdx )
+		{
+			const int vIdxNext = (vIdx + 1) % refObjVertices.size();
+			Vec2<float> axisProj = (refObjVertices[vIdx] - refObjVertices[vIdxNext]).GetNormalRightVec2().GetNormalized();
+
+			float minThis = INFINITY;
+			float maxThis = -INFINITY;
+			for ( auto e : refObjVertices )
+			{
+				const float p = e * axisProj;
+				minThis = (std::min)(minThis, p);
+				maxThis = (std::max)(maxThis, p);
+			}
+
+			float minOther = INFINITY;
+			float maxOther = -INFINITY;
+			for ( auto e : otherVertices )
+			{
+				const float p = e * axisProj;
+				minOther = (std::min)(minOther, p);
+				maxOther = (std::max)(maxOther, p);
+			}
+
+			if ( !(maxOther >= minThis && maxThis >= minOther) )
+			{
+				return false;
+			}
+		}
+		return true;
+	}
+
+	bool CheckConvexOverlapWitchCircle( const Collider& convex, const Collider& circle ) const
+	{
+		if ( CheckCircleOverlap( convex, circle ) )
+		{
+			const auto convexVertices = convex.GetVertices();
+
+			for ( int vIdx = 0; vIdx < convexVertices.size(); ++vIdx )
+			{
+				const int vIdxNext = (vIdx + 1) % convexVertices.size();
+				Vec2<float> axisProj = (convexVertices[vIdx] - convexVertices[vIdxNext]).GetNormalRightVec2().GetNormalized();
+
+				float minThis = INFINITY;
+				float maxThis = -INFINITY;
+				for ( auto e : convexVertices )
+				{
+					const float p = e * axisProj;
+					minThis = (std::min)(minThis, p);
+					maxThis = (std::max)(maxThis, p);
+				}
+
+				float minOther = INFINITY;
+				float maxOther = -INFINITY;
+
+				const Vec2<float> normalizedAxis = axisProj.GetNormalized();
+				float p = (circle.GetCenter() + (normalizedAxis * circle.GetSize())) * axisProj;
+				minOther = (std::min)(minOther, p);
+				maxOther = (std::max)(maxOther, p);
+				p = (circle.GetCenter() - (normalizedAxis * circle.GetSize())) * axisProj;
+				minOther = (std::min)(minOther, p);
+				maxOther = (std::max)(maxOther, p);
+
+				if ( !(maxOther >= minThis && maxThis >= minOther) )
+				{
+					return false;
+				}
+
+			}
+			return true;
+		}
+		return false;
+	}
 
 protected:
 	Vec2<T> pos;
+	Type type;
 };
 
 
@@ -34,7 +126,7 @@ class ConvexCollider : Collider<T>
 public:
 	ConvexCollider(const Vec2<T>& pos, const _Rect<T>& rect)
 		:
-		Collider(pos)
+		Collider(pos, Collider<T>::Type::Box )
 	{
 		vertices.reserve( 4 );
 		vertices.emplace_back( rect.left, rect.top );
@@ -48,8 +140,26 @@ public:
 		vertices( vertices )
 	{}
 
-	bool IsOverlapWith( const Collider& other ) const override
+	bool IsCollideWith( const Collider<T>& other ) const override
 	{
+		switch ( other.type )
+		{
+		case Collider<T>::Type::Box:
+			{
+				this->CheckVerticesSAT( other );
+			}
+			break;
+		case Collider<T>::Type::Circle:
+			{
+				this->CheckConvexOverlapWitchCircle( *this, other );
+			}
+			break;
+		case Collider<T>::Type::Line:
+			{
+				this->CheckVerticesSAT( other );
+			}
+			break;
+		}
 	}
 
 private:

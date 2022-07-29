@@ -147,6 +147,7 @@
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Codex.h" />
     <ClInclude Include="Collider.h" />
+    <ClInclude Include="CollisionManager.h" />
     <ClInclude Include="CoordinateTransformer.h" />
     <ClInclude Include="FileManager.h" />
     <ClInclude Include="FrameTimer.h" />
@@ -160,6 +161,7 @@
     <ClInclude Include="Mat2.h" />
     <ClInclude Include="Mat3.h" />
     <ClInclude Include="MathSH.h" />
+    <ClInclude Include="PatternMatching.h" />
     <ClInclude Include="Polygon.h" />
     <ClInclude Include="Ray.h" />
     <ClInclude Include="Rect.h" />
