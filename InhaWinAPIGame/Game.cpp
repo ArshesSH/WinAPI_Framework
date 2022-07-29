@@ -107,8 +107,8 @@ void Game::UpdateModel()
 			float dt = ft.Mark();
 			RefreshScreen();
 
-			dudeVel.y = dudeGravity.GetGravityVel( dudeVel, dt );
-			dudePos += dudeVel * dt;
+			/*dudeVel.y = dudeGravity.GetGravityVel( dudeVel, dt );
+			dudePos += dudeVel * dt;*/
 
 			if ( GetAsyncKeyState( 'A' ) & 0x8001 )
 			{

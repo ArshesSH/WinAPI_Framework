@@ -76,6 +76,9 @@
     <Filter Include="소스 파일\Engine\Actor">
       <UniqueIdentifier>{aad163b2-003d-4531-81aa-f111508c2b07}</UniqueIdentifier>
     </Filter>
+    <Filter Include="헤더 파일\Contents">
+      <UniqueIdentifier>{1904eed3-ac9c-477b-ba96-f90d4fca5e79}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -129,9 +132,6 @@
     <ClInclude Include="ImageCodex.h">
       <Filter>헤더 파일\Engine\Utilities</Filter>
     </ClInclude>
-    <ClInclude Include="PatternMatchingListener.h">
-      <Filter>헤더 파일\Engine\Utilities</Filter>
-    </ClInclude>
     <ClInclude Include="Surface.h">
       <Filter>헤더 파일\Engine\Graphics</Filter>
     </ClInclude>
@@ -167,6 +167,12 @@
     </ClInclude>
     <ClInclude Include="Gravity.h">
       <Filter>헤더 파일\Engine\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="Collider.h">
+      <Filter>헤더 파일\Engine\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="Jump.h">
+      <Filter>헤더 파일\Contents</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -56,7 +56,7 @@ private:
 	CoordinateTransformer ct;
 	Camera cam;
 
-	Vec2<float> dudePos = { 0.0f, 0.0f };
+	Vec2<float> dudePos = { 300.0f, 0.0f };
 	Vec2<float> dudeVel = { 0.0f, 0.0f };
 	const Vec2<float> dudeSize = { 100.0f, 100.0f };
 	Gravity dudeGravity;
