@@ -7,8 +7,9 @@ Game::Game()
 	:
 	imageTest( L"Images/awsom.bmp" ),
 	imageTest2( L"Images/awsom.bmp" ),
-	cam(ct),
-	dudeGravity(9.8f)
+	cam( ct ),
+	dudeGravity( 9.8f ),
+	testCollider( { 0.0f, -30.0f }, RectF( 0, 20, -1000, 1000 ) )
 {
 }
 

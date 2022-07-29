@@ -21,7 +21,6 @@ public:
 		type(type)
 	{
 	}
-	
 	void UpdatePos( const Vec2<T>& pos_in )
 	{
 		pos = pos_in;
@@ -144,7 +143,7 @@ public:
 	{
 		switch ( other.type )
 		{
-		case Collider<T>::Type::Box:
+		case Collider<T>::Type::Convex:
 			{
 				this->CheckVerticesSAT( other );
 			}
@@ -160,6 +159,10 @@ public:
 			}
 			break;
 		}
+	}
+	const std::vector<Vec2<T>>& GetVertice() const override
+	{
+		return vertices;
 	}
 
 private:

@@ -70,5 +70,7 @@ private:
 	Image::ImageGDI<float> imageTest;
 	Image::ImageGDIPlus<float> imageTest2;
 
+	RectF testRect = { 0, 20, -1000, 1000 };
+	ConvexCollider<float> testCollider;
 
 };
