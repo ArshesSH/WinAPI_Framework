@@ -10,7 +10,7 @@ class Collider
 public:
 	enum class Type
 	{
-		Box,
+		Convex,
 		Circle,
 		Line
 	};
@@ -126,7 +126,7 @@ class ConvexCollider : Collider<T>
 public:
 	ConvexCollider(const Vec2<T>& pos, const _Rect<T>& rect)
 		:
-		Collider(pos, Collider<T>::Type::Box )
+		Collider(pos, Collider<T>::Type::Convex )
 	{
 		vertices.reserve( 4 );
 		vertices.emplace_back( rect.left, rect.top );

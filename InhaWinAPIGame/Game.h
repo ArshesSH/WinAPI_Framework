@@ -69,4 +69,6 @@ private:
 
 	Image::ImageGDI<float> imageTest;
 	Image::ImageGDIPlus<float> imageTest2;
+
+
 };
