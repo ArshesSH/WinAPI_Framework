@@ -7,7 +7,8 @@ Game::Game()
 	:
 	imageTest( L"Images/awsom.bmp" ),
 	imageTest2( L"Images/awsom.bmp" ),
-	cam(ct)
+	cam(ct),
+	dudeGravity(9.8f)
 {
 }
 
@@ -48,8 +49,7 @@ void Game::ComposeFrame(HDC hdc)
 						surf.DrawRectGDI( hdc, 100, 100, 300, 300, RGB( 255, 0, 0 ) );
  						surf2.DrawImageNonChromaGDI( hdc, imageTest.GetHBitmap(), { 0,0 }, { 100,100 }, { 0,0 }, imageTest.GetImageSize() );
 						surf.DrawFillRectPlus( gfx, { 300,0 }, { 100,100 }, Gdiplus::Color{ 255,255,255,0} );
-						//surf.DrawRectGDI( hdc, 300, 0, 400, 100, RGB( 255, 255, 0 ) );
-						surf2.DrawImageChromaPlus( gfx, imageTest2, { 300,0 }, { 100,100 }, { 0,0 }, imageTest2.GetImageSize() );
+						surf2.DrawImageChromaPlus( gfx, imageTest2, dudePos, dudeSize, { 0,0 }, imageTest2.GetImageSize() );
 					};
 
 					const float screenX = (screenRect.right - screenRect.left) / 2.0f;
@@ -61,8 +61,12 @@ void Game::ComposeFrame(HDC hdc)
 					const auto camScale = cam.GetScale();
 					const std::wstring camPosStr = L"camPos: (" + std::to_wstring( camPos.x ) + L", " + std::to_wstring( camPos.y ) + L")";
 					const std::wstring camScaleStr = L"camScale: " + std::to_wstring( cam.GetScale() );
+					const std::wstring dudeVelStr = L"dudeVel: (" + std::to_wstring( dudeVel.x ) + L", " + std::to_wstring( dudeVel.y ) + L")";
+					const std::wstring dudePosStr = L"dudeVel: (" + std::to_wstring( dudePos.x ) + L", " + std::to_wstring( dudePos.y ) + L")";
 					s.DrawStringPlus( gfx, camPosStr, { 0,0 }, {255,255,255,255} );
 					s.DrawStringPlus( gfx, camScaleStr, { 0,20 }, { 255,255,255,255 } );
+					s.DrawStringPlus( gfx, dudeVelStr, { 0,40 }, { 255,255,255,255 } );
+					s.DrawStringPlus( gfx, dudePosStr, { 0,60 }, { 255,255,255,255 } );
 				}
 			);
 
@@ -102,6 +106,9 @@ void Game::UpdateModel()
 		{
 			float dt = ft.Mark();
 			RefreshScreen();
+
+			dudeVel.y = dudeGravity.GetGravityVel( dudeVel, dt );
+			dudePos += dudeVel * dt;
 
 			if ( GetAsyncKeyState( 'A' ) & 0x8001 )
 			{

@@ -7,6 +7,7 @@
 #include "Surface.h"
 #include "Image.h"
 #include "Camera.h"
+#include "Gravity.h"
 
 // Test Things
 //#include "TestTriangulationScene.h"
@@ -54,6 +55,11 @@ private:
 	Surface<float> surf2;
 	CoordinateTransformer ct;
 	Camera cam;
+
+	Vec2<float> dudePos = { 0.0f, 0.0f };
+	Vec2<float> dudeVel = { 0.0f, 0.0f };
+	const Vec2<float> dudeSize = { 100.0f, 100.0f };
+	Gravity dudeGravity;
 
 	const Vec2<float> dirLeft = { -1.0f, 0.0f };
 	const Vec2<float> dirUp = { 0.0f, 1.0f };
