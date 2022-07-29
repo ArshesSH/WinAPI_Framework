@@ -133,6 +133,10 @@ public:
 	{
 		return Vec2W( *this ).Rotate( angle );
 	}
+	Vec2 GetScaleIndependent( T scaleX, T scaleY ) const
+	{
+		return { scaleX * x, scaleY * y };
+	}
 public:
 	T x;
 	T y;

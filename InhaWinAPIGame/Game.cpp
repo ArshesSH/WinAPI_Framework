@@ -46,9 +46,10 @@ void Game::ComposeFrame(HDC hdc)
 						surf2.SetTransformation( camTransform  );
 						surf.DrawRectGDI( hdc, 0, 0, 100, 100, RGB( 255, 255, 255 ) );
 						surf.DrawRectGDI( hdc, 100, 100, 300, 300, RGB( 255, 0, 0 ) );
- 						//surf2.DrawImageNonChromaGDI( hdc, imageTest.GetHBitmap(), { 0,0 }, { 20,20 }, { 0,0 }, imageTest.GetImageSize() );
-						surf.DrawFillRectPlus( gfx, { 300,0 }, { 400,100 }, Gdiplus::Color{ 255,255,255,0} );
-						surf.DrawRectGDI( hdc, 300, 0, 400, 100, RGB( 255, 255, 0 ) );
+ 						surf2.DrawImageNonChromaGDI( hdc, imageTest.GetHBitmap(), { 0,0 }, { 100,100 }, { 0,0 }, imageTest.GetImageSize() );
+						surf.DrawFillRectPlus( gfx, { 300,0 }, { 100,100 }, Gdiplus::Color{ 255,255,255,0} );
+						//surf.DrawRectGDI( hdc, 300, 0, 400, 100, RGB( 255, 255, 0 ) );
+						surf2.DrawImageChromaPlus( gfx, imageTest2, { 300,0 }, { 100,100 }, { 0,0 }, imageTest2.GetImageSize() );
 					};
 
 					const float screenX = (screenRect.right - screenRect.left) / 2.0f;
