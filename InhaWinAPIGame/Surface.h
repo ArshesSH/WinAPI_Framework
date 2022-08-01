@@ -180,7 +180,7 @@ public:
 		}
 
 		Pen pen( color, penWidth );
-		graphics.DrawPolygon( &pen, &points, pointCnt );
+		graphics.DrawPolygon( &pen, &points[0], pointCnt );
 	}
 	void DrawPolygonPlus( Gdiplus::Graphics& graphics, const Gdiplus::Color& color, float penWidth, const std::vector<Gdiplus::PointF>& points, int pointCnt )
 	{
