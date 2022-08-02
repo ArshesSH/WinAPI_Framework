@@ -157,7 +157,7 @@ void Game::UpdateModel()
 				dudePos += dirDown * dt * 200;
 			}
 			dudeCollider.SetPos( dudePos );
-			if ( dudeCollider.IsCollideWithOBB( testCollider ) )
+			if ( dudeCollider.IsOverlapWithAABB( testCollider ) )
 			{
 				isCollided = true;
 			}

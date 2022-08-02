@@ -2,6 +2,7 @@
 
 #include "Vec2.h"
 #include "Rect.h"
+#include "Circle.h"
 #include <vector>
 
 #include "framework.h"
@@ -18,10 +19,10 @@ public:
 		Line
 	};
 public:
-	Collider( Type type, const Vec2<T>& pos )
+	Collider( Type type, const _Rect<T>& rect )
 		:
 		type( type ),
-		pos( pos )
+		rect( rect )
 	{
 	}
 	void UpdateMatrix( const Mat3<float>& transform )
@@ -30,19 +31,28 @@ public:
 	}
 	Vec2<T> GetPos() const
 	{
-		return pos;
+		return rect.GetTopLeft();
 	}
-	bool IsCollideWithAABB( const Collider<T>& other ) const;
+	bool IsOverlapWithAABB( const Collider<T>& other ) const
+	{
+		return rect.Overlaps( other.rect );
+	}
+	virtual bool IsOverlapWithOBB( const Collider<T>& other ) const = 0;
 	virtual bool IsCollideWithOBB( const Collider<T>& other ) const = 0;
 	virtual std::vector<Vec2<T>> GetVertices() const = 0;
 	virtual void Draw( Gdiplus::Graphics& gfx ) = 0;
+	virtual Circle<T> GetCircle() const
+	{
+		return Circle<T>::CreateInnerCircle( rect );
+	}
 	virtual void SetPos( const Vec2<T>& pos_in )
 	{
-		pos = pos_in;
+		const Vec2<T> delta = pos_in - rect.GetTopLeft();
+		rect += delta;
 	}
 	virtual void MoveBy( const Vec2<T>& offset )
 	{
-		pos += offset;
+		rect += offset;
 	}
 	Type GetType() const
 	{
@@ -59,7 +69,7 @@ protected:
 		Vec2<float> minTranslateNormalVec;
 
 		// Check for each axis
-		for ( int vIdx = 0; vIdx < refObjVertices.size(); ++vIdx )
+		for ( int vIdx = 0; vIdx < (int)refObjVertices.size(); ++vIdx )
 		{
 			const int vIdxNext = (vIdx + 1) % refObjVertices.size();
 			Vec2<float> axisProj = (refObjVertices[vIdx] - refObjVertices[vIdxNext]).GetNormalRightVec2().GetNormalized();
@@ -90,11 +100,11 @@ protected:
 		return true;
 	}
 
-	bool CheckCircleOverlap( const Collider<T>& other )
+	bool CheckCircleOverlap( const Collider<T>& other ) const
 	{
-		//const Vec2<float> distance = c1.GetCenter() - c2.GetCenter();
-		//const float sumOfRadius = c1.GetRadius() + c2.GetRadius();
-		//return fabs( distance.x * distance.x + distance.y * distance.y ) < sumOfRadius * sumOfRadius;
+		const Circle<T> thisCircle = GetCircle();
+		const Circle<T> otherCircle = other.GetCircle();
+		return thisCircle.IsOverlapWith( otherCircle );
 	}
 	/*
 	bool CheckConvexOverlapWithCircle( const Collider<T>& convex, const Collider<T>& circle ) const
@@ -142,7 +152,7 @@ protected:
 protected:
 	Type type;
 	Surface<T> surf;
-	Vec2<T> pos;
+	_Rect<T> rect;
 	Gdiplus::Color debugColor = { 144,255,0,255 };
 };
 
@@ -156,13 +166,15 @@ public:
 	{}
 	ConvexCollider(const _Rect<T>& rect)
 		:
-		Collider<T>( Collider<T>::Type::Convex, rect.GetTopLeft() )
+		Collider<T>( Collider<T>::Type::Convex, rect )
 	{
 		vertices.reserve( 4 );
 		vertices.emplace_back( rect.left, rect.top );
 		vertices.emplace_back( rect.right, rect.top );
 		vertices.emplace_back( rect.right, rect.bottom );
 		vertices.emplace_back( rect.left, rect.bottom );
+
+		CalcRect();
 	}
 	ConvexCollider( const std::vector<Vec2<T>>& vertices, const Vec2<T>& pos )
 		:
@@ -170,9 +182,23 @@ public:
 		vertices( vertices )
 	{}
 
+	_Rect<T> CalcRect() const
+	{
+		Vec2<T> topLeft;
+		Vec2<T> bottomRight;
+		for ( const auto& v : vertices )
+		{
+			topLeft.x = (std::min)(topLeft.x, v.x);
+			topLeft.y = (std::min)(topLeft.x, v.y);
+			bottomRight.x = (std::max)(bottomRight.x, v.x);
+			bottomRight.y = (std::max)(bottomRight.y, v.y);
+		}
+		return { topLeft, bottomRight };
+	}
+
 	void SetPos( const Vec2<T>& pos ) override
 	{
-		const Vec2<T> moved = pos - Collider<T>::pos;
+		const Vec2<T> moved = pos - Collider<T>::rect.GetTopLeft();
 		Collider<T>::SetPos( pos );
 		for ( auto& v : vertices )
 		{
@@ -186,6 +212,29 @@ public:
 		{
 			v += offset;
 		}
+	}
+	bool IsOverlapWithOBB( const Collider<T>& other ) const override
+	{
+		bool isCollide = false;
+		switch ( other.GetType() )
+		{
+		case Collider<T>::Type::Convex:
+			{
+				isCollide = this->CheckVerticesSAT( other );
+			}
+			break;
+		case Collider<T>::Type::Circle:
+			{
+				//this->CheckConvexOverlapWitchCircle( *this, other );
+			}
+			break;
+		case Collider<T>::Type::Line:
+			{
+				isCollide = this->CheckVerticesSAT( other );
+			}
+			break;
+		}
+		return isCollide;
 	}
 	bool IsCollideWithOBB( const Collider<T>& other ) const override
 	{

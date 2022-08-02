@@ -145,6 +145,7 @@
   <ItemGroup>
     <ClInclude Include="Actor.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="Circle.h" />
     <ClInclude Include="Codex.h" />
     <ClInclude Include="Collider.h" />
     <ClInclude Include="CollisionManager.h" />
