@@ -11,6 +11,10 @@ Game::Game()
 	dudeGravity( 9.8f ),
 	testCollider( testRect )
 {
+	testPoly.emplace_back( 300, 0 );
+	testPoly.emplace_back( 400, 0 );
+	testPoly.emplace_back( 400, 100 );
+	testPoly.emplace_back( 300, 100 );
 }
 
 // This function Call in Win32API's WM_PAINT, and draw everything about game
@@ -49,14 +53,11 @@ void Game::ComposeFrame(HDC hdc)
  						surf2.DrawImageNonChromaGDI( hdc, imageTest.GetHBitmap(), { 0,0 }, { 100,100 }, { 0,0 }, imageTest.GetImageSize() );
 						surf.DrawFillRectPlus( gfx, { 300,0 }, { 100,100 }, Gdiplus::Color{ 255,255,255,0} );
 						surf2.DrawImageChromaPlus( gfx, imageTest2, dudePos, dudeSize, { 0,0 }, imageTest2.GetImageSize() );
-						surf2.DrawFillRectPlus( gfx, { testRect.left, testRect.top }, testRect.GetWidth(), testRect.GetHeight(), Gdiplus::Color{ 255,255,255,255 } );
-						//dudeCollider.UpdateMatrix( camTransform );
-						//dudeCollider.Draw( gfx );
-						const auto dudeV = dudeCollider.GetVertices();
-						surf2.DrawFillPolygonPlus( gfx, dudeV, (int)dudeV.size(), Gdiplus::Color{ 255,255,0,255 } );
-						const int x = 0;
-						const int y = 0;
-						surf.DrawRectGDI( hdc, x, y, x + 50, y + 50, RGB( 0, 255, 255 ) );
+						dudeCollider.UpdateMatrix( camTransform );
+						dudeCollider.Draw( gfx );
+						testCollider.UpdateMatrix( camTransform );
+						testCollider.Draw( gfx );
+
 					};
 
 					const float screenX = (screenRect.right - screenRect.left) / 2.0f;
@@ -66,7 +67,7 @@ void Game::ComposeFrame(HDC hdc)
 					Surface<float> s;
 					const auto camPos = cam.GetPos();
 					const auto camScale = cam.GetScale();
-					const auto dudeColliderPos = dudeCollider.GetCenter();
+					const auto dudeColliderPos = dudeCollider.GetPos();
 					const std::wstring camPosStr = L"camPos: (" + std::to_wstring( camPos.x ) + L", " + std::to_wstring( camPos.y ) + L")";
 					const std::wstring camScaleStr = L"camScale: " + std::to_wstring( cam.GetScale() );
 					const std::wstring dudeVelStr = L"dudeVel: (" + std::to_wstring( dudeVel.x ) + L", " + std::to_wstring( dudeVel.y ) + L")";
@@ -153,7 +154,7 @@ void Game::UpdateModel()
 			{
 				dudePos += dirDown * dt * 200;
 			}
-			dudeCollider.SetCenter( dudePos );
+			dudeCollider.SetPos( dudePos );
 
 			if ( GetAsyncKeyState( 'Q' ) & 0x8001 )
 			{

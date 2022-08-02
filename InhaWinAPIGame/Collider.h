@@ -18,30 +18,30 @@ public:
 		Line
 	};
 public:
-	Collider( Type type, const Vec2<T>& center )
+	Collider( Type type, const Vec2<T>& pos )
 		:
 		type( type ),
-		center( center )
+		pos( pos )
 	{
 	}
 	void UpdateMatrix( const Mat3<float>& transform )
 	{
 		surf.SetTransformation( transform );
 	}
-	Vec2<T> GetCenter() const
+	Vec2<T> GetPos() const
 	{
-		return center;	
+		return pos;
 	}
 	virtual bool IsCollideWith( const Collider<T>& other ) const = 0;
 	virtual std::vector<Vec2<T>> GetVertices() const = 0;
 	virtual void Draw( Gdiplus::Graphics& gfx ) = 0;
-	virtual void SetCenter( const Vec2<T>& pos )
+	virtual void SetPos( const Vec2<T>& pos_in )
 	{
-		center = pos;
+		pos = pos_in;
 	}
 	virtual void MoveBy( const Vec2<T>& offset )
 	{
-		center += offset;
+		pos += offset;
 	}
 	Type GetType() const
 	{
@@ -141,28 +141,27 @@ protected:
 protected:
 	Type type;
 	Surface<T> surf;
-	Vec2<T> center;
-	Gdiplus::Color debugColor = { 255,255,0,255 };
+	Vec2<T> pos;
+	Gdiplus::Color debugColor = { 144,255,0,255 };
 };
-
 
 template <typename T>
 class ConvexCollider : public Collider<T>
 {
 public:
-	ConvexCollider( const Vec2<T>& pos, const T& halfWidth, const T& halfHeight )
+	ConvexCollider( const Vec2<T>& pos, const T& width, const T& height )
 		:
-		ConvexCollider( _Rect<T>::FromCenter(pos, halfWidth, halfHeight) )
+		ConvexCollider( _Rect<T>{ pos, pos + Vec2<T>{width, height} } )
 	{}
 	ConvexCollider(const _Rect<T>& rect)
 		:
-		Collider<T>( Collider<T>::Type::Convex, rect.GetCenter() )
+		Collider<T>( Collider<T>::Type::Convex, rect.GetTopLeft() )
 	{
 		vertices.reserve( 4 );
-		vertices.emplace_back( rect.left, rect.bottom );
-		vertices.emplace_back( rect.right, rect.bottom );
-		vertices.emplace_back( rect.right, rect.top );
 		vertices.emplace_back( rect.left, rect.top );
+		vertices.emplace_back( rect.right, rect.top );
+		vertices.emplace_back( rect.right, rect.bottom );
+		vertices.emplace_back( rect.left, rect.bottom );
 	}
 	ConvexCollider( const std::vector<Vec2<T>>& vertices, const Vec2<T>& pos )
 		:
@@ -170,10 +169,10 @@ public:
 		vertices( vertices )
 	{}
 
-	void SetCenter( const Vec2<T>& pos ) override
+	void SetPos( const Vec2<T>& pos ) override
 	{
-		const Vec2<T> moved = pos - Collider<T>::center;
-		Collider<T>::SetCenter( pos );
+		const Vec2<T> moved = pos - Collider<T>::pos;
+		Collider<T>::SetPos( pos );
 		for ( auto& v : vertices )
 		{
 			v += moved;
@@ -219,7 +218,7 @@ public:
 
 	void Draw( Gdiplus::Graphics& gfx ) override
 	{
-		this->surf.DrawPolygonPlus( gfx, vertices, (int)vertices.size(), this->debugColor, 5 );
+		this->surf.DrawFillPolygonPlus( gfx, vertices, (int)vertices.size(), this->debugColor );
 	}
 
 private:
