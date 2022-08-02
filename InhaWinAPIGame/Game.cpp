@@ -50,6 +50,13 @@ void Game::ComposeFrame(HDC hdc)
 						surf.DrawFillRectPlus( gfx, { 300,0 }, { 100,100 }, Gdiplus::Color{ 255,255,255,0} );
 						surf2.DrawImageChromaPlus( gfx, imageTest2, dudePos, dudeSize, { 0,0 }, imageTest2.GetImageSize() );
 						surf2.DrawFillRectPlus( gfx, { testRect.left, testRect.top }, testRect.GetWidth(), testRect.GetHeight(), Gdiplus::Color{ 255,255,255,255 } );
+						//dudeCollider.UpdateMatrix( camTransform );
+						//dudeCollider.Draw( gfx );
+						const auto dudeV = dudeCollider.GetVertices();
+						surf2.DrawFillPolygonPlus( gfx, dudeV, (int)dudeV.size(), Gdiplus::Color{ 255,255,0,255 } );
+						const int x = 0;
+						const int y = 0;
+						surf.DrawRectGDI( hdc, x, y, x + 50, y + 50, RGB( 0, 255, 255 ) );
 					};
 
 					const float screenX = (screenRect.right - screenRect.left) / 2.0f;
@@ -59,14 +66,17 @@ void Game::ComposeFrame(HDC hdc)
 					Surface<float> s;
 					const auto camPos = cam.GetPos();
 					const auto camScale = cam.GetScale();
+					const auto dudeColliderPos = dudeCollider.GetCenter();
 					const std::wstring camPosStr = L"camPos: (" + std::to_wstring( camPos.x ) + L", " + std::to_wstring( camPos.y ) + L")";
 					const std::wstring camScaleStr = L"camScale: " + std::to_wstring( cam.GetScale() );
 					const std::wstring dudeVelStr = L"dudeVel: (" + std::to_wstring( dudeVel.x ) + L", " + std::to_wstring( dudeVel.y ) + L")";
-					const std::wstring dudePosStr = L"dudeVel: (" + std::to_wstring( dudePos.x ) + L", " + std::to_wstring( dudePos.y ) + L")";
+					const std::wstring dudePosStr = L"dudePos: (" + std::to_wstring( dudePos.x ) + L", " + std::to_wstring( dudePos.y ) + L")";
+					const std::wstring dudColStr = L"dudCollision: (" + std::to_wstring( dudeColliderPos.x ) + L", " + std::to_wstring( dudeColliderPos.y ) + L")";
 					s.DrawStringPlus( gfx, camPosStr, { 0,0 }, {255,255,255,255} );
 					s.DrawStringPlus( gfx, camScaleStr, { 0,20 }, { 255,255,255,255 } );
 					s.DrawStringPlus( gfx, dudeVelStr, { 0,40 }, { 255,255,255,255 } );
 					s.DrawStringPlus( gfx, dudePosStr, { 0,60 }, { 255,255,255,255 } );
+					s.DrawStringPlus( gfx, dudColStr, { 0,80 }, { 255,255,255,255 } );
 				}
 			);
 
@@ -126,6 +136,24 @@ void Game::UpdateModel()
 			{
 				cam.MoveBy( dirDown * dt * 100 );
 			}
+
+			if ( GetAsyncKeyState( VK_LEFT ) & 0x8001 )
+			{
+				dudePos += dirLeft * dt * 200;
+			}
+			else if ( GetAsyncKeyState( VK_RIGHT ) & 0x8001 )
+			{
+				dudePos += dirRight * dt * 200;
+			}
+			if ( GetAsyncKeyState( VK_UP ) & 0x8001 )
+			{
+				dudePos += dirUp * dt * 200;
+			}
+			else if ( GetAsyncKeyState( VK_DOWN ) & 0x8001 )
+			{
+				dudePos += dirDown * dt * 200;
+			}
+			dudeCollider.SetCenter( dudePos );
 
 			if ( GetAsyncKeyState( 'Q' ) & 0x8001 )
 			{

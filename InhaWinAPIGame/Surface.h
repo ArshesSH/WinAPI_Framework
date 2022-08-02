@@ -166,7 +166,7 @@ public:
 	}
 
 	// DrawPolygon
-	void DrawPolygonPlus( Gdiplus::Graphics& graphics, const Gdiplus::Color& color, float penWidth, const std::vector<Vec2<T>>& vertices, int pointCnt )
+	void DrawPolygonPlus( Gdiplus::Graphics& graphics, const std::vector<Vec2<T>>& vertices, int pointCnt, const Gdiplus::Color& color, float penWidth )
 	{
 		using namespace Gdiplus;
 
@@ -182,7 +182,7 @@ public:
 		Pen pen( color, penWidth );
 		graphics.DrawPolygon( &pen, &points[0], pointCnt );
 	}
-	void DrawPolygonPlus( Gdiplus::Graphics& graphics, const Gdiplus::Color& color, float penWidth, const std::vector<Gdiplus::PointF>& points, int pointCnt )
+	void DrawPolygonPlus( Gdiplus::Graphics& graphics, const std::vector<Gdiplus::PointF>& points, int pointCnt, const Gdiplus::Color& color, float penWidth )
 	{
 		using namespace Gdiplus;
 
@@ -199,7 +199,7 @@ public:
 	}
 
 	// Fill Polygon
-	void DrawFillPolygonPlus( Gdiplus::Graphics& graphics, const Gdiplus::Color& color, const std::vector<Vec2<T>>& vertices, int pointCnt )
+	void DrawFillPolygonPlus( Gdiplus::Graphics& graphics, const std::vector<Vec2<T>>& vertices, int pointCnt, const Gdiplus::Color& color )
 	{
 		using namespace Gdiplus;
 
@@ -213,9 +213,9 @@ public:
 		}
 
 		SolidBrush brush( color );
-		graphics.FillPolygon( &brush, &points, pointCnt );
+		graphics.FillPolygon( &brush, &points[0], pointCnt );
 	}
-	void DrawFillPolygonPlus( Gdiplus::Graphics& graphics, const Gdiplus::Color& color, const std::vector<Gdiplus::PointF>& points, int pointCnt )
+	void DrawFillPolygonPlus( Gdiplus::Graphics& graphics, const std::vector<Gdiplus::PointF>& points, int pointCnt, const Gdiplus::Color& color )
 	{
 		using namespace Gdiplus;
 

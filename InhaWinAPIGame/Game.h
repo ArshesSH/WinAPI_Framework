@@ -61,6 +61,7 @@ private:
 	Vec2<float> dudeVel = { 0.0f, 0.0f };
 	const Vec2<float> dudeSize = { 100.0f, 100.0f };
 	Gravity dudeGravity;
+	ConvexCollider<float> dudeCollider = { dudePos, 50,50 };
 
 	const Vec2<float> dirLeft = { -1.0f, 0.0f };
 	const Vec2<float> dirUp = { 0.0f, 1.0f };

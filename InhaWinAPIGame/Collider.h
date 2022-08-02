@@ -18,18 +18,31 @@ public:
 		Line
 	};
 public:
-	Collider( Type type )
+	Collider( Type type, const Vec2<T>& center )
 		:
-		type( type )
+		type( type ),
+		center( center )
 	{
 	}
 	void UpdateMatrix( const Mat3<float>& transform )
 	{
-		surf.ApplyTransformation( transform );
+		surf.SetTransformation( transform );
+	}
+	Vec2<T> GetCenter() const
+	{
+		return center;	
 	}
 	virtual bool IsCollideWith( const Collider<T>& other ) const = 0;
 	virtual std::vector<Vec2<T>> GetVertices() const = 0;
 	virtual void Draw( Gdiplus::Graphics& gfx ) = 0;
+	virtual void SetCenter( const Vec2<T>& pos )
+	{
+		center = pos;
+	}
+	virtual void MoveBy( const Vec2<T>& offset )
+	{
+		center += offset;
+	}
 	Type GetType() const
 	{
 		return type;
@@ -128,28 +141,52 @@ protected:
 protected:
 	Type type;
 	Surface<T> surf;
+	Vec2<T> center;
 	Gdiplus::Color debugColor = { 255,255,0,255 };
 };
 
 
 template <typename T>
-class ConvexCollider : Collider<T>
+class ConvexCollider : public Collider<T>
 {
 public:
+	ConvexCollider( const Vec2<T>& pos, const T& halfWidth, const T& halfHeight )
+		:
+		ConvexCollider( _Rect<T>::FromCenter(pos, halfWidth, halfHeight) )
+	{}
 	ConvexCollider(const _Rect<T>& rect)
 		:
-		Collider<T>( Collider<T>::Type::Convex )
+		Collider<T>( Collider<T>::Type::Convex, rect.GetCenter() )
 	{
 		vertices.reserve( 4 );
-		vertices.emplace_back( rect.left, rect.top );
-		vertices.emplace_back( rect.right, rect.top );
-		vertices.emplace_back( rect.right, rect.bottom );
 		vertices.emplace_back( rect.left, rect.bottom );
+		vertices.emplace_back( rect.right, rect.bottom );
+		vertices.emplace_back( rect.right, rect.top );
+		vertices.emplace_back( rect.left, rect.top );
 	}
-	ConvexCollider( const std::vector<Vec2<T>>& vertices )
+	ConvexCollider( const std::vector<Vec2<T>>& vertices, const Vec2<T>& pos )
 		:
+		Collider<T>( Collider<T>::Type::Convex, pos ),
 		vertices( vertices )
 	{}
+
+	void SetCenter( const Vec2<T>& pos ) override
+	{
+		const Vec2<T> moved = pos - Collider<T>::center;
+		Collider<T>::SetCenter( pos );
+		for ( auto& v : vertices )
+		{
+			v += moved;
+		}
+	}
+	void MoveBy( const Vec2<T>& offset ) override
+	{
+		Collider<T>::MoveBy( offset );
+		for ( auto& v : vertices )
+		{
+			v += offset;
+		}
+	}
 
 	bool IsCollideWith( const Collider<T>& other ) const override
 	{
@@ -182,7 +219,7 @@ public:
 
 	void Draw( Gdiplus::Graphics& gfx ) override
 	{
-		this->surf.DrawPolygonPlus( gfx, this->debugColor, 1, vertices, (int)vertices.size() );
+		this->surf.DrawPolygonPlus( gfx, vertices, (int)vertices.size(), this->debugColor, 5 );
 	}
 
 private:

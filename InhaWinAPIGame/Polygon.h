@@ -10,9 +10,6 @@
 
 namespace ArshesSH
 {
-	
-
-
 	class Polygon
 	{
 	public:

@@ -81,6 +81,18 @@ public:
 		const Vec2<T> half( halfWidth, halfHeight );
 		return _Rect<T>( center - half, center + half );
 	}
+	inline Vec2<T> GetTopLeft() const
+	{
+		return { left, top };
+	}
+	inline Vec2<T> GetCenter() const
+	{
+		const auto topLeft = GetTopLeft();
+		const auto halfWidth = GetWidth() / (T)2;
+		const auto halfHeight = GetHeight() / (T)2;
+
+		return { topLeft.x + halfWidth, topLeft.y + halfHeight };
+	}
 
 public:
 	T top;
