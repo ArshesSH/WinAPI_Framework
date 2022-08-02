@@ -147,6 +147,24 @@ public:
 		DrawFillRectPlus( graphics, topLeft, { width, height }, color );
 	}
 
+	void DrawFillCirclePlus( Gdiplus::Graphics& graphics, const Vec2<T>& topLeft, const Vec2<T>& size, Gdiplus::Color color )
+	{
+		using namespace Gdiplus;
+
+		auto tl = transform * Vec2<float>( topLeft );
+		auto br = transform * Vec2<float>( topLeft + size );
+		std::swap( tl.y, br.y );
+		const auto sizeT = br - tl;
+		const Gdiplus::RectF r( { tl.x, tl.y }, { sizeT.x, sizeT.y } );
+
+		SolidBrush brush( color );
+		graphics.FillEllipse( &brush, r );
+	}
+	void DrawFillCirclePlus( Gdiplus::Graphics& graphics, const Vec2<T>& topLeft, T width, T height, Gdiplus::Color color )
+	{
+		DrawFillCirclePlus( graphics, topLeft, { width, height }, color );
+	}
+
 	// Draw Line
 	void DrawLinePlus( Gdiplus::Graphics& graphics, const Vec2<T>& v1, const Vec2<T>& v2,  const Gdiplus::Color& color, float penWidth)
 	{

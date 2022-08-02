@@ -5,7 +5,6 @@
 #include "Vec2.h"
 #include "Mat3.h"
 #include "MathSH.h"
-#include "Rect.h"
 
 class Camera
 {

@@ -19,28 +19,28 @@ public:
 	{}
 	Circle(const _Rect<T>& rect)
 		:
-		Circle( { rect.left, rect.top }, {rect.right, rect.bottom} )
+		Circle<T>( { rect.left, rect.top }, {rect.right, rect.bottom} )
 	{}
 
-	static Circle CreateOuterCircle( const Vec2<T>& topLeft, const Vec2<T>& bottomRight ) const
+	static Circle<T> CreateOuterCircle( const Vec2<T>& topLeft, const Vec2<T>& bottomRight ) 
 	{
 		Vec2<T> center = (topLeft + bottomRight) / (T)2;
 		const Vec2<T> size = bottomRight - topLeft;
 		T radius = (std::max)(size.x, size.y);
 		return { center, radius };
 	}
-	static Circle CreateOuterCircle( const _Rect<T>& rect ) const
+	static Circle<T> CreateOuterCircle( const _Rect<T>& rect ) 
 	{
 		return CreateOuterCircle( rect.GetTopLeft(), Vec2<T>{rect.right, rect.bottom} );
 	}
-	static Circle CreateInnerCircle( const Vec2<T>& topLeft, const Vec2<T>& bottomRight ) const
+	static Circle<T> CreateInnerCircle( const Vec2<T>& topLeft, const Vec2<T>& bottomRight ) 
 	{
 		Vec2<T> center = (topLeft + bottomRight) / (T)2;
 		const Vec2<T> size = bottomRight - topLeft;
 		T radius = (std::min)(size.x, size.y);
 		return { center, radius };
 	}
-	static Circle CreateInnerCircle( const _Rect<T>& rect ) const
+	static Circle<T> CreateInnerCircle( const _Rect<T>& rect ) 
 	{
 		return CreateInnerCircle( rect.GetTopLeft(), Vec2<T>{rect.right, rect.bottom} );
 	}
@@ -66,6 +66,11 @@ public:
 		const Vec2<float> distance = GetCenter() - other.GetCenter();
 		const float sumOfRadius = GetRadius() + other.GetRadius();
 		return fabs( distance.x * distance.x + distance.y * distance.y ) < sumOfRadius * sumOfRadius;
+	}
+
+	void SetCenter( const Vec2<T>& pos)
+	{
+		center = pos;
 	}
 
 private:

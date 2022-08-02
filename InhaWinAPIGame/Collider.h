@@ -39,8 +39,8 @@ public:
 	}
 	virtual bool IsOverlapWithOBB( const Collider<T>& other ) const = 0;
 	virtual bool IsCollideWithOBB( const Collider<T>& other ) const = 0;
-	virtual std::vector<Vec2<T>> GetVertices() const = 0;
-	virtual void Draw( Gdiplus::Graphics& gfx ) = 0;
+	virtual std::vector<Vec2<T>> GetVertices() const { return {}; }
+	virtual void Draw( Gdiplus::Graphics& gfx, const Gdiplus::Color& color ) = 0;
 	virtual Circle<T> GetCircle() const
 	{
 		return Circle<T>::CreateInnerCircle( rect );
@@ -106,10 +106,9 @@ protected:
 		const Circle<T> otherCircle = other.GetCircle();
 		return thisCircle.IsOverlapWith( otherCircle );
 	}
-	/*
 	bool CheckConvexOverlapWithCircle( const Collider<T>& convex, const Collider<T>& circle ) const
 	{
-		//if ( CheckCircleOverlap( convex, circle ) )
+		if ( CheckCircleOverlap( convex, circle ) )
 		{
 			const Vec2<T> convexVertices = convex.GetVertices();
 
@@ -142,13 +141,11 @@ protected:
 				{
 					return false;
 				}
-
 			}
 			return true;
 		}
 		return false;
 	}
-	*/
 protected:
 	Type type;
 	Surface<T> surf;
@@ -225,7 +222,7 @@ public:
 			break;
 		case Collider<T>::Type::Circle:
 			{
-				//this->CheckConvexOverlapWitchCircle( *this, other );
+				isCollide = this->CheckConvexOverlapWithCircle( *this, other );
 			}
 			break;
 		case Collider<T>::Type::Line:
@@ -263,11 +260,82 @@ public:
 	{
 		return vertices;
 	}
-	void Draw( Gdiplus::Graphics& gfx ) override
+	void Draw( Gdiplus::Graphics& gfx, const Gdiplus::Color& color ) override
 	{
-		this->surf.DrawFillPolygonPlus( gfx, vertices, (int)vertices.size(), this->debugColor );
+		this->surf.DrawFillPolygonPlus( gfx, vertices, (int)vertices.size(), color );
 	}
 
 private:
 	std::vector<Vec2<T>> vertices;
+};
+
+template <typename T>
+class CircleCollider : public Collider<T>
+{
+public:
+	CircleCollider( const Circle<T>& circle )
+		:
+		Collider<T>( Collider<T>::Type::Circle, circle.GetOuterRect() ),
+		circle( circle )
+	{}
+
+	void SetPos( const Vec2<T>& pos ) override
+	{
+		const Vec2<T> moved = pos - Collider<T>::rect.GetTopLeft();
+		Collider<T>::SetPos( pos );
+		circle.SetCenter( pos );
+	}
+	void Draw( Gdiplus::Graphics& gfx, const Gdiplus::Color& color ) override
+	{
+		this->surf.DrawFillCirclePlus( gfx, circle.GetTopLeft(), circle.GetRadius(), circle.GetRadius(), color );
+	}
+	bool IsOverlapWithOBB( const Collider<T>& other ) const override
+	{
+		bool isCollide = false;
+		switch ( other.GetType() )
+		{
+		case Collider<T>::Type::Convex:
+			{
+				isCollide = this->CheckVerticesSAT( other );
+			}
+			break;
+		case Collider<T>::Type::Circle:
+			{
+				//this->CheckConvexOverlapWitchCircle( *this, other );
+			}
+			break;
+		case Collider<T>::Type::Line:
+			{
+				isCollide = this->CheckVerticesSAT( other );
+			}
+			break;
+		}
+		return isCollide;
+	}
+	bool IsCollideWithOBB( const Collider<T>& other ) const override
+	{
+		bool isCollide = false;
+		switch ( other.GetType() )
+		{
+		case Collider<T>::Type::Convex:
+			{
+				isCollide = this->CheckVerticesSAT( other );
+			}
+			break;
+		case Collider<T>::Type::Circle:
+			{
+				//this->CheckConvexOverlapWitchCircle( *this, other );
+			}
+			break;
+		case Collider<T>::Type::Line:
+			{
+				isCollide = this->CheckVerticesSAT( other );
+			}
+			break;
+		}
+		return isCollide;
+	}
+
+private:
+	Circle<T> circle;
 };

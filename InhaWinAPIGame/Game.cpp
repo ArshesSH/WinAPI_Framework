@@ -9,7 +9,8 @@ Game::Game()
 	imageTest2( L"Images/awsom.bmp" ),
 	cam( ct ),
 	dudeGravity( 9.8f ),
-	testCollider( testRect )
+	testCollider( testRect ),
+	circleCollider( { {0, 200}, 50 } )
 {
 	testPoly.emplace_back( 300, 0 );
 	testPoly.emplace_back( 400, 0 );
@@ -54,10 +55,11 @@ void Game::ComposeFrame(HDC hdc)
 						surf.DrawFillRectPlus( gfx, { 300,0 }, { 100,100 }, Gdiplus::Color{ 255,255,255,0} );
 						surf2.DrawImageChromaPlus( gfx, imageTest2, dudePos, dudeSize, { 0,0 }, imageTest2.GetImageSize() );
 						dudeCollider.UpdateMatrix( camTransform );
-						dudeCollider.Draw( gfx );
+						dudeCollider.Draw( gfx, Gdiplus::Color{ 144,255,0,255 } );
 						testCollider.UpdateMatrix( camTransform );
-						testCollider.Draw( gfx );
-
+						testCollider.Draw( gfx, Gdiplus::Color{255,255,255,255} );
+						circleCollider.UpdateMatrix( camTransform );
+						circleCollider.Draw( gfx, Gdiplus::Color{ 144,255,0,0 } );
 					};
 
 					const float screenX = (screenRect.right - screenRect.left) / 2.0f;

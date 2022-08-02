@@ -75,4 +75,6 @@ private:
 	std::vector<Vec2<float>> testPoly;
 	ConvexCollider<float> testCollider;
 	bool isCollided = false;
+
+	CircleCollider<float> circleCollider;
 };
