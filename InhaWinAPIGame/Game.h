@@ -74,5 +74,5 @@ private:
 	RectF testRect = { -40, -20, -1000, 1000 };
 	std::vector<Vec2<float>> testPoly;
 	ConvexCollider<float> testCollider;
-
+	bool isCollided = false;
 };

@@ -45,6 +45,28 @@ public:
 	{
 		return { (T2)top,(T2)bottom,(T2)left,(T2)right };
 	}
+	template <typename T2>
+	inline _Rect<T> operator+( const Vec2<T2>& rhs ) const
+	{
+		return { top + (T)rhs.y, bottom + (T)rhs.y, left + (T)rhs.x, right + (T)rhs.x };
+	}
+	template <typename T2>
+	inline _Rect<T>& operator+=( const Vec2<T2>& rhs ) 
+	{
+		return *this = *this + rhs;
+	}
+	template <typename T2>
+	inline _Rect<T> operator-( const Vec2<T2>& rhs ) const
+	{
+		return { top - (T)rhs.y, bottom - (T)rhs.y, left - (T)rhs.x, right - (T)rhs.x };
+	}
+	template <typename T2>
+	inline _Rect<T>& operator-=( const Vec2<T2>& rhs )
+	{
+		return *this = *this - rhs;
+	}
+
+
 	inline	void ClipTo( const _Rect& rect )
 	{
 		top = (std::max)( top, rect.top );

@@ -73,11 +73,13 @@ void Game::ComposeFrame(HDC hdc)
 					const std::wstring dudeVelStr = L"dudeVel: (" + std::to_wstring( dudeVel.x ) + L", " + std::to_wstring( dudeVel.y ) + L")";
 					const std::wstring dudePosStr = L"dudePos: (" + std::to_wstring( dudePos.x ) + L", " + std::to_wstring( dudePos.y ) + L")";
 					const std::wstring dudColStr = L"dudCollision: (" + std::to_wstring( dudeColliderPos.x ) + L", " + std::to_wstring( dudeColliderPos.y ) + L")";
+					const std::wstring collideStr = (isCollided) ? L"true" : L"false";
 					s.DrawStringPlus( gfx, camPosStr, { 0,0 }, {255,255,255,255} );
 					s.DrawStringPlus( gfx, camScaleStr, { 0,20 }, { 255,255,255,255 } );
 					s.DrawStringPlus( gfx, dudeVelStr, { 0,40 }, { 255,255,255,255 } );
 					s.DrawStringPlus( gfx, dudePosStr, { 0,60 }, { 255,255,255,255 } );
 					s.DrawStringPlus( gfx, dudColStr, { 0,80 }, { 255,255,255,255 } );
+					s.DrawStringPlus( gfx, collideStr, { 0,100 }, { 255,255,255,255 } );
 				}
 			);
 
@@ -123,19 +125,19 @@ void Game::UpdateModel()
 
 			if ( GetAsyncKeyState( 'A' ) & 0x8001 )
 			{
-				cam.MoveBy( dirLeft * dt * 100 );
+				cam.MoveBy( dirLeft * dt * 200 );
 			}
 			else if ( GetAsyncKeyState( 'D' ) & 0x8001 )
 			{
-				cam.MoveBy( dirRight * dt * 100 );
+				cam.MoveBy( dirRight * dt * 200 );
 			}
 			if ( GetAsyncKeyState( 'W' ) & 0x8001 )
 			{
-				cam.MoveBy( dirUp * dt * 100 );
+				cam.MoveBy( dirUp * dt * 200 );
 			}
 			else if ( GetAsyncKeyState( 'S' ) & 0x8001 )
 			{
-				cam.MoveBy( dirDown * dt * 100 );
+				cam.MoveBy( dirDown * dt * 200 );
 			}
 
 			if ( GetAsyncKeyState( VK_LEFT ) & 0x8001 )
@@ -155,6 +157,14 @@ void Game::UpdateModel()
 				dudePos += dirDown * dt * 200;
 			}
 			dudeCollider.SetPos( dudePos );
+			if ( dudeCollider.IsCollideWithOBB( testCollider ) )
+			{
+				isCollided = true;
+			}
+			else
+			{
+				isCollided = false;
+			}
 
 			if ( GetAsyncKeyState( 'Q' ) & 0x8001 )
 			{
@@ -164,6 +174,7 @@ void Game::UpdateModel()
 			{
 				cam.SetScale( cam.GetScale() + (2.0f * dt) );
 			}
+
 		}
 		break;
 	case Game::SceneType::SceneTest:

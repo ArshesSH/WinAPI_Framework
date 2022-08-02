@@ -32,7 +32,8 @@ public:
 	{
 		return pos;
 	}
-	virtual bool IsCollideWith( const Collider<T>& other ) const = 0;
+	bool IsCollideWithAABB( const Collider<T>& other ) const;
+	virtual bool IsCollideWithOBB( const Collider<T>& other ) const = 0;
 	virtual std::vector<Vec2<T>> GetVertices() const = 0;
 	virtual void Draw( Gdiplus::Graphics& gfx ) = 0;
 	virtual void SetPos( const Vec2<T>& pos_in )
@@ -186,8 +187,7 @@ public:
 			v += offset;
 		}
 	}
-
-	bool IsCollideWith( const Collider<T>& other ) const override
+	bool IsCollideWithOBB( const Collider<T>& other ) const override
 	{
 		bool isCollide = false;
 		switch ( other.GetType() )
@@ -210,12 +210,10 @@ public:
 		}
 		return isCollide;
 	}
-
 	std::vector<Vec2<T>> GetVertices() const override
 	{
 		return vertices;
 	}
-
 	void Draw( Gdiplus::Graphics& gfx ) override
 	{
 		this->surf.DrawFillPolygonPlus( gfx, vertices, (int)vertices.size(), this->debugColor );
