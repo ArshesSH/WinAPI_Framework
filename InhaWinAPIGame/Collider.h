@@ -1,12 +1,14 @@
 #pragma once
 
+#include <vector>
+#include "framework.h"
+#include "Surface.h"
+
 #include "Vec2.h"
 #include "Rect.h"
 #include "Circle.h"
-#include <vector>
+#include "Line.h"
 
-#include "framework.h"
-#include "Surface.h"
 
 template <typename T>
 class Collider
@@ -41,12 +43,6 @@ public:
 	{
 		return rect.GetCenter();
 	}
-	virtual bool IsOverlapWithAABB( const Collider<T>& other ) const
-	{
-		return rect.Overlaps( other.rect );
-	}
-	virtual bool IsOverlapWithOBB( const Collider<T>& other ) const = 0;
-	virtual bool IsCollideWithOBB( const Collider<T>& other ) const = 0;
 	virtual std::vector<Vec2<T>> GetVertices() const { return {}; }
 	virtual void Draw( Gdiplus::Graphics& gfx, const Gdiplus::Color& color ) = 0;
 	virtual Circle<T> GetCircle() const
@@ -67,89 +63,7 @@ public:
 		return type;
 	}
 protected:
-	bool CheckVerticesSAT( const Collider<T>& other ) const
-	{
-		const auto refObjVertices = GetVertices();
-		const auto otherVertices = other.GetVertices();
 
-		// Create Translate things
-		float minTranslateScalar = INFINITY;
-		Vec2<float> minTranslateNormalVec;
-
-		// Check for each axis
-		for ( int vIdx = 0; vIdx < (int)refObjVertices.size(); ++vIdx )
-		{
-			const int vIdxNext = (vIdx + 1) % refObjVertices.size();
-			Vec2<float> axisProj = (refObjVertices[vIdx] - refObjVertices[vIdxNext]).GetNormalRightVec2().GetNormalized();
-
-			float minThis = INFINITY;
-			float maxThis = -INFINITY;
-			for ( auto e : refObjVertices )
-			{
-				const float p = e * axisProj;
-				minThis = (std::min)(minThis, p);
-				maxThis = (std::max)(maxThis, p);
-			}
-
-			float minOther = INFINITY;
-			float maxOther = -INFINITY;
-			for ( auto e : otherVertices )
-			{
-				const float p = e * axisProj;
-				minOther = (std::min)(minOther, p);
-				maxOther = (std::max)(maxOther, p);
-			}
-
-			if ( !(maxOther >= minThis && maxThis >= minOther) )
-			{
-				return false;
-			}
-		}
-		return true;
-	}
-
-	bool CheckCircleOverlap( const Collider<T>& other ) const
-	{
-		const Circle<T> thisCircle = GetCircle();
-		const Circle<T> otherCircle = other.GetCircle();
-		return thisCircle.IsOverlapWith( otherCircle );
-	}
-	bool CheckConvexOverlapWithCircle( const Collider<T>& convex, const Collider<T>& circle ) const
-	{
-		const auto convexVertices = convex.GetVertices();
-		for ( int vIdx = 0; vIdx < convexVertices.size(); ++vIdx )
-		{
-			const int vIdxNext = (vIdx + 1) % convexVertices.size();
-			Vec2<float> axisProj = (convexVertices[vIdx] - convexVertices[vIdxNext]).GetNormalRightVec2().GetNormalized();
-
-			float minThis = INFINITY;
-			float maxThis = -INFINITY;
-			for ( Vec2<T> e : convexVertices )
-			{
-				const float p = e * axisProj;
-				minThis = (std::min)(minThis, p);
-				maxThis = (std::max)(maxThis, p);
-			}
-
-			float minOther = INFINITY;
-			float maxOther = -INFINITY;
-
-			const Vec2<float> normalizedAxis = axisProj.GetNormalized();
-			const auto circleSize = circle.GetRect().GetWidth() / 2.0f;
-			float p = (circle.GetCenter() + (normalizedAxis * circleSize)) * axisProj;
-			minOther = (std::min)(minOther, p);
-			maxOther = (std::max)(maxOther, p);
-			p = (circle.GetCenter() - (normalizedAxis * circleSize)) * axisProj;
-			minOther = (std::min)(minOther, p);
-			maxOther = (std::max)(maxOther, p);
-
-			if ( !(maxOther >= minThis && maxThis >= minOther) )
-			{
-				return false;
-			}
-		}
-		return true;
-	}
 
 protected:
 	Type type;
@@ -215,52 +129,6 @@ public:
 			v += offset;
 		}
 	}
-	bool IsOverlapWithOBB( const Collider<T>& other ) const override
-	{
-		bool isCollide = false;
-		switch ( other.GetType() )
-		{
-		case Collider<T>::Type::Convex:
-			{
-				isCollide = this->CheckVerticesSAT( other );
-			}
-			break;
-		case Collider<T>::Type::Circle:
-			{
-				isCollide = this->CheckConvexOverlapWithCircle( *this, other );
-			}
-			break;
-		case Collider<T>::Type::Line:
-			{
-				isCollide = this->CheckVerticesSAT( other );
-			}
-			break;
-		}
-		return isCollide;
-	}
-	bool IsCollideWithOBB( const Collider<T>& other ) const override
-	{
-		bool isCollide = false;
-		switch ( other.GetType() )
-		{
-		case Collider<T>::Type::Convex:
-			{
-				isCollide = this->CheckVerticesSAT( other );
-			}
-			break;
-		case Collider<T>::Type::Circle:
-			{
-				this->CheckConvexOverlapWithCircle( *this, other );
-			}
-			break;
-		case Collider<T>::Type::Line:
-			{
-				isCollide = this->CheckVerticesSAT( other );
-			}
-			break;
-		}
-		return isCollide;
-	}
 	std::vector<Vec2<T>> GetVertices() const override
 	{
 		return vertices;
@@ -297,54 +165,8 @@ public:
 		auto testRect = circle.GetOuterRect();
 		this->surf.DrawFillRectPlus( gfx, testRect.GetTopLeft(), testRect.GetWidth(), testRect.GetHeight(), { 144,0,0,255 } );
 	}
-	bool IsOverlapWithOBB( const Collider<T>& other ) const override
-	{
-		bool isCollide = false;
-		switch ( other.GetType() )
-		{
-		case Collider<T>::Type::Convex:
-			{
-				isCollide = this->CheckVerticesSAT( other );
-			}
-			break;
-		case Collider<T>::Type::Circle:
-			{
-				//this->CheckConvexOverlapWitchCircle( other, *this );
-			}
-			break;
-		case Collider<T>::Type::Line:
-			{
-				isCollide = this->CheckVerticesSAT( other );
-			}
-			break;
-		}
-		return isCollide;
-	}
 
-	bool IsCollideWithOBB( const Collider<T>& other ) const override
-	{
-		bool isCollide = false;
-		switch ( other.GetType() )
-		{
-		case Collider<T>::Type::Convex:
-			{
-				isCollide = this->CheckVerticesSAT( other );
-			}
-			break;
-		case Collider<T>::Type::Circle:
-			{
-				//this->CheckConvexOverlapWitchCircle( *this, other );
-			}
-			break;
-		case Collider<T>::Type::Line:
-			{
-				isCollide = this->CheckVerticesSAT( other );
-			}
-			break;
-		}
-		return isCollide;
-	}
-
+	
 private:
 	Circle<T> circle;
 };
@@ -357,8 +179,12 @@ public:
 		:
 		startPos(startPos),
 		endPos(endPos),
-		Collider<T>( startPos, endPos )
+		Collider<T>( Collider<T>::Type::Line,_Rect<T>{ startPos, endPos } )
 	{}
+	std::vector<Vec2<T>> GetVertices() const override
+	{
+		return std::vector<Vec2<T>>{ startPos, endPos };
+	}
 	void SetPos( const Vec2<T>& pos ) override
 	{
 		const Vec2<T> moved = pos - Collider<T>::rect.GetTopLeft();
@@ -368,13 +194,10 @@ public:
 	}
 	void Draw( Gdiplus::Graphics& gfx, const Gdiplus::Color& color ) override
 	{
-		auto testRect = this->GetOuterRect();
-		this->surf.DrawFillRectPlus( gfx, testRect.GetTopLeft(), testRect.GetWidth(), testRect.GetHeight(), { 144,0,0,255 } );
+		this->surf.DrawFillRectPlus( gfx, this->rect.GetTopLeft(), this->rect.GetWidth(), this->rect.GetHeight(), { 144,0,0,255 } );
 
 		this->surf.DrawLinePlus( gfx, startPos, endPos, color, 1 );
 	}
-
-
 private:
 	Vec2<T> startPos;
 	Vec2<T> endPos;

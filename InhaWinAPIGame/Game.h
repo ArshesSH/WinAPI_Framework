@@ -9,6 +9,7 @@
 #include "Camera.h"
 #include "Gravity.h"
 #include "Collider.h"
+#include "CollisionManager.h"
 
 // Test Things
 //#include "TestTriangulationScene.h"
@@ -62,7 +63,8 @@ private:
 	const Vec2<float> dudeSize = { 100.0f, 100.0f };
 	Gravity dudeGravity;
 	//ConvexCollider<float> dudeCollider = { dudePos, 100,100 };
-	CircleCollider<float> dudeCollider = { dudePos, 50 };
+	//CircleCollider<float> dudeCollider = { dudePos, 50 };
+	LineCollider<float> dudeCollider = { dudePos, dudePos + Vec2<float>{50,50} };
 
 	const Vec2<float> dirLeft = { -1.0f, 0.0f };
 	const Vec2<float> dirUp = { 0.0f, 1.0f };
@@ -75,8 +77,9 @@ private:
 	RectF testRect = { -40, -20, -1000, 1000 };
 	std::vector<Vec2<float>> testPoly;
 	ConvexCollider<float> testCollider;
+	LineCollider<float> testLineCollider = { {0,0,},{100,200} };
 	bool isCollided = false;
-
+	CollisionManager<float> collisionManager;
 
 	std::vector<Collider<float>*> pColliders;
 };
