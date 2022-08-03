@@ -9,13 +9,13 @@ Game::Game()
 	imageTest2( L"Images/awsom.bmp" ),
 	cam( ct ),
 	dudeGravity( 9.8f ),
-	testCollider( testRect ),
-	circleCollider( { {0, 200}, 50 } )
+	testCollider( testRect )
 {
 	testPoly.emplace_back( 300, 0 );
 	testPoly.emplace_back( 400, 0 );
 	testPoly.emplace_back( 400, 100 );
 	testPoly.emplace_back( 300, 100 );
+	pColliders.push_back( &testCollider );
 }
 
 // This function Call in Win32API's WM_PAINT, and draw everything about game
@@ -58,8 +58,6 @@ void Game::ComposeFrame(HDC hdc)
 						dudeCollider.Draw( gfx, Gdiplus::Color{ 144,255,0,255 } );
 						testCollider.UpdateMatrix( camTransform );
 						testCollider.Draw( gfx, Gdiplus::Color{255,255,255,255} );
-						circleCollider.UpdateMatrix( camTransform );
-						circleCollider.Draw( gfx, Gdiplus::Color{ 144,255,0,0 } );
 					};
 
 					const float screenX = (screenRect.right - screenRect.left) / 2.0f;
@@ -159,14 +157,23 @@ void Game::UpdateModel()
 				dudePos += dirDown * dt * 200;
 			}
 			dudeCollider.SetPos( dudePos );
-			if ( dudeCollider.IsOverlapWithAABB( testCollider ) )
+
+			for ( auto c : pColliders )
 			{
-				isCollided = true;
+
+				//if ( dudeCollider.IsOverlapWithAABB( testCollider ) )
+				if ( c->IsOverlapWithOBB( dudeCollider ) )
+				{
+					isCollided = true;
+				}
+				else
+				{
+					isCollided = false;
+				}
 			}
-			else
-			{
-				isCollided = false;
-			}
+
+
+
 
 			if ( GetAsyncKeyState( 'Q' ) & 0x8001 )
 			{

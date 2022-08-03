@@ -160,9 +160,10 @@ public:
 		SolidBrush brush( color );
 		graphics.FillEllipse( &brush, r );
 	}
-	void DrawFillCirclePlus( Gdiplus::Graphics& graphics, const Vec2<T>& topLeft, T width, T height, Gdiplus::Color color )
+	void DrawFillCirclePlus( Gdiplus::Graphics& graphics, const Vec2<T>& topLeft, T radius, Gdiplus::Color color )
 	{
-		DrawFillCirclePlus( graphics, topLeft, { width, height }, color );
+		const auto size = radius * 2;
+		DrawFillCirclePlus( graphics, topLeft, { size, size }, color );
 	}
 
 	// Draw Line
