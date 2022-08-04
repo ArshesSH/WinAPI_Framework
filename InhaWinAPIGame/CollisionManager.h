@@ -41,7 +41,7 @@ public:
 			}
 			else
 			{
-				return CheckConvexOverlapLine( ref, target );
+				return CheckConvexOverlapLine( target, ref );
 			}
 		}
 	}

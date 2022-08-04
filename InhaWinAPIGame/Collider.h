@@ -183,28 +183,25 @@ class LineCollider : public Collider<T>
 public:
 	LineCollider( const Vec2<T>& startPos, const Vec2<T>& endPos )
 		:
-		startPos(startPos),
-		endPos(endPos),
+		line( startPos, endPos ),
 		Collider<T>( Collider<T>::Type::Line,_Rect<T>{ startPos, endPos } )
 	{}
 	std::vector<Vec2<T>> GetVertices() const override
 	{
-		return std::vector<Vec2<T>>{ startPos, endPos };
+		return std::vector<Vec2<T>>{ line.GetStartPos(), line.GetEndPos() };
 	}
 	void SetPos( const Vec2<T>& pos ) override
 	{
 		const Vec2<T> moved = pos - Collider<T>::rect.GetTopLeft();
 		Collider<T>::SetPos( pos );
-		startPos += pos;
-		endPos += pos;
+		line += moved;
 	}
 	void Draw( Gdiplus::Graphics& gfx, const Gdiplus::Color& color ) override
 	{
 		this->surf.DrawFillRectPlus( gfx, this->rect.GetTopLeft(), this->rect.GetWidth(), this->rect.GetHeight(), { 144,0,0,255 } );
 
-		this->surf.DrawLinePlus( gfx, startPos, endPos, color, 1 );
+		this->surf.DrawLinePlus( gfx, line.GetStartPos(), line.GetEndPos(), color, 1 );
 	}
 private:
-	Vec2<T> startPos;
-	Vec2<T> endPos;
+	Line<T> line;
 };

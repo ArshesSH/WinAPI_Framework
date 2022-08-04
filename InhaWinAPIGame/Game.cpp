@@ -17,7 +17,7 @@ Game::Game()
 	testPoly.emplace_back( 300, 100 );
 	pColliders.push_back( &testCollider );
 	pColliders.push_back( &testLineCollider );
-	//pColliders.push_back( &testCircleCollider );
+	pColliders.push_back( &testCircleCollider );
 }
 
 // This function Call in Win32API's WM_PAINT, and draw everything about game
@@ -64,7 +64,7 @@ void Game::ComposeFrame(HDC hdc)
 						}
 
 						dudeCollider.UpdateMatrix( camTransform );
-						dudeCollider.Draw( gfx, Gdiplus::Color{ 144,255,0,255 } );
+						dudeCollider.Draw( gfx, Gdiplus::Color{ 255,255,255,255 } );
 					};
 
 					const float screenX = (screenRect.right - screenRect.left) / 2.0f;
@@ -168,9 +168,7 @@ void Game::UpdateModel()
 			isCollided = false;
 			for ( auto c : pColliders )
 			{
-				
-				//if ( dudeCollider.IsOverlapWithAABB( testCollider ) )
-				if ( collisionManager.IsOverlapWithOBB( dudeCollider, *c ) )
+				if ( collisionManager.IsOverlapWithAABB( dudeCollider, *c ) )
 				{
 					isCollided |= true;
 				}
