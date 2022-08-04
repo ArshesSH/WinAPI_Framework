@@ -189,6 +189,12 @@
     <ClInclude Include="Line.h">
       <Filter>헤더 파일\Engine\Physics</Filter>
     </ClInclude>
+    <ClInclude Include="ColliderTypeTrait.h">
+      <Filter>헤더 파일\Engine\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="CollisionPatternMatching.h">
+      <Filter>헤더 파일\Engine\Physics</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="InhaWinAPIGame.cpp">
@@ -214,6 +220,9 @@
     </ClCompile>
     <ClCompile Include="CoordinateTransformer.cpp">
       <Filter>소스 파일\Engine\Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="ColliderTypeTrait.cpp">
+      <Filter>소스 파일\Engine\Physics</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

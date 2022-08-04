@@ -23,8 +23,8 @@ namespace std
 	};
 }
 
-template <class C>
-class PatternMatching
+template <typename N>
+class CollisionPatternMatching
 {
 public:
 	// Get TypeTrait T and U, and Functor for F, Create Both case of T,U and U,T 
@@ -52,7 +52,7 @@ public:
 	{
 		def = f;
 	}
-	inline void Switch( C& a, C& b )
+	inline void Switch( Collider<N>& a, Collider<N>& b )
 	{
 		auto i = handlers.find( { typeid(a.GetTypeTrait()),typeid(b.GetTypeTrait()) } );
 		if ( i != handlers.end() )
@@ -66,6 +66,6 @@ public:
 	}
 
 private:
-	std::unordered_map<TypePair, std::function<void( C&, C& )>> handlers;
-	std::function<void( C&, C& )> def = []( C&, C& ) {};
+	std::unordered_map<TypePair, std::function<void( Collider<N>&, Collider<N>& )>> handlers;
+	std::function<void( Collider<N>&, Collider<N>& )> def = []( Collider<N>&, Collider<N>& ) {};
 };

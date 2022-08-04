@@ -148,7 +148,9 @@
     <ClInclude Include="Circle.h" />
     <ClInclude Include="Codex.h" />
     <ClInclude Include="Collider.h" />
+    <ClInclude Include="ColliderTypeTrait.h" />
     <ClInclude Include="CollisionManager.h" />
+    <ClInclude Include="CollisionPatternMatching.h" />
     <ClInclude Include="CoordinateTransformer.h" />
     <ClInclude Include="FileManager.h" />
     <ClInclude Include="FrameTimer.h" />
@@ -181,6 +183,7 @@
     <ClInclude Include="CoordSH.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="ColliderTypeTrait.cpp" />
     <ClCompile Include="CoordinateTransformer.cpp" />
     <ClCompile Include="FileManager.cpp" />
     <ClCompile Include="FrameTimer.cpp" />

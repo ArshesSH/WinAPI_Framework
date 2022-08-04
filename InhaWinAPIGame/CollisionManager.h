@@ -1,7 +1,8 @@
 #pragma once
 
 #include "Collider.h"
-#include "PatternMatching.h"
+#include "ColliderTypeTrait.h"
+#include "CollisionPatternMatching.h"
 
 template <typename T>
 class CollisionManager
@@ -9,15 +10,16 @@ class CollisionManager
 public:
 	CollisionManager()
 	{
-		//using Convex = Collider<T>::Type::Convex;
-		//using Circle = Collider<T>::Type::Circle;
-		//using Line = Collider<T>::Type::Line;
-
-		overlapAABBSwitch.Case<Collider<T>::Type::Convex, Collider<T>::Type::Convex>( [&]( Collider<T>& convex1, Collider<T>& convex2 )
+		overlapAABBSwitch.Case<TypeConvex<T>, TypeConvex<T>>( [&]( Collider<T>& convex1, Collider<T>& convex2 )
 			{
-				convex1.GetRect().Overlaps( convex2.GetRect() );
+				if ( convex1.GetRect().Overlaps( convex2.GetRect() ) )
+				{
+					convex1.SetCollided();
+					convex2.SetCollided();
+				}
 			}
-		);/*
+		);
+		/*
 		overlapAABBSwitch.Case<Convex, Circle>( [&]( Collider<T>& convex1, Collider<T>& convex2 )
 			{
 				convex1.GetRect().Overlaps( convex2.GetRect() );
@@ -45,9 +47,18 @@ public:
 		);*/
 	}
 
-	bool IsOverlapWithAABB( const Collider<T>& collider1, const Collider<T>& collider2 )
+	bool IsOverlapWithAABB( Collider<T>& ref, Collider<T>& target )
 	{
-		overlapAABBSwitch.Switch( collider1.GetType(), collider2.GetType() );
+
+
+		if ( overlapAABBSwitch.HasCase<TypeConvex<T>, TypeConvex<T>>() )
+		{
+			overlapAABBSwitch.Switch( ref, target );
+			return ref.GetCollide();
+		}
+		return isCollide;
+
+
 	}
 private:
 	bool CheckVerticesSAT( const std::vector<Vec2<T>>& refObjVertices, const std::vector<Vec2<T>>& otherVertices ) const
@@ -171,5 +182,6 @@ private:
 	}
 
 private:
-	PatternMatching<Collider<T>> overlapAABBSwitch;
+	CollisionPatternMatching<T> overlapAABBSwitch;
+	bool isCollide = false;
 };

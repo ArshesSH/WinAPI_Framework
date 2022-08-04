@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <memory>
 #include "framework.h"
 #include "Surface.h"
 
@@ -8,7 +9,7 @@
 #include "Rect.h"
 #include "Circle.h"
 #include "Line.h"
-
+#include "ColliderTypeTrait.h"
 
 template <typename T>
 class Collider
@@ -20,12 +21,37 @@ public:
 		Circle,
 		Line
 	};
+
+public:
+	class TypeTrait
+	{
+	public:
+		virtual ~TypeTrait() = default;
+		virtual Type GetType() const = 0;
+	};
 public:
 	Collider( Type type, const _Rect<T>& rect )
 		:
-		type( type ),
 		rect( rect )
 	{
+		switch ( type )
+		{
+		case Type::Convex:
+			{
+				pTypeTrait = std::make_unique<TypeConvex<T>>();
+			}
+			break;
+		case Type::Circle:
+			{
+				pTypeTrait = std::make_unique<TypeCircle<T>>();
+			}
+			break;
+		case Type::Line:
+			{
+				pTypeTrait = std::make_unique<TypeLine<T>>();
+			}
+			break;
+		}
 	}
 	void UpdateMatrix( const Mat3<float>& transform )
 	{
@@ -42,6 +68,14 @@ public:
 	Vec2<T> GetCenter() const
 	{
 		return rect.GetCenter();
+	}
+	void SetCollided( bool state = true )
+	{
+		isCollide = state;
+	}
+	bool GetCollide() const
+	{
+		return isCollide;
 	}
 	virtual std::vector<Vec2<T>> GetVertices() const { return {}; }
 	virtual void Draw( Gdiplus::Graphics& gfx, const Gdiplus::Color& color ) = 0;
@@ -60,16 +94,21 @@ public:
 	}
 	Type GetType() const
 	{
-		return type;
+		return pTypeTrait->GetType();
+	}
+	const TypeTrait& GetTypeTrait() const
+	{
+		return *pTypeTrait;
 	}
 protected:
 
 
 protected:
-	Type type;
+	std::unique_ptr<TypeTrait> pTypeTrait;
 	Surface<T> surf;
 	_Rect<T> rect;
 	Gdiplus::Color debugColor = { 144,255,0,255 };
+	bool isCollide = false;
 };
 
 template <typename T>
