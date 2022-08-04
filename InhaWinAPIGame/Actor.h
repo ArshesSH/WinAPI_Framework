@@ -13,7 +13,8 @@ public:
 	Actor( Actor&& ) = default;
 	Actor& operator=( const Actor& ) = default;
 	Actor& operator=( Actor&& ) noexcept = default;
-	virtual void Draw( Gdiplus::Graphics& gfx ) = 0;
+	virtual void Update( float dt, class Game& game ) = 0;
+	virtual void Draw( HDC hdc ) = 0;
 	void SetDestroy()
 	{
 		shouldDestroy = true;

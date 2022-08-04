@@ -1,23 +1,9 @@
 #include "Game.h"
 
-#include "Vec2.h"
-#include "Surface.h"
-
 Game::Game()
-	:
-	imageTest( L"Images/awsom.bmp" ),
-	imageTest2( L"Images/awsom.bmp" ),
-	cam( ct ),
-	dudeGravity( 9.8f ),
-	testCollider( testRect )
 {
-	testPoly.emplace_back( 300, 0 );
-	testPoly.emplace_back( 400, 0 );
-	testPoly.emplace_back( 400, 100 );
-	testPoly.emplace_back( 300, 100 );
-	pColliders.push_back( &testCollider );
-	pColliders.push_back( &testLineCollider );
-	pColliders.push_back( &testCircleCollider );
+	pScenes.push_back( std::make_unique<TestScene>( screenWidth, screenHeight, ct ) );
+	curScene = pScenes.begin();
 }
 
 // This function Call in Win32API's WM_PAINT, and draw everything about game
@@ -29,178 +15,19 @@ Game::Game()
 // 또한 isScreenChanged를 전달해서 창의 크기가 변경되었을 경우, 이에 맞추어 출력되도록 합니다.
 void Game::ComposeFrame(HDC hdc)
 {
-	switch ( sceneType )
-	{
-	case Game::SceneType::SceneStart:
+	drawManager.DrawMain( hdc, screenRect, isScreenChanged,
+		[this]( HDC hdc )
 		{
+			(*curScene)->Draw( hdc );
 		}
-		break;
-	case Game::SceneType::SceneStage:
-		{
-			drawManager.DrawMain( hdc, screenRect, isScreenChanged,
-				[this]( HDC hdc )
-				{
-					Gdiplus::Graphics gfx( hdc );
-					//surf.DrawRectGDI( hdc, 30, 30, 100, 100, RGB( 255, 255, 255 ) );
-					//surf.DrawImageNonChromaGDI( hdc, imageTest.GetHBitmap(), { 50,50 }, { 100,100 }, { 0,0 }, imageTest.GetImageSize() );
-					//surf.DrawImageNonChromaPlus( gfx, imageTest2.GetImagePtr(), { 100,100 }, { 200,200 }, { 0,0 }, imageTest2.GetImageSize() );
-					
-					auto draws = [&]( HDC hdc, const Mat3<float>& camTransform )
-					{
-						auto transform1 = Mat3<float>::Translation( { 100, 100 } ) * Mat3<float>::Scale( 1 );
-						//auto transform2 = Mat3<float>::Translation( { 200,200 } );
-						surf.SetTransformation( camTransform  );
-						surf2.SetTransformation( camTransform  );
-						surf.DrawRectGDI( hdc, 0, 0, 100, 100, RGB( 255, 255, 255 ) );
-						surf.DrawRectGDI( hdc, 100, 100, 300, 300, RGB( 255, 0, 0 ) );
- 						surf2.DrawImageNonChromaGDI( hdc, imageTest.GetHBitmap(), { 0,0 }, { 100,100 }, { 0,0 }, imageTest.GetImageSize() );
-						surf.DrawFillRectPlus( gfx, { 300,0 }, { 100,100 }, Gdiplus::Color{ 255,255,255,0} );
-						surf2.DrawImageChromaPlus( gfx, imageTest2, dudePos, dudeSize, { 0,0 }, imageTest2.GetImageSize() );
-
-						for ( auto& pCollider : pColliders )
-						{
-							pCollider->UpdateMatrix( camTransform );
-							pCollider->Draw( gfx, { 144,255,255,255 } );
-						}
-
-						dudeCollider.UpdateMatrix( camTransform );
-						dudeCollider.Draw( gfx, Gdiplus::Color{ 255,255,255,255 } );
-					};
-
-					const float screenX = (screenRect.right - screenRect.left) / 2.0f;
-					const float screenY = (screenRect.bottom - screenRect.top) / 2.0f;
-					cam.Draw( hdc, { screenX, screenY }, draws);
-					
-					Surface<float> s;
-					const auto camPos = cam.GetPos();
-					const auto camScale = cam.GetScale();
-					const auto dudeColliderPos = dudeCollider.GetPos();
-					const std::wstring camPosStr = L"camPos: (" + std::to_wstring( camPos.x ) + L", " + std::to_wstring( camPos.y ) + L")";
-					const std::wstring camScaleStr = L"camScale: " + std::to_wstring( cam.GetScale() );
-					const std::wstring dudeVelStr = L"dudeVel: (" + std::to_wstring( dudeVel.x ) + L", " + std::to_wstring( dudeVel.y ) + L")";
-					const std::wstring dudePosStr = L"dudePos: (" + std::to_wstring( dudePos.x ) + L", " + std::to_wstring( dudePos.y ) + L")";
-					const std::wstring dudColStr = L"dudCollision: (" + std::to_wstring( dudeColliderPos.x ) + L", " + std::to_wstring( dudeColliderPos.y ) + L")";
-					const std::wstring collideStr = (isCollided) ? L"true" : L"false";
-					s.DrawStringPlus( gfx, camPosStr, { 0,0 }, {255,255,255,255} );
-					s.DrawStringPlus( gfx, camScaleStr, { 0,20 }, { 255,255,255,255 } );
-					s.DrawStringPlus( gfx, dudeVelStr, { 0,40 }, { 255,255,255,255 } );
-					s.DrawStringPlus( gfx, dudePosStr, { 0,60 }, { 255,255,255,255 } );
-					s.DrawStringPlus( gfx, dudColStr, { 0,80 }, { 255,255,255,255 } );
-					s.DrawStringPlus( gfx, collideStr, { 0,100 }, { 255,255,255,255 } );
-				}
-			);
-
-			if ( isScreenChanged )
-			{
-				isScreenChanged = false;
-			}
-		}
-		break;
-	case Game::SceneType::SceneTest:
-		{
-			drawManager.DrawMain( hdc, screenRect, isScreenChanged,
-				[this]( HDC hdc )
-				{
-					//testTriangulationScene.Draw( hdc );
-
-				}
-			);
-		}
-		break;
-	case Game::SceneType::SceneResult:
-		{
-		}
-		break;
-	}
+	);
 }
 
 void Game::UpdateModel()
 {
-	switch ( sceneType )
-	{
-	case Game::SceneType::SceneStart:
-		{
-		}
-		break;
-	case Game::SceneType::SceneStage:
-		{
-			float dt = ft.Mark();
-			RefreshScreen();
-
-			/*dudeVel.y = dudeGravity.GetGravityVel( dudeVel, dt );
-			dudePos += dudeVel * dt;*/
-
-			if ( GetAsyncKeyState( 'A' ) & 0x8001 )
-			{
-				cam.MoveBy( dirLeft * dt * 200 );
-			}
-			else if ( GetAsyncKeyState( 'D' ) & 0x8001 )
-			{
-				cam.MoveBy( dirRight * dt * 200 );
-			}
-			if ( GetAsyncKeyState( 'W' ) & 0x8001 )
-			{
-				cam.MoveBy( dirUp * dt * 200 );
-			}
-			else if ( GetAsyncKeyState( 'S' ) & 0x8001 )
-			{
-				cam.MoveBy( dirDown * dt * 200 );
-			}
-
-			if ( GetAsyncKeyState( VK_LEFT ) & 0x8001 )
-			{
-				dudePos += dirLeft * dt * 200;
-			}
-			else if ( GetAsyncKeyState( VK_RIGHT ) & 0x8001 )
-			{
-				dudePos += dirRight * dt * 200;
-			}
-			if ( GetAsyncKeyState( VK_UP ) & 0x8001 )
-			{
-				dudePos += dirUp * dt * 200;
-			}
-			else if ( GetAsyncKeyState( VK_DOWN ) & 0x8001 )
-			{
-				dudePos += dirDown * dt * 200;
-			}
-			dudeCollider.SetPos( dudePos );
-
-			isCollided = false;
-			for ( auto c : pColliders )
-			{
-				if ( collisionManager.IsOverlapWithAABB( dudeCollider, *c ) )
-				{
-					isCollided |= true;
-				}
-				else
-				{
-					isCollided |= false;
-				}
-			}
-
-			if ( GetAsyncKeyState( 'Q' ) & 0x8001 )
-			{
-				cam.SetScale( cam.GetScale() - (2.0f  * dt) );
-			}
-			else if ( GetAsyncKeyState( 'E' ) & 0x8001 )
-			{
-				cam.SetScale( cam.GetScale() + (2.0f * dt) );
-			}
-
-		}
-		break;
-	case Game::SceneType::SceneTest:
-		{
-			float dt = ft.Mark();
-			RefreshScreen();
-			//testTriangulationScene.Update(dt, *this);
-		}
-		break;
-	case Game::SceneType::SceneResult:
-		{
-		}
-		break;
-	}
+	float dt = ft.Mark();
+	RefreshScreen();
+	(*curScene)->Update( dt, *this );
 }
 void Game::RefreshScreen()
 {
@@ -238,4 +65,24 @@ void Game::SetClientSize( HWND hWnd, int width, int height )
 
 	SetWindowPos( hWnd, nullptr, ((resolutionX / 2) - (winWidth / 2)),
 		((resolutionY / 2) - (winHeight / 2)), winWidth, winHeight, NULL );
+}
+
+void Game::CycleScenes()
+{
+	if ( ++curScene == pScenes.end() )
+	{
+		curScene = pScenes.begin();
+	}
+}
+
+void Game::ReverseCycleScenes()
+{
+	if ( curScene == pScenes.begin() )
+	{
+		curScene = pScenes.end() - 1;
+	}
+	else
+	{
+		--curScene;
+	}
 }

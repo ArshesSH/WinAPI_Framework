@@ -195,6 +195,12 @@
     <ClInclude Include="CollisionPatternMatching.h">
       <Filter>헤더 파일\Engine\Physics</Filter>
     </ClInclude>
+    <ClInclude Include="Character.h">
+      <Filter>헤더 파일\Engine\Actor</Filter>
+    </ClInclude>
+    <ClInclude Include="TestCharacter.h">
+      <Filter>헤더 파일\GameObjects\DynamicActor</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="InhaWinAPIGame.cpp">
@@ -223,6 +229,9 @@
     </ClCompile>
     <ClCompile Include="ColliderTypeTrait.cpp">
       <Filter>소스 파일\Engine\Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="TestScene.cpp">
+      <Filter>소스 파일\Scene</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

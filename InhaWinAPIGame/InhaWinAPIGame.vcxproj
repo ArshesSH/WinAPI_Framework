@@ -166,6 +166,7 @@
     <ClInclude Include="Mat3.h" />
     <ClInclude Include="MathSH.h" />
     <ClInclude Include="PatternMatching.h" />
+    <ClInclude Include="Character.h" />
     <ClInclude Include="Polygon.h" />
     <ClInclude Include="Ray.h" />
     <ClInclude Include="Rect.h" />
@@ -174,6 +175,7 @@
     <ClInclude Include="ImageCodex.h" />
     <ClInclude Include="Surface.h" />
     <ClInclude Include="targetver.h" />
+    <ClInclude Include="TestCharacter.h" />
     <ClInclude Include="TestScene.h" />
     <ClInclude Include="Vec2.h" />
     <ClInclude Include="Vec2W.h" />
@@ -192,6 +194,7 @@
     <ClCompile Include="InhaWinAPIGame.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="Surface.cpp" />
+    <ClCompile Include="TestScene.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="InhaWinAPIGame.rc" />

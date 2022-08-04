@@ -6,9 +6,6 @@ template <typename T>
 class CollisionManager
 {
 public:
-	CollisionManager()
-	{}
-
 	bool IsOverlapWithAABB( const Collider<T>& ref, const Collider<T>& target ) const
 	{
 		if ( ref.GetType() == Collider<T>::Type::Convex )
@@ -221,6 +218,5 @@ private:
 		return b * b - 4 * a * c >= 0;
 	}
 
-private:
-	bool isCollide = false;
+	private:
 };

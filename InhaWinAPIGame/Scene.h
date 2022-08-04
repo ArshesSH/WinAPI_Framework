@@ -6,10 +6,12 @@
 class Scene
 {
 public:
-	Scene(int sceneWidth, int sceneHeight)
+	Scene( int sceneWidth, int sceneHeight )
 		:
-		sceneWidth(sceneWidth),
-		sceneHeight(sceneHeight)
+		sceneWidth( sceneWidth ),
+		sceneHeight( sceneHeight ),
+		sceneTopLeft( 0, 0 ),
+		sceneBottomRight( sceneWidth, sceneHeight )
 	{}
 	virtual ~Scene() {}
 	virtual void Update(float dt, class Game& game ) = 0;
