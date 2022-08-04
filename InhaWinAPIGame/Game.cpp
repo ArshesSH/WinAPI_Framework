@@ -16,7 +16,8 @@ Game::Game()
 	testPoly.emplace_back( 400, 100 );
 	testPoly.emplace_back( 300, 100 );
 	pColliders.push_back( &testCollider );
-	//pColliders.push_back( &testLineCollider );
+	pColliders.push_back( &testLineCollider );
+	pColliders.push_back( &testCircleCollider );
 }
 
 // This function Call in Win32API's WM_PAINT, and draw everything about game
@@ -55,12 +56,15 @@ void Game::ComposeFrame(HDC hdc)
  						surf2.DrawImageNonChromaGDI( hdc, imageTest.GetHBitmap(), { 0,0 }, { 100,100 }, { 0,0 }, imageTest.GetImageSize() );
 						surf.DrawFillRectPlus( gfx, { 300,0 }, { 100,100 }, Gdiplus::Color{ 255,255,255,0} );
 						surf2.DrawImageChromaPlus( gfx, imageTest2, dudePos, dudeSize, { 0,0 }, imageTest2.GetImageSize() );
+
+						for ( auto& pCollider : pColliders )
+						{
+							pCollider->UpdateMatrix( camTransform );
+							pCollider->Draw( gfx, { 144,255,255,255 } );
+						}
+
 						dudeCollider.UpdateMatrix( camTransform );
 						dudeCollider.Draw( gfx, Gdiplus::Color{ 144,255,0,255 } );
-						testCollider.UpdateMatrix( camTransform );
-						testCollider.Draw( gfx, Gdiplus::Color{255,255,255,255} );
-						testLineCollider.UpdateMatrix( camTransform );
-						testLineCollider.Draw( gfx, { 255,255,255,255 } );
 					};
 
 					const float screenX = (screenRect.right - screenRect.left) / 2.0f;
@@ -161,17 +165,18 @@ void Game::UpdateModel()
 			}
 			dudeCollider.SetPos( dudePos );
 
+			isCollided = false;
 			for ( auto c : pColliders )
 			{
-
+				
 				//if ( dudeCollider.IsOverlapWithAABB( testCollider ) )
 				if ( collisionManager.IsOverlapWithAABB( dudeCollider, *c ) )
 				{
-					isCollided = true;
+					isCollided |= true;
 				}
 				else
 				{
-					isCollided = false;
+					isCollided |= false;
 				}
 			}
 

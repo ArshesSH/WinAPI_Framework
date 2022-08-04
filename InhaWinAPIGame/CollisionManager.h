@@ -1,64 +1,49 @@
 #pragma once
 
 #include "Collider.h"
-#include "ColliderTypeTrait.h"
-#include "CollisionPatternMatching.h"
 
 template <typename T>
 class CollisionManager
 {
 public:
 	CollisionManager()
-	{
-		overlapAABBSwitch.Case<TypeConvex<T>, TypeConvex<T>>( [&]( Collider<T>& convex1, Collider<T>& convex2 )
-			{
-				if ( convex1.GetRect().Overlaps( convex2.GetRect() ) )
-				{
-					convex1.SetCollided();
-					convex2.SetCollided();
-				}
-			}
-		);
-		/*
-		overlapAABBSwitch.Case<Convex, Circle>( [&]( Collider<T>& convex1, Collider<T>& convex2 )
-			{
-				convex1.GetRect().Overlaps( convex2.GetRect() );
-			}
-		);
-		overlapAABBSwitch.Case<Circle, Circle>( [&]( Collider<T>& convex1, Collider<T>& convex2 )
-			{
-				convex1.GetRect().Overlaps( convex2.GetRect() );
-			}
-		);
-		overlapAABBSwitch.Case<Convex, Line>( [&]( Collider<T>& convex, Collider<T>& line )
-			{
-				CheckConvexOverlapLine( convex, line );
-			}
-		);
-		overlapAABBSwitch.Case<Circle, Line>( [&]( Collider<T>& circle, Collider<T>& line )
-			{
-				CheckCircleOverlapLine( circle, line );
-			}
-		);
-		overlapAABBSwitch.Case<Line, Line>( [&]( Collider<T>& line1, Collider<T>& line2 )
-			{
-				CheckLineOverlapLine( line1, line2 );
-			}
-		);*/
-	}
+	{}
 
 	bool IsOverlapWithAABB( Collider<T>& ref, Collider<T>& target )
 	{
-
-
-		if ( overlapAABBSwitch.HasCase<TypeConvex<T>, TypeConvex<T>>() )
+		if ( ref.GetType() == Collider<T>::Type::Convex )
 		{
-			overlapAABBSwitch.Switch( ref, target );
-			return ref.GetCollide();
+			if ( target.GetType() == Collider<T>::Type::Line )
+			{
+				return CheckConvexOverlapLine( ref, target );
+			}
+			else
+			{
+				return ref.GetRect().Overlaps( target.GetRect() );
+			}
 		}
-		return isCollide;
-
-
+		else if ( ref.GetType() == Collider<T>::Type::Circle )
+		{
+			if ( target.GetType() == Collider<T>::Type::Line )
+			{
+				return CheckConvexOverlapLine( ref, target );
+			}
+			else
+			{
+				return ref.GetRect().Overlaps( target.GetRect() );
+			}
+		}
+		else
+		{
+			if ( target.GetType() == Collider<T>::Type::Line )
+			{
+				return CheckLineOverlapLine( ref, target );
+			}
+			else
+			{
+				return CheckConvexOverlapLine( ref, target );
+			}
+		}
 	}
 private:
 	bool CheckVerticesSAT( const std::vector<Vec2<T>>& refObjVertices, const std::vector<Vec2<T>>& otherVertices ) const
@@ -167,21 +152,22 @@ private:
 		const auto lineVertices = line.GetVertices();
 		const Line<T> curLine = { lineVertices[0], lineVertices[1] };
 		const Circle<T> circle = circleCollider.GetCircle();
-		const Vec2<T> circlePos = circle.center;
+		const Vec2<T> circlePos = circle.GetCenter();
+		const auto curLineEndPos = curLine.GetEndPos();
+		const auto curLineStartPos = curLine.GetStartPos();
 
-		const float dx = curLine.endPos.x - curLine.startPos.x;
-		const float dy = curLine.endPos.y - curLine.startPos.y;
+		const float dx = curLineEndPos.x - curLineStartPos.x;
+		const float dy = curLineEndPos.y - curLineStartPos.y;
 		const float a = dx * dx + dy * dy;
-		const float b = 2 * (dx * (curLine.startPos.x - circlePos.x) + dy * (curLine.startPos.y - circlePos.y));
+		const float b = 2 * (dx * (curLineStartPos.x - circlePos.x) + dy * (curLineStartPos.y - circlePos.y));
 		float c = circlePos.x * circlePos.x + circlePos.y * circlePos.y;
-		c += curLine.startPos.x * curLine.startPos.x + curLine.startPos.y * curLine.startPos.y;
-		c -= 2 * (circlePos.x * curLine.startPos.x + circlePos.y * curLine.startPos.y);
+		c += curLineStartPos.x * curLineStartPos.x + curLineStartPos.y * curLineStartPos.y;
+		c -= 2 * (circlePos.x * curLineStartPos.x + circlePos.y * curLineStartPos.y);
 		c -= circle.GetRadius() * circle.GetRadius();
 
 		return b * b - 4 * a * c >= 0;
 	}
 
 private:
-	CollisionPatternMatching<T> overlapAABBSwitch;
 	bool isCollide = false;
 };

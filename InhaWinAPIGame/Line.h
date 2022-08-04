@@ -77,8 +77,8 @@ public:
 
 	bool IsOverlapWith( const Line<T>& rhs ) const
 	{
-		float q = (startPos.Y - rhs.startPos.Y) * (rhs.endPos.X - rhs.startPos.X) - (startPos.X - rhs.startPos.X) * (rhs.endPos.Y - rhs.startPos.Y);
-		float d = (endPos.X - startPos.X) * (rhs.endPos.Y - rhs.startPos.Y) - (endPos.Y - startPos.Y) * (rhs.endPos.X - rhs.startPos.X);
+		float q = (startPos.y - rhs.startPos.y) * (rhs.endPos.x - rhs.startPos.x) - (startPos.x - rhs.startPos.x) * (rhs.endPos.y - rhs.startPos.y);
+		float d = (endPos.x - startPos.x) * (rhs.endPos.y - rhs.startPos.y) - (endPos.y - startPos.y) * (rhs.endPos.x - rhs.startPos.x);
 
 		if ( d == 0 )
 		{
@@ -86,7 +86,7 @@ public:
 		}
 		float r = q / d;
 
-		q = (startPos.Y - rhs.startPos.Y) * (endPos.X - startPos.X) - (startPos.X - rhs.startPos.X) * (endPos.Y - startPos.Y);
+		q = (startPos.y - rhs.startPos.y) * (endPos.x - startPos.x) - (startPos.x - rhs.startPos.x) * (endPos.y - startPos.y);
 
 		float s = q / d;
 

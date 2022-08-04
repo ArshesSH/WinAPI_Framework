@@ -78,6 +78,7 @@ private:
 	std::vector<Vec2<float>> testPoly;
 	ConvexCollider<float> testCollider;
 	LineCollider<float> testLineCollider = { {0,0,},{100,200} };
+	CircleCollider<float> testCircleCollider = { {-100, 200}, 50 };
 	bool isCollided = false;
 	CollisionManager<float> collisionManager;
 

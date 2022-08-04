@@ -1,7 +1,6 @@
 #pragma once
 
 #include <vector>
-#include <memory>
 #include "framework.h"
 #include "Surface.h"
 
@@ -9,7 +8,6 @@
 #include "Rect.h"
 #include "Circle.h"
 #include "Line.h"
-#include "ColliderTypeTrait.h"
 
 template <typename T>
 class Collider
@@ -23,36 +21,11 @@ public:
 	};
 
 public:
-	class TypeTrait
-	{
-	public:
-		virtual ~TypeTrait() = default;
-		virtual Type GetType() const = 0;
-	};
-public:
 	Collider( Type type, const _Rect<T>& rect )
 		:
+		type(type),
 		rect( rect )
-	{
-		switch ( type )
-		{
-		case Type::Convex:
-			{
-				pTypeTrait = std::make_unique<TypeConvex<T>>();
-			}
-			break;
-		case Type::Circle:
-			{
-				pTypeTrait = std::make_unique<TypeCircle<T>>();
-			}
-			break;
-		case Type::Line:
-			{
-				pTypeTrait = std::make_unique<TypeLine<T>>();
-			}
-			break;
-		}
-	}
+	{}
 	void UpdateMatrix( const Mat3<float>& transform )
 	{
 		surf.SetTransformation( transform );
@@ -94,17 +67,11 @@ public:
 	}
 	Type GetType() const
 	{
-		return pTypeTrait->GetType();
+		return type;
 	}
-	const TypeTrait& GetTypeTrait() const
-	{
-		return *pTypeTrait;
-	}
-protected:
-
 
 protected:
-	std::unique_ptr<TypeTrait> pTypeTrait;
+	Type type;
 	Surface<T> surf;
 	_Rect<T> rect;
 	Gdiplus::Color debugColor = { 144,255,0,255 };
