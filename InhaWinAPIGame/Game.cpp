@@ -17,7 +17,7 @@ Game::Game()
 	testPoly.emplace_back( 300, 100 );
 	pColliders.push_back( &testCollider );
 	pColliders.push_back( &testLineCollider );
-	pColliders.push_back( &testCircleCollider );
+	//pColliders.push_back( &testCircleCollider );
 }
 
 // This function Call in Win32API's WM_PAINT, and draw everything about game
@@ -170,7 +170,7 @@ void Game::UpdateModel()
 			{
 				
 				//if ( dudeCollider.IsOverlapWithAABB( testCollider ) )
-				if ( collisionManager.IsOverlapWithAABB( dudeCollider, *c ) )
+				if ( collisionManager.IsOverlapWithOBB( dudeCollider, *c ) )
 				{
 					isCollided |= true;
 				}

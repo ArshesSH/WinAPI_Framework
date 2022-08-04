@@ -9,7 +9,7 @@ public:
 	CollisionManager()
 	{}
 
-	bool IsOverlapWithAABB( Collider<T>& ref, Collider<T>& target )
+	bool IsOverlapWithAABB( const Collider<T>& ref, const Collider<T>& target ) const
 	{
 		if ( ref.GetType() == Collider<T>::Type::Convex )
 		{
@@ -45,9 +45,62 @@ public:
 			}
 		}
 	}
-private:
-	bool CheckVerticesSAT( const std::vector<Vec2<T>>& refObjVertices, const std::vector<Vec2<T>>& otherVertices ) const
+
+	bool IsOverlapWithOBB( const Collider<T>& ref, const Collider<T>& target ) const
 	{
+		if ( ref.GetType() == Collider<T>::Type::Convex )
+		{
+			if ( target.GetType() == Collider<T>::Type::Convex )
+			{
+				return CheckVerticesSAT( ref, target );
+			}
+			else if ( target.GetType() == Collider<T>::Type::Circle )
+			{
+				return CheckConvexOverlapCircle( ref, target );
+			}
+			else
+			{
+				return CheckConvexOverlapLine(ref, target);
+			}
+		}
+		else if ( ref.GetType() == Collider<T>::Type::Circle )
+		{
+			if ( target.GetType() == Collider<T>::Type::Convex )
+			{
+				return CheckConvexOverlapCircle( target, ref );
+			}
+			else if ( target.GetType() == Collider<T>::Type::Circle )
+			{
+				return ref.GetCircle().IsOverlapWith( target.GetCircle() );
+			}
+			else
+			{
+				return CheckCircleOverlapLine( ref, target );
+			}
+		}
+		else
+		{
+			if ( target.GetType() == Collider<T>::Type::Convex )
+			{
+				return CheckConvexOverlapLine( target, ref );
+			}
+			else if ( target.GetType() == Collider<T>::Type::Circle )
+			{
+				return CheckCircleOverlapLine( target, ref );
+			}
+			else
+			{
+				return CheckConvexOverlapLine( ref, target );
+			}
+		}
+	}
+
+private:
+	bool CheckVerticesSAT( const Collider<T>& ref, const Collider<T>& other ) const
+	{
+		const std::vector<Vec2<T>>& refObjVertices = ref.GetVertices();
+		const std::vector<Vec2<T>>& otherVertices = other.GetVertices();
+
 		// Create Translate things
 		float minTranslateScalar = INFINITY;
 		Vec2<float> minTranslateNormalVec;
