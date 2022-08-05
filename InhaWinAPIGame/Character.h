@@ -11,9 +11,10 @@ template <typename T>
 class Character: public Actor
 {
 public:
-	Character(const std::wstring& imageName)
+	Character(const std::wstring& imageName, const Vec2<T>& pos)
 		:
-		image(imageName)
+		image(imageName),
+		pos(pos)
 	{}
 
 protected:

@@ -201,6 +201,9 @@
     <ClInclude Include="TestCharacter.h">
       <Filter>헤더 파일\GameObjects\DynamicActor</Filter>
     </ClInclude>
+    <ClInclude Include="Animation.h">
+      <Filter>헤더 파일\Engine\Graphics</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="InhaWinAPIGame.cpp">

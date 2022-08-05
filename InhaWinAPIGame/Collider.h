@@ -42,14 +42,7 @@ public:
 	{
 		return rect.GetCenter();
 	}
-	void SetCollided( bool state = true )
-	{
-		isCollide = state;
-	}
-	bool GetCollide() const
-	{
-		return isCollide;
-	}
+
 	virtual std::vector<Vec2<T>> GetVertices() const { return {}; }
 	virtual void Draw( Gdiplus::Graphics& gfx, const Gdiplus::Color& color ) = 0;
 	virtual Circle<T> GetCircle() const
@@ -75,7 +68,6 @@ protected:
 	Surface<T> surf;
 	_Rect<T> rect;
 	Gdiplus::Color debugColor = { 144,255,0,255 };
-	bool isCollide = false;
 };
 
 template <typename T>
@@ -185,6 +177,11 @@ public:
 		:
 		line( startPos, endPos ),
 		Collider<T>( Collider<T>::Type::Line,_Rect<T>{ startPos, endPos } )
+	{}
+	LineCollider( const Line<T>& line )
+		:
+		line(line),
+		Collider<T>( Collider<T>::Type::Line, _Rect<T>{ line.GetStartPos(), line.GetEndPos() } )
 	{}
 	std::vector<Vec2<T>> GetVertices() const override
 	{

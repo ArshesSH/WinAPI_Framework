@@ -51,6 +51,4 @@ private:
 	CollisionManager<float> collisionManager;
 	std::vector<Collider<float>*> pColliders;
 
-
-	TestCharacter<float> testPlayer;
 };

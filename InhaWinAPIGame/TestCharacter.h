@@ -18,6 +18,19 @@ public:
 	}
 	void Draw( HDC hdc ) override
 	{
+		
+	}
+	void Draw( Gdiplus::Graphics& gfx )
+	{
+
+	}
+private:
+	void Control( float dt ) override
+	{
+
+	}
+	bool CanMove( const Vec2<T>& pos )override
+	{
 
 	}
 

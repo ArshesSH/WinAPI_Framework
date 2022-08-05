@@ -44,24 +44,6 @@ void TestScene::Update( float dt, Game& game )
 		cam.MoveBy( dirDown * dt * 200 );
 	}
 
-	if ( GetAsyncKeyState( VK_LEFT ) & 0x8001 )
-	{
-		dudePos += dirLeft * dt * 200;
-	}
-	else if ( GetAsyncKeyState( VK_RIGHT ) & 0x8001 )
-	{
-		dudePos += dirRight * dt * 200;
-	}
-	if ( GetAsyncKeyState( VK_UP ) & 0x8001 )
-	{
-		dudePos += dirUp * dt * 200;
-	}
-	else if ( GetAsyncKeyState( VK_DOWN ) & 0x8001 )
-	{
-		dudePos += dirDown * dt * 200;
-	}
-	dudeCollider.SetPos( dudePos );
-
 	isCollided = false;
 	for ( auto c : pColliders )
 	{
@@ -74,6 +56,39 @@ void TestScene::Update( float dt, Game& game )
 			isCollided |= false;
 		}
 	}
+	
+	// Move
+	{
+		Vec2<float> prevPos = dudePos;
+		LineCollider<float> nextLineCollider()
+		if ( GetAsyncKeyState( VK_LEFT ) & 0x8001 )
+		{
+			dudePos += dirLeft * dt * 200;
+		}
+		else if ( GetAsyncKeyState( VK_RIGHT ) & 0x8001 )
+		{
+			dudePos += dirRight * dt * 200;
+		}
+		if ( GetAsyncKeyState( VK_UP ) & 0x8001 )
+		{
+			dudePos += dirUp * dt * 200;
+		}
+		else if ( GetAsyncKeyState( VK_DOWN ) & 0x8001 )
+		{
+			dudePos += dirDown * dt * 200;
+		}
+		dudeCollider.SetPos( dudePos );
+
+		if ( isCollided )
+		{
+			dudeCollider.SetPos( prevPos );
+			dudePos = prevPos;
+		}
+	}
+
+
+
+
 
 	if ( GetAsyncKeyState( 'Q' ) & 0x8001 )
 	{
