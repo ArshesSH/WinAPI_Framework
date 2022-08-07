@@ -15,24 +15,32 @@ HINSTANCE hInst;                                // 현재 인스턴스입니다.
 WCHAR szTitle[MAX_LOADSTRING];                  // 제목 표시줄 텍스트입니다.
 WCHAR szWindowClass[MAX_LOADSTRING];            // 기본 창 클래스 이름입니다.
 
+HWND g_hWnd;
+HWND g_hMenuWnd;
+constexpr int clientWidth = 1600;
+constexpr int clientHeight = 900;
+constexpr int menuDlgWidth = 400;
+RECT clientRect = { 0,0,clientWidth,clientHeight };
+
+
+//GDIPlusManager gdi;
+//std::unique_ptr<Game> pGame;
+
+
 // 이 코드 모듈에 포함된 함수의 선언을 전달합니다:
 ATOM                MyRegisterClass(HINSTANCE hInstance);
 BOOL                InitInstance(HINSTANCE, int);
 LRESULT CALLBACK    WndProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK    About(HWND, UINT, WPARAM, LPARAM);
+INT_PTR CALLBACK    MenuDlg( HWND, UINT, WPARAM, LPARAM );
 VOID    CALLBACK    TimerProc( HWND, UINT, WPARAM, DWORD );
-
-GDIPlusManager gdi;
-std::unique_ptr<Game> pGame;
-
-
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
                      _In_opt_ HINSTANCE hPrevInstance,
                      _In_ LPWSTR    lpCmdLine,
                      _In_ int       nCmdShow)
 {
-    pGame = std::make_unique<Game>();
+    //pGame = std::make_unique<Game>();
     UNREFERENCED_PARAMETER(hPrevInstance);
     UNREFERENCED_PARAMETER(lpCmdLine);
 
@@ -66,7 +74,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
         }
         //else
         {
-            pGame->UpdateModel();
+            //pGame->UpdateModel();
         }
     }
     return (int)msg.wParam;
@@ -112,8 +120,10 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 {
    hInst = hInstance; // 인스턴스 핸들을 전역 변수에 저장합니다.
 
-   HWND hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
+   HWND hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW & ~WS_MAXIMIZEBOX,
       CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, nullptr, nullptr, hInstance, nullptr);
+
+   g_hWnd = hWnd;
 
    if (!hWnd)
    {
@@ -141,20 +151,35 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     switch (message)
     {
     case WM_CREATE:
-        if ( pGame )
+       // if ( pGame )
         {
-            //pGame->SetScreenSize( hWnd );
-            pGame->SetClientSize( hWnd );
+            g_hMenuWnd = CreateDialog( hInst, MAKEINTRESOURCE( IDD_MenuDlg ), hWnd, MenuDlg );
+           
+            AdjustWindowRect( &clientRect, WS_OVERLAPPEDWINDOW, TRUE );
+            GetWindowRect( g_hMenuWnd, &clientRect );
+            MoveWindow( hWnd, 10, 10, clientWidth, clientHeight, TRUE );
+            MoveWindow( g_hMenuWnd, 10 + clientWidth, 10, menuDlgWidth, clientHeight, TRUE );
+
+            //pGame->SetClientSize( hWnd );
             SetTimer( hWnd, 0, 0, TimerProc );
         }
-
         break;
+
     case WM_SIZE:
-        if ( pGame )
         {
-            pGame->SetScreenSize( hWnd );
+            GetWindowRect( hWnd, &clientRect );
+            MoveWindow( hWnd, clientRect.left, clientRect.top, clientWidth, clientHeight, TRUE );
         }
         break;
+
+    case WM_MOVE:
+        {
+            GetWindowRect( hWnd, &clientRect );
+            MoveWindow( hWnd, clientRect.left, clientRect.top, clientWidth, clientHeight, TRUE );
+            MoveWindow( g_hMenuWnd, clientRect.right, clientRect.top, menuDlgWidth, clientHeight, TRUE );
+        }
+        break;
+
     case WM_COMMAND:
         {
             int wmId = LOWORD(wParam);
@@ -177,15 +202,16 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             PAINTSTRUCT ps;
             HDC hdc = BeginPaint(hWnd, &ps);
             // TODO: 여기에 hdc를 사용하는 그리기 코드를 추가합니다...
-            if ( pGame )
+          //  if ( pGame )
             {
-                pGame->ComposeFrame( hdc );
+          //      pGame->ComposeFrame( hdc );
             }
             EndPaint(hWnd, &ps);
         }
         break;
     case WM_DESTROY:
         KillTimer( hWnd, 0 );
+        DestroyWindow( g_hMenuWnd );
         PostQuitMessage(0);
         break;
     default:
@@ -208,6 +234,23 @@ INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
         {
             EndDialog(hDlg, LOWORD(wParam));
             return (INT_PTR)TRUE;
+        }
+        break;
+    }
+    return (INT_PTR)FALSE;
+}
+
+INT_PTR CALLBACK MenuDlg( HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam )
+{
+    UNREFERENCED_PARAMETER( lParam );
+    switch ( message )
+    {
+    case WM_INITDIALOG:
+        return (INT_PTR)TRUE;
+
+    case WM_COMMAND:
+        {
+
         }
         break;
     }
