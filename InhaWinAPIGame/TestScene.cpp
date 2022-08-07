@@ -26,7 +26,7 @@ void TestScene::Update( float dt, Game& game )
 
 	/*dudeVel.y = dudeGravity.GetGravityVel( dudeVel, dt );
 	dudePos += dudeVel * dt;*/
-
+	delta = dt;
 	if ( GetAsyncKeyState( 'A' ) & 0x8001 )
 	{
 		cam.MoveBy( dirLeft * dt * 200 );
@@ -44,50 +44,48 @@ void TestScene::Update( float dt, Game& game )
 		cam.MoveBy( dirDown * dt * 200 );
 	}
 
-	isCollided = false;
-	for ( auto c : pColliders )
-	{
-		if ( collisionManager.IsOverlapWithAABB( dudeCollider, *c ) )
-		{
-			isCollided |= true;
-		}
-		else
-		{
-			isCollided |= false;
-		}
-	}
+
 	
 	// Move
 	{
-		Vec2<float> prevPos = dudePos;
-		LineCollider<float> nextLineCollider()
+		Vec2<float> nextPos = dudePos;
 		if ( GetAsyncKeyState( VK_LEFT ) & 0x8001 )
 		{
-			dudePos += dirLeft * dt * 200;
+			nextPos= dudePos + dirLeft * dt * 200;
 		}
 		else if ( GetAsyncKeyState( VK_RIGHT ) & 0x8001 )
 		{
-			dudePos += dirRight * dt * 200;
+			nextPos = dudePos + dirRight * dt * 200;
 		}
 		if ( GetAsyncKeyState( VK_UP ) & 0x8001 )
 		{
-			dudePos += dirUp * dt * 200;
+			nextPos = dudePos + dirUp * dt * 200;
 		}
 		else if ( GetAsyncKeyState( VK_DOWN ) & 0x8001 )
 		{
-			dudePos += dirDown * dt * 200;
+			nextPos = dudePos + dirDown * dt * 200;
 		}
-		dudeCollider.SetPos( dudePos );
-
-		if ( isCollided )
+		//LineCollider<float> nextCollider( nextPos, nextPos + Vec2<float>{100, 100} );
+		ConvexCollider<float> nextCollider( nextPos, 100, 100 );
+		isCollided = false;
+		for ( auto c : pColliders )
 		{
-			dudeCollider.SetPos( prevPos );
-			dudePos = prevPos;
+			if ( collisionManager.IsOverlapWithAABB( nextCollider, *c ) )
+			{
+				isCollided |= true;
+			}
+			else
+			{
+				isCollided |= false;
+			}
+		}
+
+		if ( !isCollided )
+		{
+			dudeCollider.SetPos( dudePos );
+			dudePos = nextPos;
 		}
 	}
-
-
-
 
 
 	if ( GetAsyncKeyState( 'Q' ) & 0x8001 )
@@ -143,10 +141,12 @@ void TestScene::Draw( HDC hdc )
 	const std::wstring dudePosStr = L"dudePos: (" + std::to_wstring( dudePos.x ) + L", " + std::to_wstring( dudePos.y ) + L")";
 	const std::wstring dudColStr = L"dudCollision: (" + std::to_wstring( dudeColliderPos.x ) + L", " + std::to_wstring( dudeColliderPos.y ) + L")";
 	const std::wstring collideStr = (isCollided) ? L"true" : L"false";
+	const std::wstring deltaStr = L"dt = " + std::to_wstring( delta );
 	s.DrawStringPlus( gfx, camPosStr, { 0,0 }, { 255,255,255,255 } );
 	s.DrawStringPlus( gfx, camScaleStr, { 0,20 }, { 255,255,255,255 } );
 	s.DrawStringPlus( gfx, dudeVelStr, { 0,40 }, { 255,255,255,255 } );
 	s.DrawStringPlus( gfx, dudePosStr, { 0,60 }, { 255,255,255,255 } );
 	s.DrawStringPlus( gfx, dudColStr, { 0,80 }, { 255,255,255,255 } );
 	s.DrawStringPlus( gfx, collideStr, { 0,100 }, { 255,255,255,255 } );
+	s.DrawStringGDI( hdc, { 0,120 }, deltaStr );
 }

@@ -30,9 +30,9 @@ private:
 	Vec2<float> dudeVel = { 0.0f, 0.0f };
 	const Vec2<float> dudeSize = { 100.0f, 100.0f };
 	Gravity dudeGravity;
-	//ConvexCollider<float> dudeCollider = { dudePos, 100,100 };
+	ConvexCollider<float> dudeCollider = { dudePos, 100,100 };
 	//CircleCollider<float> dudeCollider = { dudePos, 50 };
-	LineCollider<float> dudeCollider = { dudePos, dudePos + Vec2<float>{100,100} };
+	//LineCollider<float> dudeCollider = { dudePos, dudePos + Vec2<float>{100,100} };
 
 	const Vec2<float> dirLeft = { -1.0f, 0.0f };
 	const Vec2<float> dirUp = { 0.0f, 1.0f };
@@ -50,5 +50,5 @@ private:
 	bool isCollided = false;
 	CollisionManager<float> collisionManager;
 	std::vector<Collider<float>*> pColliders;
-
+	float delta;
 };

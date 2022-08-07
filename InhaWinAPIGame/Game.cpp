@@ -21,6 +21,10 @@ void Game::ComposeFrame(HDC hdc)
 			(*curScene)->Draw( hdc );
 		}
 	);
+	if ( isScreenChanged )
+	{
+		isScreenChanged = false;
+	}
 }
 
 void Game::UpdateModel()
