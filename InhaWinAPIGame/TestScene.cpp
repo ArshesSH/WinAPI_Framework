@@ -65,7 +65,7 @@ void TestScene::Update( float dt, Game& game )
 		{
 			nextPos = dudePos + dirDown * dt * 200;
 		}
-		//LineCollider<float> nextCollider( nextPos, nextPos + Vec2<float>{100, 100} );
+
 		ConvexCollider<float> nextCollider( nextPos, 100, 100 );
 		isCollided = false;
 		for ( auto c : pColliders )
@@ -123,8 +123,8 @@ void TestScene::Draw( HDC hdc )
 			pCollider->Draw( gfx, { 144,255,255,255 } );
 		}
 
-		dudeCollider.UpdateMatrix( camTransform );
-		dudeCollider.Draw( gfx, Gdiplus::Color{ 255,255,255,255 } );
+		//dudeCollider.UpdateMatrix( camTransform );
+		//dudeCollider.Draw( gfx, Gdiplus::Color{ 255,255,255,255 } );
 	};
 
 	const float screenX = ( sceneBottomRight.x - sceneTopLeft.x) / 2.0f;
