@@ -6,7 +6,7 @@
 #include "InhaWinAPIGame.h"
 #include "Game.h"
 #include <memory>
-
+#include <commdlg.h>
 
 #define MAX_LOADSTRING 100
 
@@ -21,7 +21,11 @@ constexpr int clientWidth = 1600;
 constexpr int clientHeight = 900;
 constexpr int menuDlgWidth = 400;
 RECT clientRect = { 0,0,clientWidth,clientHeight };
+OPENFILENAME ofn;
 
+TCHAR strFileTitle[MAX_PATH];
+TCHAR strFileExtension[10];
+TCHAR strFile[100];
 
 //GDIPlusManager gdi;
 //std::unique_ptr<Game> pGame;
@@ -240,7 +244,7 @@ INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
     return (INT_PTR)FALSE;
 }
 
-INT_PTR CALLBACK MenuDlg( HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam )
+INT_PTR CALLBACK MenuDlg( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam )
 {
     UNREFERENCED_PARAMETER( lParam );
     switch ( message )
@@ -250,7 +254,68 @@ INT_PTR CALLBACK MenuDlg( HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam 
 
     case WM_COMMAND:
         {
+            switch ( LOWORD(wParam) )
+            {
+            case ID_TOOLMENU_OPEN:
+                {
+                    ZeroMemory( &ofn, sizeof( ofn ) );
+                    ofn.lStructSize = sizeof( ofn );
+                    ofn.hwndOwner = hWnd;
+                    ofn.lpstrTitle = L"파일을 선택하세요";
+                    ofn.lpstrFile = (LPWSTR)strFile;
+                    ofn.lpstrFilter = L"임시 파일 (*.txt)\0*.txt\0모든 파일(*.*)\0*.*\0";
+                    ofn.nMaxFile = MAX_PATH;
+                    ofn.nMaxFileTitle = MAX_PATH;
 
+                    if ( GetOpenFileName( &ofn ) != 0 )
+                    {
+                        switch ( ofn.nFilterIndex )
+                        {
+                        case 1:
+                            {
+                                MessageBox( 0, strFile, L"임시 파일", 0 );
+                            }
+                            break;
+                        case 2:
+                            {
+                                MessageBox( 0, strFile, L"모든 파일", 0 );
+                            }
+                            break;
+                        default:
+                            break;
+                        }
+                    }
+                }
+                break;
+                
+            case ID_TOOLMENU_SAVE:
+                {
+                    ZeroMemory( &ofn, sizeof( ofn ) );
+                    ofn.lStructSize = sizeof( ofn );
+                    ofn.hwndOwner = hWnd;
+                    ofn.lpstrTitle = L"저장할 파일을 선택하세요";
+                    ofn.lpstrFile = (LPWSTR)strFile;
+                    ofn.lpstrFilter = L"임시 파일 (*.txt)\0*.txt\0모든 파일(*.*)\0*.*\0";
+                    ofn.nMaxFile = MAX_PATH;
+                    ofn.nMaxFileTitle = MAX_PATH;
+                    if ( GetSaveFileName( &ofn ) != 0 )
+                    {
+                        switch ( ofn.nFilterIndex )
+                        {
+                        case 1:
+                            {
+                                MessageBox( 0, strFile, L"임시 파일", 0 );
+                            }
+                            break;
+                        case 2:
+                            {
+                                MessageBox( 0, strFile, L"모든 파일", 0 );
+                            }
+                            break;
+                        }
+                    }
+                }
+            }
         }
         break;
     }
