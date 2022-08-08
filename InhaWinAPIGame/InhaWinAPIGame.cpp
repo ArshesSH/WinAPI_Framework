@@ -7,7 +7,7 @@
 #include "Game.h"
 #include <memory>
 #include <commdlg.h>
-#include "EditorFrame.h"
+#include "SpriteCuttingEditor.h"
 
 #define MAX_LOADSTRING 100
 
@@ -22,7 +22,7 @@ TCHAR strFile[100];
 
 std::unique_ptr<EditorFrame> pEditor;
 
-//GDIPlusManager gdi;
+GDIPlusManager gdi;
 //std::unique_ptr<Game> pGame;
 
 
@@ -75,6 +75,10 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
         //else
         {
             //pGame->UpdateModel();
+            if ( pEditor )
+            {
+                pEditor->Update();
+            }
         }
     }
     return (int)msg.wParam;
@@ -153,11 +157,16 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 //
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
+    if ( pEditor )
+    {
+        //pEditor->CaptureWndProc(hWnd, message, wParam, lParam);
+    }
     switch (message)
     {
     case WM_CREATE:
         {
-            pEditor = std::make_unique<EditorFrame>( hWnd, hInst, IDD_MenuDlg, MenuDlg );
+            pEditor = std::make_unique<SpriteCuttingEditor>( hWnd, hInst, IDD_MenuDlg, MenuDlg );
+            SetTimer( hWnd, 0, 0, TimerProc );
         }
         break;
 
@@ -168,10 +177,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
     case WM_MOVE:
         {
-            if ( pEditor )
-            {
-                pEditor->MoveEditor(hWnd);
-            }
         }
         break;
 
@@ -206,7 +211,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
             if ( pEditor )
             {
-
+                pEditor->Draw( hdc );
             }
             EndPaint(hWnd, &ps);
         }

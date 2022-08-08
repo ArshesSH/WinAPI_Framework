@@ -33,11 +33,11 @@ public:
 	// String
 	void DrawStringGDI(HDC hdc, T x, T y, const std::wstring& str )
 	{
-		TextOut( hdc, (int)x, (int)y, str.c_str(), str.size() );
+		TextOut( hdc, (int)x, (int)y, str.c_str(), (int)str.size() );
 	}
 	void DrawStringGDI( HDC hdc, const Vec2<T>& pos, const std::wstring& str )
 	{
-		TextOut( hdc, (int)pos.x, (int)pos.y, str.c_str(), str.size() );
+		TextOut( hdc, (int)pos.x, (int)pos.y, str.c_str(), (int)str.size() );
 	}
 	void DrawStringPlus( Gdiplus::Graphics& graphics, const std::wstring& str, const Vec2<T>& pos, const Gdiplus::Color& color, float fontSize = 24.0f,
 		const std::wstring& fontType = L"Consolas", const Gdiplus::FontStyle& fontStyle = Gdiplus::FontStyleRegular )
@@ -49,7 +49,7 @@ public:
 		Font font( &fontFamily, fontSize, fontStyle, UnitPixel );
 		PointF pointF( pos.x, pos.y );
 
-		graphics.DrawString( str.c_str(), str.size(), &font, pointF, &brush );
+		graphics.DrawString( str.c_str(), (int)str.size(), &font, pointF, &brush );
 	}
 
 	// Rect
@@ -283,7 +283,7 @@ public:
 		const auto sizeT = br - tl;
 		const Gdiplus::RectF r( { tl.x, tl.y }, { sizeT.x, sizeT.y } );
 
-		graphics.DrawImage( image, r, (int)imageStart.x, (int)imageStart.y, (int)imageEnd.x, (int)imageEnd.y, UnitPixel );
+		graphics.DrawImage( image, r, imageStart.x, imageStart.y, imageEnd.x, imageEnd.y, UnitPixel );
 	}
 	void DrawImageNonChromaPlus( Gdiplus::Graphics& graphics, const Image::ImageGDIPlus<T>& image, const Vec2<T>& topLeft, const Vec2<T>& size,
 		const Vec2<T>& imageStart, const Vec2<T>& imageEnd )

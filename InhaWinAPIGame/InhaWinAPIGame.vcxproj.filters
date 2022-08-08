@@ -204,7 +204,7 @@
     <ClInclude Include="Animation.h">
       <Filter>헤더 파일\Engine\Graphics</Filter>
     </ClInclude>
-    <ClInclude Include="ImageCuttingTool.h">
+    <ClInclude Include="SpriteCuttingEditor.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="EditorFrame.h">

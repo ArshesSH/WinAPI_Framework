@@ -3,6 +3,8 @@
 #include "framework.h"
 #include <commdlg.h>
 #include <string>
+#include <Shlwapi.h>
+#pragma comment(lib, "Shlwapi.lib")
 
 class EditorFrame
 {
@@ -29,10 +31,16 @@ public:
         MoveWindow( hMenuWnd, mainWndSize.cx, 0, menuDlgWidth, wndSize.cy, TRUE );
     }
 
-    ~EditorFrame()
+    virtual ~EditorFrame()
     {
         DestroyWindow( hMenuWnd );
         DestroyWindow( hBottomWnd );
+    }
+
+    virtual void Update() = 0;
+    virtual void Draw( HDC hdc )
+    {
+
     }
 
     void FileOpenFrame( HWND& hWnd )
@@ -41,7 +49,7 @@ public:
         ofn.lStructSize = sizeof( ofn );
         ofn.hwndOwner = hWnd;
         ofn.lpstrTitle = L"파일을 선택하세요";
-        ofn.lpstrFile = &fileName[0];
+        ofn.lpstrFile = fileName;
         ofn.lpstrFilter = L"모든 파일(*.*)\0*.*\0";
         ofn.nMaxFile = MAX_PATH;
         ofn.nMaxFileTitle = MAX_PATH;
@@ -52,6 +60,17 @@ public:
             {
             case 1:
                 {
+                    if ( PathRelativePathTo( fileName, L"D:\\Project\\WindowAPIs\\WinAPI_Framework\\InhaWinAPIGame\\Image",
+                        FILE_ATTRIBUTE_DIRECTORY, fileName, FILE_ATTRIBUTE_NORMAL ) )
+                    {
+                        std::wstring path = fileName;
+                        fileRelativePath = (path.substr( 3, path.size() ));
+                    }
+                    else
+                    {
+                        fileRelativePath = fileName;
+                        MessageBox( 0, L"File Path convert failed", L"error", 0 );
+                    }
                     FileOpen();
                 }
                 break;
@@ -66,7 +85,7 @@ public:
         ofn.lStructSize = sizeof( ofn );
         ofn.hwndOwner = hWnd;
         ofn.lpstrTitle = L"저장할 위치를 선택하세요";
-        ofn.lpstrFile = &fileName[0];
+        ofn.lpstrFile = fileName;
         ofn.lpstrFilter = L"모든 파일(*.*)\0*.*\0";
         ofn.nMaxFile = MAX_PATH;
         ofn.nMaxFileTitle = MAX_PATH;
@@ -94,16 +113,18 @@ public:
 protected:
     virtual void FileOpen()
     {
-        MessageBox( 0, &fileName[0], L"모든 파일", 0 );
+        MessageBox( 0, &fileRelativePath[0], L"모든 파일", 0 );
     }
     virtual void FileSave()
     {
         MessageBox( 0, &fileName[0], L"모든 파일", 0 );
     }
 
-private:
+protected:
     OPENFILENAME ofn;
-    std::wstring fileName;
+    //std::wstring fileName;
+    TCHAR fileName[MAX_PATH];
+    std::wstring fileRelativePath;
 
     HWND hMenuWnd;
     HWND hBottomWnd;
