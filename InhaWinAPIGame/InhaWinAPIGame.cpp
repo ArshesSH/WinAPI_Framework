@@ -7,6 +7,7 @@
 #include "Game.h"
 #include <memory>
 #include <commdlg.h>
+#include "EditorFrame.h"
 
 #define MAX_LOADSTRING 100
 
@@ -15,20 +16,11 @@ HINSTANCE hInst;                                // 현재 인스턴스입니다.
 WCHAR szTitle[MAX_LOADSTRING];                  // 제목 표시줄 텍스트입니다.
 WCHAR szWindowClass[MAX_LOADSTRING];            // 기본 창 클래스 이름입니다.
 
-HWND g_hWnd;
-HWND g_hMenuWnd;
-HWND g_hBottomWnd;
-OPENFILENAME ofn;
-
 TCHAR strFileTitle[MAX_PATH];
 TCHAR strFileExtension[10];
 TCHAR strFile[100];
 
-SIZE wndSize;
-SIZE mainWndSize;
-SIZE bottomWndSize;
-const int menuDlgWidth = 300;
-RECT clientRect;
+std::unique_ptr<EditorFrame> pEditor;
 
 //GDIPlusManager gdi;
 //std::unique_ptr<Game> pGame;
@@ -138,8 +130,6 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
    HWND hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW & ~WS_MAXIMIZEBOX,
       CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, nullptr, nullptr, hInstance, nullptr);
 
-   g_hWnd = hWnd;
-
    if (!hWnd)
    {
       return FALSE;
@@ -167,26 +157,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     {
     case WM_CREATE:
         {
-            wndSize.cx = GetSystemMetrics( SM_CXSCREEN );
-            wndSize.cy = GetSystemMetrics( SM_CYSCREEN );
-            mainWndSize.cx = wndSize.cx * 0.75f;
-            mainWndSize.cy = (wndSize.cy - 30) * 0.75f;
-            bottomWndSize.cx = mainWndSize.cx;
-            bottomWndSize.cy = (wndSize.cy - 30) * 0.25f;
-
-            MoveWindow( hWnd, 0, 0, mainWndSize.cx, mainWndSize.cy, TRUE );
-
-            g_hBottomWnd = CreateWindow( L"BottomWnd", L"View2", WS_POPUP | WS_CAPTION | WS_THICKFRAME | WS_VISIBLE,
-                0, mainWndSize.cy, bottomWndSize.cx, bottomWndSize.cy, hWnd, NULL, hInst, NULL );
-
-            clientRect = { 0,0,mainWndSize.cx, mainWndSize.cy };
-            AdjustWindowRect( &clientRect, WS_OVERLAPPEDWINDOW, TRUE );
-            GetWindowRect( g_hMenuWnd, &clientRect );
-
-            g_hMenuWnd = CreateDialog( hInst, MAKEINTRESOURCE( IDD_MenuDlg ), hWnd, MenuDlg );
-            MoveWindow( g_hMenuWnd, mainWndSize.cx, 0, menuDlgWidth, wndSize.cy, TRUE );
-
-            //SetTimer( hWnd, 0, 0, TimerProc );
+            pEditor = std::make_unique<EditorFrame>( hWnd, hInst, IDD_MenuDlg, MenuDlg );
         }
         break;
 
@@ -197,10 +168,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
     case WM_MOVE:
         {
-            GetWindowRect( hWnd, &clientRect );
-            MoveWindow( hWnd, clientRect.left, clientRect.top, clientRect.right, clientRect.bottom, TRUE );
-            MoveWindow( g_hMenuWnd, clientRect.right, clientRect.top, menuDlgWidth, wndSize.cy, TRUE );
-            MoveWindow( g_hBottomWnd, clientRect.left, clientRect.bottom, bottomWndSize.cx, bottomWndSize.cy, TRUE );
+            if ( pEditor )
+            {
+                pEditor->MoveEditor(hWnd);
+            }
         }
         break;
 
@@ -210,67 +181,18 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         // 메뉴 선택을 구문 분석합니다:
         switch ( wmId )
         {
-            case WM_INITDIALOG:
-                return (INT_PTR)TRUE;
+        case WM_INITDIALOG:
+            return (INT_PTR)TRUE;
 
-            case ID_TOOLMENU_OPEN:
+        case ID_TOOLMENU_OPEN:
             {
-                ZeroMemory( &ofn, sizeof( ofn ) );
-                ofn.lStructSize = sizeof( ofn );
-                ofn.hwndOwner = hWnd;
-                ofn.lpstrTitle = L"파일을 선택하세요";
-                ofn.lpstrFile = (LPWSTR)strFile;
-                ofn.lpstrFilter = L"임시 파일 (*.txt)\0*.txt\0모든 파일(*.*)\0*.*\0";
-                ofn.nMaxFile = MAX_PATH;
-                ofn.nMaxFileTitle = MAX_PATH;
-
-                if ( GetOpenFileName( &ofn ) != 0 )
-                {
-                    switch ( ofn.nFilterIndex )
-                    {
-                        case 1:
-                        {
-                            MessageBox( 0, strFile, L"임시 파일", 0 );
-                        }
-                        break;
-                        case 2:
-                        {
-                            MessageBox( 0, strFile, L"모든 파일", 0 );
-                        }
-                        break;
-                        default:
-                            break;
-                    }
-                }
+                pEditor->FileOpenFrame( hWnd );
             }
             break;
 
-            case ID_TOOLMENU_SAVE:
+        case ID_TOOLMENU_SAVE:
             {
-                ZeroMemory( &ofn, sizeof( ofn ) );
-                ofn.lStructSize = sizeof( ofn );
-                ofn.hwndOwner = hWnd;
-                ofn.lpstrTitle = L"저장할 위치를 선택하세요";
-                ofn.lpstrFile = (LPWSTR)strFile;
-                ofn.lpstrFilter = L"임시 파일 (*.txt)\0*.txt\0모든 파일(*.*)\0*.*\0";
-                ofn.nMaxFile = MAX_PATH;
-                ofn.nMaxFileTitle = MAX_PATH;
-                if ( GetSaveFileName( &ofn ) != 0 )
-                {
-                    switch ( ofn.nFilterIndex )
-                    {
-                        case 1:
-                        {
-                            MessageBox( 0, strFile, L"임시 파일", 0 );
-                        }
-                        break;
-                        case 2:
-                        {
-                            MessageBox( 0, strFile, L"모든 파일", 0 );
-                        }
-                        break;
-                    }
-                }
+                pEditor->FileSaveFrame( hWnd );
             }
             break;
         }
@@ -281,16 +203,17 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             PAINTSTRUCT ps;
             HDC hdc = BeginPaint(hWnd, &ps);
             // TODO: 여기에 hdc를 사용하는 그리기 코드를 추가합니다...
-          //  if ( pGame )
+
+            if ( pEditor )
             {
-          //      pGame->ComposeFrame( hdc );
+
             }
             EndPaint(hWnd, &ps);
         }
         break;
     case WM_DESTROY:
         KillTimer( hWnd, 0 );
-        DestroyWindow( g_hMenuWnd );
+        pEditor.release();
         PostQuitMessage(0);
         break;
     default:
@@ -345,7 +268,6 @@ LRESULT CALLBACK BottomWndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM l
         }
         break;
         case WM_DESTROY:
-            DestroyWindow( g_hMenuWnd );
             PostQuitMessage( 0 );
             break;
         default:
