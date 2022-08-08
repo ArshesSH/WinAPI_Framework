@@ -1,6 +1,7 @@
 #pragma once
 
 #include "framework.h"
+#include "Image.h"
 #include "EditorFrame.h"
 #include "DrawManager.h"
 #include "FrameTimer.h"
@@ -52,7 +53,6 @@ public:
 		{
 			cam.SetScale( cam.GetScale() + (2.0f * dt) );
 		}
-
         const auto camPos = cam.GetPos();
         const auto camZoom = cam.GetScale();
         camPosStr = L"CamPos : (" + std::to_wstring(camPos.x) + L", " + std::to_wstring( camPos.y ) + L")";
@@ -68,7 +68,7 @@ public:
     {
         EditorFrame::FileOpen();
         pSprite = std::make_unique<ImagePlus>( this->fileName );
-        pSp2 = std::make_unique<Image::ImageGDI<float>>( L"Images/awsom.bmp" );
+        pSpriteGDI = std::make_unique<Image::ImageGDI<float>>( this->fileName );
     }
     void FileSave() override
     {
@@ -83,12 +83,12 @@ public:
                 [this](HDC hdc)
                 {
                     Gdiplus::Graphics gfx( hdc );
-                    cam.Draw( hdc, { 0.0f, float( mainWndSize.cy ) },
+                    cam.Draw( hdc, { 0.0f, 0.0f },
                         [&]( HDC hdc, const Mat3<float>& camTransform )
                         {
                             surf.SetTransformation( camTransform );
                             //surf.DrawImageNonChromaPlus( gfx, pSprite->GetImagePtr(), { 0.0f,0.0f }, pSprite->GetImageSize(), { 0.0f,0.0f }, pSprite->GetImageSize() );
-                            surf.DrawImageNonChromaGDI( hdc, pSp2->GetHBitmap(), { 0.0f, 0.0f }, pSp2->GetImageSize(), { 0.0f, 0.0f }, pSp2->GetImageSize() );
+                            surf.DrawImageNonChromaGDI( hdc, pSpriteGDI->GetHBitmap(), { 0.0f, 0.0f }, pSpriteGDI->GetImageSize(), { 0.0f, 0.0f }, pSpriteGDI->GetImageSize() );
                         }
                     );
                     
@@ -117,8 +117,8 @@ private:
 	const Vec2<float> dirDown = { 0.0f, -1.0f };
 
     std::unique_ptr<ImagePlus> pSprite;
-    std::unique_ptr<Image::ImageGDI<float>> pSp2;
-    
+    std::unique_ptr<Image::ImageGDI<float>> pSpriteGDI;
+
     Surface<float> surf;
     Surface<float> screenSurf;
 };
