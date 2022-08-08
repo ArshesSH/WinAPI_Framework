@@ -17,15 +17,18 @@ WCHAR szWindowClass[MAX_LOADSTRING];            // 기본 창 클래스 이름�
 
 HWND g_hWnd;
 HWND g_hMenuWnd;
-constexpr int clientWidth = 1600;
-constexpr int clientHeight = 900;
-constexpr int menuDlgWidth = 400;
-RECT clientRect = { 0,0,clientWidth,clientHeight };
+HWND g_hBottomWnd;
 OPENFILENAME ofn;
 
 TCHAR strFileTitle[MAX_PATH];
 TCHAR strFileExtension[10];
 TCHAR strFile[100];
+
+SIZE wndSize;
+SIZE mainWndSize;
+SIZE bottomWndSize;
+const int menuDlgWidth = 300;
+RECT clientRect;
 
 //GDIPlusManager gdi;
 //std::unique_ptr<Game> pGame;
@@ -35,6 +38,7 @@ TCHAR strFile[100];
 ATOM                MyRegisterClass(HINSTANCE hInstance);
 BOOL                InitInstance(HINSTANCE, int);
 LRESULT CALLBACK    WndProc(HWND, UINT, WPARAM, LPARAM);
+LRESULT CALLBACK    BottomWndProc( HWND, UINT, WPARAM, LPARAM );
 INT_PTR CALLBACK    About(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK    MenuDlg( HWND, UINT, WPARAM, LPARAM );
 VOID    CALLBACK    TimerProc( HWND, UINT, WPARAM, DWORD );
@@ -107,6 +111,13 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
     wcex.lpszClassName  = szWindowClass;
     wcex.hIconSm        = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
 
+    // Register Main Window
+    RegisterClassExW( &wcex );
+
+    //Register Bottom Sub window
+    wcex.lpszMenuName = NULL;
+    wcex.lpfnWndProc = BottomWndProc;
+    wcex.lpszClassName = L"BottomWnd";
     return RegisterClassExW(&wcex);
 }
 
@@ -155,32 +166,41 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     switch (message)
     {
     case WM_CREATE:
-       // if ( pGame )
         {
-            g_hMenuWnd = CreateDialog( hInst, MAKEINTRESOURCE( IDD_MenuDlg ), hWnd, MenuDlg );
-           
+            wndSize.cx = GetSystemMetrics( SM_CXSCREEN );
+            wndSize.cy = GetSystemMetrics( SM_CYSCREEN );
+            mainWndSize.cx = wndSize.cx * 0.75f;
+            mainWndSize.cy = (wndSize.cy - 30) * 0.75f;
+            bottomWndSize.cx = mainWndSize.cx;
+            bottomWndSize.cy = (wndSize.cy - 30) * 0.25f;
+
+            MoveWindow( hWnd, 0, 0, mainWndSize.cx, mainWndSize.cy, TRUE );
+
+            g_hBottomWnd = CreateWindow( L"BottomWnd", L"View2", WS_POPUP | WS_CAPTION | WS_THICKFRAME | WS_VISIBLE,
+                0, mainWndSize.cy, bottomWndSize.cx, bottomWndSize.cy, hWnd, NULL, hInst, NULL );
+
+            clientRect = { 0,0,mainWndSize.cx, mainWndSize.cy };
             AdjustWindowRect( &clientRect, WS_OVERLAPPEDWINDOW, TRUE );
             GetWindowRect( g_hMenuWnd, &clientRect );
-            MoveWindow( hWnd, 10, 10, clientWidth, clientHeight, TRUE );
-            MoveWindow( g_hMenuWnd, 10 + clientWidth, 10, menuDlgWidth, clientHeight, TRUE );
 
-            //pGame->SetClientSize( hWnd );
-            SetTimer( hWnd, 0, 0, TimerProc );
+            g_hMenuWnd = CreateDialog( hInst, MAKEINTRESOURCE( IDD_MenuDlg ), hWnd, MenuDlg );
+            MoveWindow( g_hMenuWnd, mainWndSize.cx, 0, menuDlgWidth, wndSize.cy, TRUE );
+
+            //SetTimer( hWnd, 0, 0, TimerProc );
         }
         break;
 
     case WM_SIZE:
         {
-            GetWindowRect( hWnd, &clientRect );
-            MoveWindow( hWnd, clientRect.left, clientRect.top, clientWidth, clientHeight, TRUE );
         }
         break;
 
     case WM_MOVE:
         {
             GetWindowRect( hWnd, &clientRect );
-            MoveWindow( hWnd, clientRect.left, clientRect.top, clientWidth, clientHeight, TRUE );
-            MoveWindow( g_hMenuWnd, clientRect.right, clientRect.top, menuDlgWidth, clientHeight, TRUE );
+            MoveWindow( hWnd, clientRect.left, clientRect.top, clientRect.right, clientRect.bottom, TRUE );
+            MoveWindow( g_hMenuWnd, clientRect.right, clientRect.top, menuDlgWidth, wndSize.cy, TRUE );
+            MoveWindow( g_hBottomWnd, clientRect.left, clientRect.bottom, bottomWndSize.cx, bottomWndSize.cy, TRUE );
         }
         break;
 
@@ -275,6 +295,61 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         break;
     default:
         return DefWindowProc(hWnd, message, wParam, lParam);
+    }
+    return 0;
+}
+
+LRESULT CALLBACK BottomWndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam )
+{
+    switch ( message )
+    {
+        case WM_CREATE:
+        {
+        }
+        break;
+
+        case WM_SIZE:
+        {
+        }
+        break;
+
+        case WM_MOVE:
+        {
+        }
+        break;
+
+        case WM_COMMAND:
+        {
+            int wmId = LOWORD( wParam );
+            // 메뉴 선택을 구문 분석합니다:
+            switch ( wmId )
+            {
+                case WM_INITDIALOG:
+                    return (INT_PTR)TRUE;
+
+                break;
+            }
+        }
+        break;
+
+        case WM_PAINT:
+        {
+            PAINTSTRUCT ps;
+            HDC hdc = BeginPaint( hWnd, &ps );
+            // TODO: 여기에 hdc를 사용하는 그리기 코드를 추가합니다...
+          //  if ( pGame )
+            {
+                //      pGame->ComposeFrame( hdc );
+            }
+            EndPaint( hWnd, &ps );
+        }
+        break;
+        case WM_DESTROY:
+            DestroyWindow( g_hMenuWnd );
+            PostQuitMessage( 0 );
+            break;
+        default:
+            return DefWindowProc( hWnd, message, wParam, lParam );
     }
     return 0;
 }
