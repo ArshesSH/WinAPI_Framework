@@ -103,7 +103,7 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
     wcex.hIcon          = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_INHAWINAPIGAME));
     wcex.hCursor        = LoadCursor(nullptr, IDC_ARROW);
     wcex.hbrBackground  = (HBRUSH)(COLOR_WINDOW+1);
-    wcex.lpszMenuName   = MAKEINTRESOURCEW(IDC_INHAWINAPIGAME);
+    wcex.lpszMenuName   = MAKEINTRESOURCEW(IDR_TOOLMENU);
     wcex.lpszClassName  = szWindowClass;
     wcex.hIconSm        = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
 
@@ -185,22 +185,77 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         break;
 
     case WM_COMMAND:
+    {
+        int wmId = LOWORD( wParam );
+        // 메뉴 선택을 구문 분석합니다:
+        switch ( wmId )
         {
-            int wmId = LOWORD(wParam);
-            // 메뉴 선택을 구문 분석합니다:
-            switch (wmId)
+            case WM_INITDIALOG:
+                return (INT_PTR)TRUE;
+
+            case ID_TOOLMENU_OPEN:
             {
-            case IDM_ABOUT:
-                DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
-                break;
-            case IDM_EXIT:
-                DestroyWindow(hWnd);
-                break;
-            default:
-                return DefWindowProc(hWnd, message, wParam, lParam);
+                ZeroMemory( &ofn, sizeof( ofn ) );
+                ofn.lStructSize = sizeof( ofn );
+                ofn.hwndOwner = hWnd;
+                ofn.lpstrTitle = L"파일을 선택하세요";
+                ofn.lpstrFile = (LPWSTR)strFile;
+                ofn.lpstrFilter = L"임시 파일 (*.txt)\0*.txt\0모든 파일(*.*)\0*.*\0";
+                ofn.nMaxFile = MAX_PATH;
+                ofn.nMaxFileTitle = MAX_PATH;
+
+                if ( GetOpenFileName( &ofn ) != 0 )
+                {
+                    switch ( ofn.nFilterIndex )
+                    {
+                        case 1:
+                        {
+                            MessageBox( 0, strFile, L"임시 파일", 0 );
+                        }
+                        break;
+                        case 2:
+                        {
+                            MessageBox( 0, strFile, L"모든 파일", 0 );
+                        }
+                        break;
+                        default:
+                            break;
+                    }
+                }
             }
+            break;
+
+            case ID_TOOLMENU_SAVE:
+            {
+                ZeroMemory( &ofn, sizeof( ofn ) );
+                ofn.lStructSize = sizeof( ofn );
+                ofn.hwndOwner = hWnd;
+                ofn.lpstrTitle = L"저장할 위치를 선택하세요";
+                ofn.lpstrFile = (LPWSTR)strFile;
+                ofn.lpstrFilter = L"임시 파일 (*.txt)\0*.txt\0모든 파일(*.*)\0*.*\0";
+                ofn.nMaxFile = MAX_PATH;
+                ofn.nMaxFileTitle = MAX_PATH;
+                if ( GetSaveFileName( &ofn ) != 0 )
+                {
+                    switch ( ofn.nFilterIndex )
+                    {
+                        case 1:
+                        {
+                            MessageBox( 0, strFile, L"임시 파일", 0 );
+                        }
+                        break;
+                        case 2:
+                        {
+                            MessageBox( 0, strFile, L"모든 파일", 0 );
+                        }
+                        break;
+                    }
+                }
+            }
+            break;
         }
-        break;
+    }
+    break;
     case WM_PAINT:
         {
             PAINTSTRUCT ps;
@@ -253,69 +308,10 @@ INT_PTR CALLBACK MenuDlg( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam 
         return (INT_PTR)TRUE;
 
     case WM_COMMAND:
+        if ( LOWORD( wParam ) == IDOK || LOWORD( wParam ) == IDCANCEL )
         {
-            switch ( LOWORD(wParam) )
-            {
-            case ID_TOOLMENU_OPEN:
-                {
-                    ZeroMemory( &ofn, sizeof( ofn ) );
-                    ofn.lStructSize = sizeof( ofn );
-                    ofn.hwndOwner = hWnd;
-                    ofn.lpstrTitle = L"파일을 선택하세요";
-                    ofn.lpstrFile = (LPWSTR)strFile;
-                    ofn.lpstrFilter = L"임시 파일 (*.txt)\0*.txt\0모든 파일(*.*)\0*.*\0";
-                    ofn.nMaxFile = MAX_PATH;
-                    ofn.nMaxFileTitle = MAX_PATH;
-
-                    if ( GetOpenFileName( &ofn ) != 0 )
-                    {
-                        switch ( ofn.nFilterIndex )
-                        {
-                        case 1:
-                            {
-                                MessageBox( 0, strFile, L"임시 파일", 0 );
-                            }
-                            break;
-                        case 2:
-                            {
-                                MessageBox( 0, strFile, L"모든 파일", 0 );
-                            }
-                            break;
-                        default:
-                            break;
-                        }
-                    }
-                }
-                break;
-                
-            case ID_TOOLMENU_SAVE:
-                {
-                    ZeroMemory( &ofn, sizeof( ofn ) );
-                    ofn.lStructSize = sizeof( ofn );
-                    ofn.hwndOwner = hWnd;
-                    ofn.lpstrTitle = L"저장할 파일을 선택하세요";
-                    ofn.lpstrFile = (LPWSTR)strFile;
-                    ofn.lpstrFilter = L"임시 파일 (*.txt)\0*.txt\0모든 파일(*.*)\0*.*\0";
-                    ofn.nMaxFile = MAX_PATH;
-                    ofn.nMaxFileTitle = MAX_PATH;
-                    if ( GetSaveFileName( &ofn ) != 0 )
-                    {
-                        switch ( ofn.nFilterIndex )
-                        {
-                        case 1:
-                            {
-                                MessageBox( 0, strFile, L"임시 파일", 0 );
-                            }
-                            break;
-                        case 2:
-                            {
-                                MessageBox( 0, strFile, L"모든 파일", 0 );
-                            }
-                            break;
-                        }
-                    }
-                }
-            }
+            EndDialog( hWnd, LOWORD( wParam ) );
+            return (INT_PTR)TRUE;
         }
         break;
     }
