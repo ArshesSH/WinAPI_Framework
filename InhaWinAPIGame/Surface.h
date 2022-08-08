@@ -53,24 +53,35 @@ public:
 	}
 
 	// Rect
-	void DrawRectGDI(HDC hdc, T left, T top, T right, T bottom, COLORREF color )
+	void DrawRectGDI( HDC hdc, T left, T top, T right, T bottom, COLORREF color, int penWidth )
 	{
+		HPEN hPen;
+		HPEN oldPen;
 		HBRUSH hBrush;
 		HBRUSH oldBrush;
-		hBrush = CreateSolidBrush( color );
+
+		hPen = CreatePen( PS_SOLID, penWidth, color );
+		oldPen = (HPEN)SelectObject( hdc, hPen );
+		hBrush = (HBRUSH)GetStockObject( NULL_BRUSH );
 		oldBrush = (HBRUSH)SelectObject( hdc, hBrush );
 
-		auto topLeft =  transform * Vec3<float>{ left, top, 1 };
+		auto topLeft = transform * Vec3<float>{ left, top, 1 };
 		auto bottomRight = transform * Vec3<float>{ right, bottom, 1 };
 		std::swap( topLeft.y, bottomRight.y );
 
 		Rectangle( hdc, (int)topLeft.x, (int)topLeft.y, (int)bottomRight.x, (int)bottomRight.y );
 		SelectObject( hdc, oldBrush );
 		DeleteObject( hBrush );
+		SelectObject( hdc, oldPen );
+		DeleteObject( hPen );
 	}
-	void DrawRectGDI( HDC hdc, const _Rect<T>& rect, COLORREF color )
+	void DrawRectGDI( HDC hdc, const _Rect<T>& rect, COLORREF color, int penWidth )
 	{
-		DrawRectGDI( hdc, (int)rect.left, (int)rect.top, (int)rect.right, (int)rect.bottom, color );
+		DrawRectGDI( hdc, rect.left, rect.top, rect.right, rect.bottom, color, penWidth );
+	}
+	void DrawRectGDI( HDC hdc, const Vec2<T>& topLeft, const Vec2<T>& bottomRight, COLORREF color, int penWidth )
+	{
+		DrawRectGDI( hdc, topLeft.x, topLeft.y, bottomRight.x, bottomRight.y, color, penWidth );
 	}
 	void DrawRectPlus( Gdiplus::Graphics& graphics, const Vec2<T>& topLeft, const Vec2<T>& size, const Gdiplus::Color& color, float penWidth )
 	{
@@ -124,6 +135,29 @@ public:
 	}
 
 	// Fill Rect
+	void DrawFillRectGDI( HDC hdc, T left, T top, T right, T bottom, COLORREF color )
+	{
+		HBRUSH hBrush;
+		HBRUSH oldBrush;
+		hBrush = CreateSolidBrush( color );
+		oldBrush = (HBRUSH)SelectObject( hdc, hBrush );
+
+		auto topLeft = transform * Vec3<float>{ left, top, 1 };
+		auto bottomRight = transform * Vec3<float>{ right, bottom, 1 };
+		std::swap( topLeft.y, bottomRight.y );
+
+		Rectangle( hdc, (int)topLeft.x, (int)topLeft.y, (int)bottomRight.x, (int)bottomRight.y );
+		SelectObject( hdc, oldBrush );
+		DeleteObject( hBrush );
+	}
+	void DrawFillRectGDI( HDC hdc, const _Rect<T>& rect, COLORREF color )
+	{
+		DrawFillRectGDI( hdc, (int)rect.left, (int)rect.top, (int)rect.right, (int)rect.bottom, color );
+	}
+	void DrawFillRectGDI( HDC hdc, const Vec2<T>& topLeft, const Vec2<T>& bottomRight, COLORREF color )
+	{
+		DrawFillRectGDI( hdc, topLeft.x, topLeft.y, bottomRight.x, bottomRight.y, color );
+	}
 	void DrawFillRectPlus( Gdiplus::Graphics& graphics, const Vec2<T>& topLeft, const Vec2<T>& size, Gdiplus::Color color )
 	{
 		using namespace Gdiplus;
