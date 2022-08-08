@@ -20,7 +20,8 @@ public:
     SpriteCuttingEditor( HWND& hWnd, HINSTANCE hInst, UINT dialogNum, DLGPROC dialogFunc )
         :
         EditorFrame( hWnd, hInst, dialogNum, dialogFunc ),
-        cam( ct )
+        cam( ct ),
+        halfMainWndSize( (float)(mainWndSize.cx / 2), (float)(mainWndSize.cy / 2))
     {
     }
 
@@ -57,6 +58,30 @@ public:
         const auto camZoom = cam.GetScale();
         camPosStr = L"CamPos : (" + std::to_wstring(camPos.x) + L", " + std::to_wstring( camPos.y ) + L")";
         camZoomStr = L"Zoom : " +  std::to_wstring( camZoom );
+        mousePosStr = L"MousePos : (" + std::to_wstring( mousePos.x ) + L", " + std::to_wstring( mousePos.y ) + L")";
+    }
+
+    void CaptureWndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam ) override
+    {
+        switch ( message )
+        {
+            case WM_MOUSEMOVE:
+            {
+                mousePos.x = LOWORD( lParam );
+                mousePos.y = HIWORD( lParam );
+                mousePos = (mousePos - halfMainWndSize) / cam.GetScale();
+            }
+            break;
+        }
+    }
+
+    void CaptureBottomWndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam ) override
+    {
+    }
+
+    void CaptureMenuProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam ) override
+    {
+
     }
 
     void Draw( HDC hdc ) override
@@ -79,11 +104,11 @@ public:
     {
         if ( pSprite )
         {
-            drawManager.DrawMain( hdc, this->clientRect, isClientSizeChanged,
+            drawManagerMain.DrawMain( hdc, this->clientRect, isClientSizeChanged,
                 [this](HDC hdc)
                 {
                     Gdiplus::Graphics gfx( hdc );
-                    cam.Draw( hdc, { 0.0f, 0.0f },
+                    cam.Draw( hdc, { halfMainWndSize.x, halfMainWndSize.y },
                         [&]( HDC hdc, const Mat3<float>& camTransform )
                         {
                             surf.SetTransformation( camTransform );
@@ -91,18 +116,29 @@ public:
                             surf.DrawImageNonChromaGDI( hdc, pSpriteGDI->GetHBitmap(), { 0.0f, 0.0f }, pSpriteGDI->GetImageSize(), { 0.0f, 0.0f }, pSpriteGDI->GetImageSize() );
                         }
                     );
-                    
-                    screenSurf.DrawStringGDI( hdc, { 0,0 }, camPosStr );
-                    screenSurf.DrawStringGDI( hdc, { 0,20 }, camZoomStr );
                 }
             );
         }
     }
 
-
+    void DrawBottomWnd( HDC hdc ) override
+    {
+        if ( pSprite )
+        {
+            drawManagerSub.DrawMain( hdc, {0,0,bottomWndSize.cx, bottomWndSize.cy}, isClientSizeChanged,
+                [this]( HDC hdc )
+                {
+                    screenSurf.DrawStringGDI( hdc, { 0,0 }, camPosStr );
+                    screenSurf.DrawStringGDI( hdc, { 0,20 }, camZoomStr );
+                    screenSurf.DrawStringGDI( hdc, { 0,40 }, mousePosStr );
+                }
+            );
+        }
+    }
 	
 private:
-    DrawManager drawManager;
+    DrawManager drawManagerMain;
+    DrawManager drawManagerSub;
     bool isClientSizeChanged = false;
     FrameTimer ft;
 
@@ -110,11 +146,15 @@ private:
     Camera cam;
     std::wstring camPosStr;
     std::wstring camZoomStr;
+    Vec2<float> mousePos = { 0.0f, 0.0f };
+    std::wstring mousePosStr;
 
 	const Vec2<float> dirLeft = { -1.0f, 0.0f };
 	const Vec2<float> dirUp = { 0.0f, 1.0f };
 	const Vec2<float> dirRight = { 1.0f, 0.0f };
 	const Vec2<float> dirDown = { 0.0f, -1.0f };
+    
+    const Vec2<float> halfMainWndSize;
 
     std::unique_ptr<ImagePlus> pSprite;
     std::unique_ptr<Image::ImageGDI<float>> pSpriteGDI;

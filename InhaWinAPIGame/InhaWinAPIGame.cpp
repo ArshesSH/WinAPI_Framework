@@ -111,9 +111,9 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
     RegisterClassExW( &wcex );
 
     //Register Bottom Sub window
-    wcex.lpszMenuName = NULL;
+    wcex.lpszMenuName = nullptr;
     wcex.lpfnWndProc = BottomWndProc;
-    wcex.lpszClassName = L"BottomWnd";
+    wcex.lpszClassName = _T("BottomWndClass");
     return RegisterClassExW(&wcex);
 }
 
@@ -159,7 +159,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
     if ( pEditor )
     {
-        //pEditor->CaptureWndProc(hWnd, message, wParam, lParam);
+        pEditor->CaptureWndProc(hWnd, message, wParam, lParam);
     }
     switch (message)
     {
@@ -229,10 +229,15 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 LRESULT CALLBACK BottomWndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam )
 {
+    //if ( pEditor )
+    //{
+    //    pEditor->CaptureBottomWndProc( hWnd, message, wParam, lParam );
+    //}
     switch ( message )
     {
         case WM_CREATE:
         {
+            SetTimer( hWnd, 0, 0, TimerProc );
         }
         break;
 
@@ -264,10 +269,11 @@ LRESULT CALLBACK BottomWndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM l
         {
             PAINTSTRUCT ps;
             HDC hdc = BeginPaint( hWnd, &ps );
-            // TODO: 여기에 hdc를 사용하는 그리기 코드를 추가합니다...
-          //  if ( pGame )
             {
-                //      pGame->ComposeFrame( hdc );
+                if ( pEditor )
+                {
+                    pEditor->DrawBottomWnd( hdc );
+                }
             }
             EndPaint( hWnd, &ps );
         }
@@ -285,18 +291,18 @@ LRESULT CALLBACK BottomWndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM l
 INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 {
     UNREFERENCED_PARAMETER(lParam);
-    switch (message)
+    switch ( message )
     {
-    case WM_INITDIALOG:
-        return (INT_PTR)TRUE;
-
-    case WM_COMMAND:
-        if (LOWORD(wParam) == IDOK || LOWORD(wParam) == IDCANCEL)
-        {
-            EndDialog(hDlg, LOWORD(wParam));
+        case WM_INITDIALOG:
             return (INT_PTR)TRUE;
-        }
-        break;
+
+        case WM_COMMAND:
+            if ( LOWORD( wParam ) == IDOK || LOWORD( wParam ) == IDCANCEL )
+            {
+                EndDialog( hDlg, LOWORD( wParam ) );
+                return (INT_PTR)TRUE;
+            }
+            break;
     }
     return (INT_PTR)FALSE;
 }

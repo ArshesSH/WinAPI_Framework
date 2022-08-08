@@ -20,7 +20,7 @@ public:
 
         MoveWindow( hWnd, 0, 0, mainWndSize.cx, mainWndSize.cy, TRUE );
 
-        hBottomWnd = CreateWindow( L"BottomWnd", L"View2", WS_POPUP | WS_CAPTION | WS_THICKFRAME | WS_VISIBLE,
+        hBottomWnd = CreateWindowEx( WS_EX_CLIENTEDGE, _T("BottomWndClass"), L"View2", WS_POPUP | WS_CAPTION | WS_THICKFRAME | WS_VISIBLE,
             0, mainWndSize.cy, bottomWndSize.cx, bottomWndSize.cy, hWnd, NULL, hInst, NULL );
 
         clientRect = { 0,0,mainWndSize.cx, mainWndSize.cy };
@@ -37,11 +37,13 @@ public:
         DestroyWindow( hBottomWnd );
     }
 
-    virtual void Update() = 0;
-    virtual void Draw( HDC hdc )
-    {
+    virtual void CaptureWndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam ) = 0;
+    virtual void CaptureBottomWndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam ) = 0;
+    virtual void CaptureMenuProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam ) = 0;
 
-    }
+    virtual void Update() = 0;
+    virtual void Draw( HDC hdc ) = 0;
+    virtual void DrawBottomWnd( HDC hdc ) = 0;
 
     void FileOpenFrame( HWND& hWnd )
     {
