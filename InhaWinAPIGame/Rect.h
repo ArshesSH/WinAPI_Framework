@@ -7,7 +7,13 @@ template < typename T >
 class _Rect
 {
 public:
-	inline	_Rect() {}
+	inline	_Rect()
+		:
+		top( T( 0 ) ),
+		bottom( T( 0 ) ),
+		left( T( 0 ) ),
+		right( T( 0 ) )
+	{}
 	inline	_Rect( T top, T bottom, T left, T right )
 		:
 		top( top ),
