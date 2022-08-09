@@ -15,6 +15,11 @@
 class SpriteCuttingEditor : public EditorFrame
 {
 public:
+    enum class Mode
+    {
+        GDI,
+        GDIPlus
+    };
 public:
     using ImagePlus = Image::ImageGDIPlus<float>;
 
@@ -55,6 +60,22 @@ public:
         {
             cam.SetScale( cam.GetScale() + (2.0f * dt) );
         }
+        if ( GetAsyncKeyState( 'R' ) & 0x8001 )
+        {
+            if ( isImageSet )
+            {
+                switch ( mode )
+                {
+                case SpriteCuttingEditor::Mode::GDI:
+                    cam.SetPos( { 0.0f, pSpriteGdi->GetImageSize().y } );
+                    break;
+                case SpriteCuttingEditor::Mode::GDIPlus:
+                    cam.SetPos( { 0.0f, pSpriteGdiPlus->GetImageSize().y } );
+                    break;
+                }
+            }
+            
+        }
         const auto camPos = cam.GetPos();
         const auto camZoom = cam.GetScale();
         camPosStr = L"CamPos : (" + std::to_wstring( camPos.x ) + L", " + std::to_wstring( camPos.y ) + L")";
@@ -79,7 +100,7 @@ public:
             {
                 mousePos.x = LOWORD( lParam );
                 mousePos.y = HIWORD( lParam );
-                mousePos = Vec2<int>( (Mat3<float>::ScaleIndependent( 1.0f, -1.0f ) * (Vec2<float>( mousePos ) - halfMainWndSize) + cam.GetPos()) / cam.GetScale() );
+                mousePos = Vec2<int>( (Mat3<float>::ScaleIndependent( 1.0f, -1.0f ) * (Vec2<float>( mousePos ) - halfMainWndSize) ) / cam.GetScale() + cam.GetPos()   );
             }
             break;
 
@@ -124,8 +145,27 @@ public:
     void FileOpen() override
     {
         EditorFrame::FileOpen();
-        pSprite = std::make_unique<ImagePlus>( this->fileName );
-        pSpriteGDI = std::make_unique<Image::ImageGDI<float>>( this->fileName );
+        auto fileExtension = PathFindExtension( fileName );
+        
+        if ( wcscmp( fileExtension, L".bmp" ) == 0 )
+        {
+            mode = Mode::GDI;
+        }
+        else
+        {
+            mode = Mode::GDIPlus;
+        }
+
+        switch ( mode )
+        {
+        case SpriteCuttingEditor::Mode::GDI:
+            pSpriteGdi = std::make_unique<Image::ImageGDI<float>>( this->fileName );
+            break;
+        case SpriteCuttingEditor::Mode::GDIPlus:
+            pSpriteGdiPlus = std::make_unique<ImagePlus>( this->fileName );
+            break;
+        }
+        isImageSet = true;
     }
     void FileSave() override
     {
@@ -134,7 +174,7 @@ public:
 
     void DrawMainWnd( HDC hdc )
     {
-        if ( pSprite )
+        if ( isImageSet )
         {
             drawManagerMain.DrawMain( hdc, this->clientRect, isClientSizeChanged,
                 [this]( HDC hdc )
@@ -144,12 +184,19 @@ public:
                         [&]( HDC hdc, const Mat3<float>& camTransform )
                         {
                             surf.SetTransformation( camTransform );
-                            //surf.DrawImageNonChromaPlus( gfx, pSprite->GetImagePtr(), { 0.0f,0.0f }, pSprite->GetImageSize(), { 0.0f,0.0f }, pSprite->GetImageSize() );
-                            surf.DrawImageNonChromaGDI( hdc, pSpriteGDI->GetHBitmap(), { 0.0f, 0.0f }, pSpriteGDI->GetImageSize(), { 0.0f, 0.0f }, pSpriteGDI->GetImageSize() );
 
+                            switch ( mode )
                             {
-                                surf.DrawRectGDI( hdc, selectRect, RGB( 0, 255, 0 ), 1 );
+                            case SpriteCuttingEditor::Mode::GDI:
+                                surf.DrawImageNonChromaGDI( hdc, pSpriteGdi->GetHBitmap(), { 0.0f, 0.0f }, pSpriteGdi->GetImageSize(), { 0.0f, 0.0f }, pSpriteGdi->GetImageSize() );
+                                break;
+                            case SpriteCuttingEditor::Mode::GDIPlus:
+                                surf.DrawImageNonChromaPlus( gfx, pSpriteGdiPlus->GetImagePtr(), { 0.0f,0.0f }, pSpriteGdiPlus->GetImageSize(), { 0.0f,0.0f }, pSpriteGdiPlus->GetImageSize() );
+                                break;
                             }
+                
+                            // Draw mouse rect
+                            surf.DrawRectGDI( hdc, selectRect, RGB( 0, 255, 0 ), 1 );
                         }
                     );
                 }
@@ -159,7 +206,7 @@ public:
 
     void DrawBottomWnd( HDC hdc ) override
     {
-        if ( pSprite )
+        if ( isImageSet )
         {
             drawManagerSub.DrawMain( hdc, { 0,0,bottomWndSize.cx, bottomWndSize.cy }, isClientSizeChanged,
                 [this]( HDC hdc )
@@ -202,6 +249,8 @@ private:
     DrawManager drawManagerSub;
     bool isClientSizeChanged = false;
     FrameTimer ft;
+    Mode mode = Mode::GDI;
+    bool isImageSet = false;
 
     CoordinateTransformer ct;
     Camera cam;
@@ -222,8 +271,8 @@ private:
     
     const Vec2<float> halfMainWndSize;
 
-    std::unique_ptr<ImagePlus> pSprite;
-    std::unique_ptr<Image::ImageGDI<float>> pSpriteGDI;
+    std::unique_ptr<ImagePlus> pSpriteGdiPlus;
+    std::unique_ptr<Image::ImageGDI<float>> pSpriteGdi;
 
     Surface<float> surf;
     Surface<float> screenSurf;
