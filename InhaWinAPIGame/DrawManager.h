@@ -17,8 +17,15 @@ public:
 		HBITMAP hOldBitmap;
 
 		hMemDC = CreateCompatibleDC( hdc );
-		if ( hDoubleBufferImage == nullptr || isClientSizeChanged )
+		if ( hDoubleBufferImage == nullptr  )
 		{
+			// Create Bitmap Image for Double buffering
+			hDoubleBufferImage = CreateCompatibleBitmap( hdc, clientRECT.right, clientRECT.bottom );
+		}
+		if ( isClientSizeChanged )
+		{
+			SelectObject( hMemDC, hDoubleBufferImage );
+			DeleteObject( hMemDC );
 			// Create Bitmap Image for Double buffering
 			hDoubleBufferImage = CreateCompatibleBitmap( hdc, clientRECT.right, clientRECT.bottom );
 		}

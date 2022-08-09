@@ -62,17 +62,6 @@ public:
             {
             case 1:
                 {
-                    if ( PathRelativePathTo( fileName, L"D:\\Project\\WindowAPIs\\WinAPI_Framework\\InhaWinAPIGame\\Image",
-                        FILE_ATTRIBUTE_DIRECTORY, fileName, FILE_ATTRIBUTE_NORMAL ) )
-                    {
-                        std::wstring path = fileName;
-                        fileRelativePath = (path.substr( 3, path.size() ));
-                    }
-                    else
-                    {
-                        fileRelativePath = fileName;
-                        MessageBox( 0, L"File Path convert failed", L"error", 0 );
-                    }
                     FileOpen();
                 }
                 break;
@@ -115,18 +104,17 @@ public:
 protected:
     virtual void FileOpen()
     {
-        MessageBox( 0, &fileRelativePath[0], L"葛电 颇老", 0 );
+        MessageBox( 0, fileName, L"葛电 颇老", 0 );
     }
     virtual void FileSave()
     {
-        MessageBox( 0, &fileName[0], L"葛电 颇老", 0 );
+        MessageBox( 0, fileName, L"葛电 颇老", 0 );
     }
 
 protected:
     OPENFILENAME ofn;
     //std::wstring fileName;
     TCHAR fileName[MAX_PATH];
-    std::wstring fileRelativePath;
 
     HWND hMenuWnd;
     HWND hBottomWnd;
