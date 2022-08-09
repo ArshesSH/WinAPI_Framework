@@ -65,8 +65,8 @@ public:
 		hBrush = (HBRUSH)GetStockObject( NULL_BRUSH );
 		oldBrush = (HBRUSH)SelectObject( hdc, hBrush );
 
-		auto topLeft = transform * Vec3<float>{ left, top, 1 };
-		auto bottomRight = transform * Vec3<float>{ right, bottom, 1 };
+		auto topLeft = transform * Vec3<float>{ (float)left, (float)top, 1 };
+		auto bottomRight = transform * Vec3<float>{ (float)right, (float)bottom, 1 };
 		std::swap( topLeft.y, bottomRight.y );
 
 		Rectangle( hdc, (int)topLeft.x, (int)topLeft.y, (int)bottomRight.x, (int)bottomRight.y );
@@ -317,7 +317,7 @@ public:
 		const auto sizeT = br - tl;
 		const Gdiplus::RectF r( { tl.x, tl.y }, { sizeT.x, sizeT.y } );
 
-		graphics.DrawImage( image, r, imageStart.x, imageStart.y, imageEnd.x, imageEnd.y, UnitPixel );
+		graphics.DrawImage( image, r, (float)imageStart.x, (float)imageStart.y, (float)imageEnd.x, (float)imageEnd.y, UnitPixel );
 	}
 	void DrawImageNonChromaPlus( Gdiplus::Graphics& graphics, const Image::ImageGDIPlus<T>& image, const Vec2<T>& topLeft, const Vec2<T>& size,
 		const Vec2<T>& imageStart, const Vec2<T>& imageEnd )

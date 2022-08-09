@@ -21,7 +21,8 @@ public:
         GDIPlus
     };
 public:
-    using ImagePlus = Image::ImageGDIPlus<float>;
+    using ImagePlus = Image::ImageGDIPlus<int>;
+    using ImageGDI = Image::ImageGDI<int>;
 
     SpriteCuttingEditor( HWND& hWnd, HINSTANCE hInst, UINT dialogNum, DLGPROC dialogFunc )
         :
@@ -67,10 +68,10 @@ public:
                 switch ( mode )
                 {
                 case SpriteCuttingEditor::Mode::GDI:
-                    cam.SetPos( { 0.0f, pSpriteGdi->GetImageSize().y } );
+                    cam.SetPos( { 0.0f, (float)pSpriteGdi->GetImageSize().y } );
                     break;
                 case SpriteCuttingEditor::Mode::GDIPlus:
-                    cam.SetPos( { 0.0f, pSpriteGdiPlus->GetImageSize().y } );
+                    cam.SetPos( { 0.0f, (float)pSpriteGdiPlus->GetImageSize().y } );
                     break;
                 }
             }
@@ -159,7 +160,7 @@ public:
         switch ( mode )
         {
         case SpriteCuttingEditor::Mode::GDI:
-            pSpriteGdi = std::make_unique<Image::ImageGDI<float>>( this->fileName );
+            pSpriteGdi = std::make_unique<ImageGDI>( this->fileName );
             break;
         case SpriteCuttingEditor::Mode::GDIPlus:
             pSpriteGdiPlus = std::make_unique<ImagePlus>( this->fileName );
@@ -188,10 +189,12 @@ public:
                             switch ( mode )
                             {
                             case SpriteCuttingEditor::Mode::GDI:
-                                surf.DrawImageNonChromaGDI( hdc, pSpriteGdi->GetHBitmap(), { 0.0f, 0.0f }, pSpriteGdi->GetImageSize(), { 0.0f, 0.0f }, pSpriteGdi->GetImageSize() );
+                                surf.DrawImageNonChromaGDI( hdc, pSpriteGdi->GetHBitmap(), { 0, 0 }, pSpriteGdi->GetImageSize(),
+                                    { 0, 0 }, pSpriteGdi->GetImageSize() );
                                 break;
                             case SpriteCuttingEditor::Mode::GDIPlus:
-                                surf.DrawImageNonChromaPlus( gfx, pSpriteGdiPlus->GetImagePtr(), { 0.0f,0.0f }, pSpriteGdiPlus->GetImageSize(), { 0.0f,0.0f }, pSpriteGdiPlus->GetImageSize() );
+                                surf.DrawImageNonChromaPlus( gfx, pSpriteGdiPlus->GetImagePtr(), { 0, 0 }, pSpriteGdiPlus->GetImageSize(),
+                                    { 0, 0 }, pSpriteGdiPlus->GetImageSize() );
                                 break;
                             }
                 
@@ -272,8 +275,8 @@ private:
     const Vec2<float> halfMainWndSize;
 
     std::unique_ptr<ImagePlus> pSpriteGdiPlus;
-    std::unique_ptr<Image::ImageGDI<float>> pSpriteGdi;
+    std::unique_ptr<ImageGDI> pSpriteGdi;
 
-    Surface<float> surf;
+    Surface<int> surf;
     Surface<float> screenSurf;
 };
