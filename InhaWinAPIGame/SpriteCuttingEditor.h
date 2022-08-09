@@ -27,6 +27,7 @@ public:
     SpriteCuttingEditor( HWND& hWnd, HINSTANCE hInst, UINT dialogNum, DLGPROC dialogFunc )
         :
         EditorFrame( hWnd, hInst, dialogNum, dialogFunc ),
+        ct(Mat3<float>::Identity()),
         cam( ct ),
         halfMainWndSize( (float)(mainWndSize.cx / 2), (float)(mainWndSize.cy / 2) )
     {
@@ -121,7 +122,10 @@ public:
                 {
                     selectEndPos = mousePos;
                     isSelectStart = false;
+                    shouldCompactRect = true;
                     selectRect = { selectStartPos, selectEndPos };
+                    
+                 
                 }
             }
             break;
@@ -189,7 +193,7 @@ public:
                             switch ( mode )
                             {
                             case SpriteCuttingEditor::Mode::GDI:
-                                surf.DrawImageNonChromaGDI( hdc, pSpriteGdi->GetHBitmap(), { 0, 0 }, pSpriteGdi->GetImageSize(),
+                                DrawImageNonChromaGDILocal( hdc, pSpriteGdi->GetHBitmap(), { 0, 0 }, pSpriteGdi->GetImageSize(),
                                     { 0, 0 }, pSpriteGdi->GetImageSize() );
                                 break;
                             case SpriteCuttingEditor::Mode::GDIPlus:
@@ -199,7 +203,8 @@ public:
                             }
                 
                             // Draw mouse rect
-                            surf.DrawRectGDI( hdc, selectRect, RGB( 0, 255, 0 ), 1 );
+                            //surf.DrawRectGDI( hdc, selectRect, RGB( 0, 255, 0 ), 1 );
+                            surf.DrawRectPlus( gfx, selectRect, { 255,0,255,0 }, 1 );
                         }
                     );
                 }
@@ -223,28 +228,98 @@ public:
     }
 
 private:
-    void FindMinRect(HDC hdc, COLORREF chroma)
+    void FindMinRect(HDC hSrcImageDC, COLORREF chroma)
     {
-        // Find Top
+        //selectRect.top = FindTopPos( hSrcImageDC, chroma );
+        selectRect.left = FindLeftPos( hSrcImageDC, chroma );
+        //selectRect.right = FindRightPos( hSrcImageDC, chroma );
+        // Find Left
 
-
-
+        shouldCompactRect = false;
     }
 
-    Vec2<int> ScanMinPixelPos( HDC hdc, int startX, int startY, int endX, int endY, int increase, COLORREF chroma)
+    int FindTopPos(HDC hSrcImageDC, COLORREF chroma )
     {
-        for ( int y = startY; y < endY; y+=increase )
+        for ( int y = selectRect.top; y < selectRect.bottom; ++y )
         {
-            for ( int x = startX; x < startY; ++x )
+            for ( int x = selectRect.left; x < selectRect.right; ++x )
             {
-                const auto curColor = GetPixel( hdc, x, y );
+                const COLORREF curColor = GetPixel( hSrcImageDC, x, y );
+                int r = (curColor >> 16u) & 0xFFu;
+                int g = (curColor >> 8u) & 0xFFu;
+                int b = curColor & 0xFFu;
                 if ( curColor != chroma )
                 {
-                    return { x,y };
+                    return y;
                 }
             }
         }
-        return { endX, endY };
+    }
+    int FindLeftPos( HDC hSrcImageDC, COLORREF chroma )
+    {
+  
+        for ( int x = selectRect.left; x < selectRect.right; ++x )
+        {
+            for ( int y = selectRect.top; y < selectRect.bottom; ++y )
+            {
+
+                const COLORREF curColor = GetPixel( hSrcImageDC, x, y );
+                int r = (curColor >> 16u) & 0xFFu;
+                int g = (curColor >> 8u) & 0xFFu;
+                int b = curColor & 0xFFu;
+                if ( curColor != chroma )
+                {
+                    return x;
+                }
+            }
+        }
+    }
+    int FindRightPos( HDC hSrcImageDC, COLORREF chroma )
+    {
+
+        for ( int x = selectRect.right; x > selectRect.left; --x )
+        {
+            for ( int y = selectRect.top; y < selectRect.bottom; ++y )
+            {
+
+                const COLORREF curColor = GetPixel( hSrcImageDC, x, y );
+                int r = (curColor >> 16u) & 0xFFu;
+                int g = (curColor >> 8u) & 0xFFu;
+                int b = curColor & 0xFFu;
+                if ( curColor != chroma )
+                {
+                    return x;
+                }
+            }
+        }
+    }
+
+    void DrawImageNonChromaGDILocal( HDC hdc, const HBITMAP& hBitmap, const Vec2<int>& topLeft, const Vec2<int>& size,
+        const Vec2<int>& imageStart, const Vec2<int>& imageEnd )
+    {
+        HDC hMemDC = CreateCompatibleDC( hdc );
+        HBITMAP hOldBitmap = (HBITMAP)SelectObject( hMemDC, hBitmap );
+
+        auto tl = surf.GetTransformation() * Vec2<float>( topLeft );
+        auto br = surf.GetTransformation() * Vec2<float>( topLeft + size );
+        if ( tl.y > br.y )
+        {
+            std::swap( tl.y, br.y );
+        }
+        const auto sizeT = br - tl;
+
+
+
+        StretchBlt( hdc, (int)tl.x, (int)tl.y, (int)sizeT.x, (int)sizeT.y,
+            hMemDC, (int)imageStart.x, (int)imageStart.y, (int)imageEnd.x, (int)imageEnd.y, SRCCOPY );
+
+        if ( shouldCompactRect )
+        {
+            FindMinRect( hMemDC, RGB( 255, 0, 255 ) );
+        }
+
+        SelectObject( hMemDC, hOldBitmap );
+        DeleteObject( hMemDC );
     }
 	
 private:
@@ -263,6 +338,7 @@ private:
     std::wstring mousePosStr;
 
     bool isSelectStart = false;
+    bool shouldCompactRect = false;
     Vec2<int> selectStartPos;
     Vec2<int> selectEndPos;
     RectI selectRect;

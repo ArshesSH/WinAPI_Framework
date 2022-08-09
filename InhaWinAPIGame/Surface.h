@@ -65,11 +65,14 @@ public:
 		hBrush = (HBRUSH)GetStockObject( NULL_BRUSH );
 		oldBrush = (HBRUSH)SelectObject( hdc, hBrush );
 
-		auto topLeft = transform * Vec3<float>{ (float)left, (float)top, 1 };
-		auto bottomRight = transform * Vec3<float>{ (float)right, (float)bottom, 1 };
-		std::swap( topLeft.y, bottomRight.y );
+		auto tl = transform * Vec3<float>{ (float)left, (float)top, 1 };
+		auto br = transform * Vec3<float>{ (float)right, (float)bottom, 1 };
+		if ( tl.y > br.y )
+		{
+			std::swap( tl.y, br.y );
+		}
 
-		Rectangle( hdc, (int)topLeft.x, (int)topLeft.y, (int)bottomRight.x, (int)bottomRight.y );
+		Rectangle( hdc, (int)tl.x, (int)tl.y, (int)br.x, (int)br.y );
 		SelectObject( hdc, oldBrush );
 		DeleteObject( hBrush );
 		SelectObject( hdc, oldPen );
@@ -117,7 +120,10 @@ public:
 
 		auto tl = transform * Vec2<float>( topLeft );
 		auto br = transform * Vec2<float>( topLeft + size );
-		std::swap( tl.y, br.y );
+		if ( tl.y > br.y )
+		{
+			std::swap( tl.y, br.y );
+		}
 		const auto sizeT = br - tl;
 		const Gdiplus::RectF r( { tl.x, tl.y }, { sizeT.x, sizeT.y } );
 
@@ -142,11 +148,14 @@ public:
 		hBrush = CreateSolidBrush( color );
 		oldBrush = (HBRUSH)SelectObject( hdc, hBrush );
 
-		auto topLeft = transform * Vec3<float>{ left, top, 1 };
-		auto bottomRight = transform * Vec3<float>{ right, bottom, 1 };
-		std::swap( topLeft.y, bottomRight.y );
+		auto tl = transform * Vec3<float>{ left, top, 1 };
+		auto br = transform * Vec3<float>{ right, bottom, 1 };
+		if ( tl.y > br.y )
+		{
+			std::swap( tl.y, br.y );
+		}
 
-		Rectangle( hdc, (int)topLeft.x, (int)topLeft.y, (int)bottomRight.x, (int)bottomRight.y );
+		Rectangle( hdc, (int)tl.x, (int)tl.y, (int)br.x, (int)br.y );
 		SelectObject( hdc, oldBrush );
 		DeleteObject( hBrush );
 	}
@@ -164,7 +173,10 @@ public:
 
 		auto tl = transform * Vec2<float>( topLeft );
 		auto br = transform * Vec2<float>( topLeft + size );
-		std::swap( tl.y, br.y );
+		if ( tl.y > br.y )
+		{
+			std::swap( tl.y, br.y );
+		}
 		const auto sizeT = br - tl;
 		const Gdiplus::RectF r( { tl.x, tl.y }, { sizeT.x, sizeT.y } );
 
@@ -187,7 +199,10 @@ public:
 
 		auto tl = transform * Vec2<float>( topLeft );
 		auto br = transform * Vec2<float>( topLeft + size );
-		std::swap( tl.y, br.y );
+		if ( tl.y > br.y )
+		{
+			std::swap( tl.y, br.y );
+		}
 		const auto sizeT = br - tl;
 		const Gdiplus::RectF r( { tl.x, tl.y }, { sizeT.x, sizeT.y } );
 
@@ -293,7 +308,10 @@ public:
 
 		auto tl = transform * Vec2<float>( topLeft );
 		auto br = transform * Vec2<float>( topLeft + size);
-		std::swap( tl.y, br.y );
+		if ( tl.y > br.y )
+		{
+			std::swap( tl.y, br.y );
+		}
 		const auto sizeT = br - tl;
 
 		StretchBlt( hdc, (int)tl.x, (int)tl.y, (int)sizeT.x, (int)sizeT.y,
@@ -313,7 +331,10 @@ public:
 
 		auto tl = transform * Vec2<float>( topLeft );
 		auto br = transform * Vec2<float>( topLeft + size );
-		std::swap( tl.y, br.y );
+		if ( tl.y > br.y )
+		{
+			std::swap( tl.y, br.y );
+		}
 		const auto sizeT = br - tl;
 		const Gdiplus::RectF r( { tl.x, tl.y }, { sizeT.x, sizeT.y } );
 
@@ -356,7 +377,10 @@ public:
 
 		auto tl = transform * Vec2<float>( topLeft );
 		auto br = transform * Vec2<float>( topLeft + size );
-		std::swap( tl.y, br.y );
+		if ( tl.y > br.y )
+		{
+			std::swap( tl.y, br.y );
+		}
 		const auto sizeT = br - tl;
 
 		TransparentBlt( hdc, tl.x, tl.y, sizeT.x, sizeT.y, hMemDC,
@@ -380,7 +404,10 @@ public:
 
 		auto tl = transform * Vec2<float>( topLeft );
 		auto br = transform * Vec2<float>( topLeft + size );
-		std::swap( tl.y, br.y );
+		if ( tl.y > br.y )
+		{
+			std::swap( tl.y, br.y );
+		}
 		const auto sizeT = br - tl;
 		const Gdiplus::RectF r( { tl.x, tl.y }, { sizeT.x, sizeT.y } );
 
