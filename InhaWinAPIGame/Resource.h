@@ -29,6 +29,26 @@
 #define IDC_TOPPLAYER                   1011
 #define IDC_TOPPLAYER2                  1012
 #define IDC_TOPPLAYER3                  1013
+#define IDC_STATIC_Mode                 1014
+#define IDC_RADIO_Select                1015
+#define IDC_RADIO_Pick                  1016
+#define IDC_STATIC_ChromaR              1017
+#define IDC_STATIC_ChromaG              1018
+#define IDC_STATIC_ChromaB              1019
+#define IDC_STATIC_Pivot                1020
+#define IDC_STATIC_PivotX               1021
+#define IDC_EDIT_PivotX                 1022
+#define IDC_EDIT_PivotY                 1023
+#define IDC_STATIC_PivotY               1024
+#define IDC_BUTTON_Pivot                1025
+#define IDC_STATIC_Animations           1026
+#define IDC_LIST1                       1027
+#define IDC_BUTTON_Show                 1028
+#define IDC_BUTTON_Delete               1029
+#define IDC_BUTTON_Add                  1030
+#define IDC_BUTTON_Sample               1031
+#define IDC_BUTTON_Open                 1032
+#define IDC_BUTTON_Save                 1033
 #define ID_TOOLMENU_OPEN                32773
 #define ID_TOOLMENU_SAVE                32774
 #define IDC_STATIC                      -1
@@ -40,7 +60,7 @@
 #define _APS_NO_MFC                     1
 #define _APS_NEXT_RESOURCE_VALUE        133
 #define _APS_NEXT_COMMAND_VALUE         32775
-#define _APS_NEXT_CONTROL_VALUE         1014
+#define _APS_NEXT_CONTROL_VALUE         1033
 #define _APS_NEXT_SYMED_VALUE           110
 #endif
 #endif
