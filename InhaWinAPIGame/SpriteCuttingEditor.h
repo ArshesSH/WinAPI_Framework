@@ -93,11 +93,13 @@ public:
         camZoomStr = L"Zoom : " + std::to_wstring( camZoom );
         mousePosStr = L"MousePos : (" + std::to_wstring( mousePos.x ) + L", " + std::to_wstring( mousePos.y ) + L")";
         transMousePosStr = L"ImageMousePos : (" + std::to_wstring( imageBasedMousePos.x ) + L", " + std::to_wstring( imageBasedMousePos.y ) + L")";
+        chromaStr = L"Chroma : (" + std::to_wstring( GetRValue( chroma ) ) + L"," + std::to_wstring( GetGValue( chroma ) ) +
+            L"," + std::to_wstring( GetBValue( chroma ) ) + L")";
 
         /*************************/
         /*  Update Mouse Click   */
         /*************************/
-        if ( isSelectStart )
+        if ( isSelectRect )
         {
             selectEndPos = mousePos;
             selectRect = { selectStartPos, selectEndPos };
@@ -144,10 +146,13 @@ public:
                 // Select Mode
                 if ( mode == Mode::Select )
                 {
-                    isSelectStart = true;
+                    isSelectRect = true;
                     selectStartPos = mousePos;
                 }
-
+                else
+                {
+                    isPickChroma = true;
+                }
             }
             break;
 
@@ -156,10 +161,14 @@ public:
                 if ( mode == Mode::Select )
                 {
                     selectEndPos = mousePos;
-                    isSelectStart = false;
+                    isSelectRect = false;
                     shouldCompactRect = true;
                     selectRect = { selectStartPos, selectEndPos };
                     selectImageRect = { (coordMatI * selectStartPos).AddToY( imageSize.y ), (coordMatI * selectEndPos).AddToY( imageSize.y ) };
+                }
+                else
+                {
+
                 }
             }
             break;
@@ -186,6 +195,16 @@ public:
                     mode = Mode::Select;
                     break;
                 }
+            }
+            break;
+        case WM_LBUTTONUP:
+            {
+                    const std::wstring chromaR = L"R: " + std::to_wstring( GetRValue( chroma ) );
+                    const std::wstring chromaG = L"R: " + std::to_wstring( GetGValue( chroma ) );
+                    const std::wstring chromaB = L"R: " + std::to_wstring( GetBValue( chroma ) );
+                    SetDlgItemText( hWnd, IDC_STATIC_ChromaR, chromaR.c_str() );
+                    SetDlgItemText( hWnd, IDC_STATIC_ChromaG, chromaG.c_str() );
+                    SetDlgItemText( hWnd, IDC_STATIC_ChromaB, chromaB.c_str() );
             }
             break;
         }
@@ -252,7 +271,7 @@ public:
                             }
                 
                             // Draw mouse rect
-                            surf.DrawRectGDI( hdc, selectRect, chroma, 1 );
+                            surf.DrawRectGDI( hdc, selectRect, RGB(0,255,0), 1 );
                         }
                     );
                 }
@@ -271,6 +290,7 @@ public:
                     screenSurf.DrawStringGDI( hdc, { 0,20 }, camZoomStr );
                     screenSurf.DrawStringGDI( hdc, { 0,40 }, mousePosStr );
                     screenSurf.DrawStringGDI( hdc, { 0,60 }, transMousePosStr );
+                    screenSurf.DrawStringGDI( hdc, { 0,80 }, chromaStr );
                 }
             );
         }
@@ -323,9 +343,6 @@ private:
             for ( int x = selectImageRect.left; x < selectImageRect.right; ++x )
             {
                 const COLORREF curColor = GetPixel( hSrcImageDC, x, y );
-                int r = (curColor >> 16u) & 0xFFu;
-                int g = (curColor >> 8u) & 0xFFu;
-                int b = curColor & 0xFFu;
                 if ( curColor != chroma )
                 {
                     return y;
@@ -341,9 +358,6 @@ private:
             for ( int x = selectImageRect.left; x < selectImageRect.right; ++x )
             {
                 const COLORREF curColor = GetPixel( hSrcImageDC, x, y );
-                int r = (curColor >> 16u) & 0xFFu;
-                int g = (curColor >> 8u) & 0xFFu;
-                int b = curColor & 0xFFu;
                 if ( curColor != chroma )
                 {
                     return y;
@@ -360,9 +374,6 @@ private:
             {
 
                 const COLORREF curColor = GetPixel( hSrcImageDC, x, y );
-                int r = (curColor >> 16u) & 0xFFu;
-                int g = (curColor >> 8u) & 0xFFu;
-                int b = curColor & 0xFFu;
                 if ( curColor != chroma )
                 {
                     return x;
@@ -379,9 +390,6 @@ private:
             {
 
                 const COLORREF curColor = GetPixel( hSrcImageDC, x, y );
-                int r = (curColor >> 16u) & 0xFFu;
-                int g = (curColor >> 8u) & 0xFFu;
-                int b = curColor & 0xFFu;
                 if ( curColor != chroma )
                 {
                     return x;
@@ -407,9 +415,22 @@ private:
         StretchBlt( hdc, (int)tl.x, (int)tl.y, (int)sizeT.x, (int)sizeT.y,
             hMemDC, (int)imageStart.x, (int)imageStart.y, (int)imageEnd.x, (int)imageEnd.y, SRCCOPY );
 
+
+        /****************************/
+        /*      Do Pixel Things     */
+        /****************************/
+
+        // Compact
         if ( shouldCompactRect )
         {
-            FindMinRect( hMemDC, RGB( 255, 0, 255 ) );
+            FindMinRect( hMemDC, chroma );
+        }
+
+        // Get Chroma
+        if ( isPickChroma )
+        {
+            chroma = GetPixel( hMemDC, imageBasedMousePos.x, imageBasedMousePos.y );
+            isPickChroma = false;
         }
 
         SelectObject( hMemDC, hOldBitmap );
@@ -445,12 +466,15 @@ private:
     std::wstring transMousePosStr;
 
     // Select Rect
-    bool isSelectStart = false;
+    bool isSelectRect = false;
     bool shouldCompactRect = false;
     Vec2<int> selectStartPos;
     Vec2<int> selectEndPos;
     RectI selectRect;
     RectI selectImageRect;
+
+    // Select Chorma
+    bool isPickChroma = false;
 
     // Sprite
     std::unique_ptr<ImagePlus> pSpriteGdiPlus;
@@ -465,4 +489,7 @@ private:
     Mode mode = Mode::Chroma;
     Vec2<float> ndcPivot = { 0.0f, 0.5f };
     COLORREF chroma = RGB(255, 0, 255);
+    std::wstring chromaStr;
+    bool isColorPicked
+
 };
