@@ -37,6 +37,10 @@ public:
     {
         float dt = ft.Mark();
 
+
+        /*************************/
+        /*      Update Camera    */
+        /*************************/
         if ( GetAsyncKeyState( 'A' ) & 0x8001 )
         {
             cam.MoveBy( dirLeft * dt * 200 );
@@ -228,7 +232,6 @@ public:
                 
                             // Draw mouse rect
                             surf.DrawRectGDI( hdc, selectRect, RGB( 0, 255, 0 ), 1 );
-                            //surf.DrawRectPlus( gfx, selectDrawStartPos, selectDrawEndPos, { 255,0,255,0 }, 1 );
                         }
                     );
                 }
@@ -267,9 +270,6 @@ private:
         const Vec2<int> bottomRight = coordMatI * Vec2<int>( selectImageRect.right, selectImageRect.bottom ).AddToY( -imageSize.y );
         selectRect.right = bottomRight.x;
         selectRect.bottom = bottomRight.y;
-
-
-        // Find Left
 
         shouldCompactRect = false;
     }
@@ -349,7 +349,6 @@ private:
         return selectImageRect.right;
     }
 
-
     void DrawImageNonChromaGDILocal( HDC hdc, const HBITMAP& hBitmap, const Vec2<int>& topLeft, const Vec2<int>& size,
         const Vec2<int>& imageStart, const Vec2<int>& imageEnd )
     {
@@ -364,8 +363,6 @@ private:
         }
         const auto sizeT = br - tl;
 
-
-
         StretchBlt( hdc, (int)tl.x, (int)tl.y, (int)sizeT.x, (int)sizeT.y,
             hMemDC, (int)imageStart.x, (int)imageStart.y, (int)imageEnd.x, (int)imageEnd.y, SRCCOPY );
 
@@ -379,7 +376,6 @@ private:
     }
 	
 private:
-
     const Vec2<float> dirLeft = { -1.0f, 0.0f };
     const Vec2<float> dirUp = { 0.0f, 1.0f };
     const Vec2<float> dirRight = { 1.0f, 0.0f };
@@ -395,15 +391,19 @@ private:
     Mode mode = Mode::GDI;
     bool isImageSet = false;
 
+    // Camera
     CoordinateTransformer ct;
     Camera cam;
     std::wstring camPosStr;
     std::wstring camZoomStr;
+    
+    // Mouse
     Vec2<int> mousePos;
     Vec2<int> imageBasedMousePos;
     std::wstring mousePosStr;
     std::wstring transMousePosStr;
 
+    // Select Rect
     bool isSelectStart = false;
     bool shouldCompactRect = false;
     Vec2<int> selectStartPos;
@@ -411,13 +411,12 @@ private:
     RectI selectRect;
     RectI selectImageRect;
 
-    
-
-
+    // Sprite
     std::unique_ptr<ImagePlus> pSpriteGdiPlus;
     std::unique_ptr<ImageGDI> pSpriteGdi;
     Vec2<int> imageSize = { 0,0 };
 
+    // Surface
     Surface<int> surf;
     Surface<float> screenSurf;
 };
