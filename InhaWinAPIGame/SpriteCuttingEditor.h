@@ -11,14 +11,20 @@
 #include "CoordinateTransformer.h"
 #include "Camera.h"
 #include "Rect.h"
+#include "Animation.h"
 
 class SpriteCuttingEditor : public EditorFrame
 {
 public:
-    enum class Mode
+    enum class SpriteType
     {
         GDI,
         GDIPlus
+    };
+    enum class Mode
+    {
+        Select,
+        Chroma
     };
 public:
     using ImagePlus = Image::ImageGDIPlus<int>;
@@ -27,7 +33,6 @@ public:
     SpriteCuttingEditor( HWND& hWnd, HINSTANCE hInst, UINT dialogNum, DLGPROC dialogFunc )
         :
         EditorFrame( hWnd, hInst, dialogNum, dialogFunc ),
-        //ct(Mat3<float>::Identity()),
         cam( ct ),
         halfMainWndSize( (float)(mainWndSize.cx / 2), (float)(mainWndSize.cy / 2) )
     {
@@ -70,12 +75,12 @@ public:
         {
             if ( isImageSet )
             {
-                switch ( mode )
+                switch ( spriteType )
                 {
-                case SpriteCuttingEditor::Mode::GDI:
+                case SpriteCuttingEditor::SpriteType::GDI:
                     cam.SetPos( { 0.0f, (float)pSpriteGdi->GetImageSize().y } );
                     break;
-                case SpriteCuttingEditor::Mode::GDIPlus:
+                case SpriteCuttingEditor::SpriteType::GDIPlus:
                     cam.SetPos( { 0.0f, (float)pSpriteGdiPlus->GetImageSize().y } );
                     break;
                 }
@@ -96,7 +101,6 @@ public:
         {
             selectEndPos = mousePos;
             selectRect = { selectStartPos, selectEndPos };
-            selectImageRect = { (coordMatI * selectStartPos).AddToY( imageSize.y ), (coordMatI * selectEndPos).AddToY( imageSize.y ) };
         }
 
         /*************************/
@@ -104,12 +108,12 @@ public:
         /*************************/
         if ( isImageSet )
         {
-            switch ( mode )
+            switch ( spriteType )
             {
-            case SpriteCuttingEditor::Mode::GDI:
+            case SpriteCuttingEditor::SpriteType::GDI:
                 imageSize = pSpriteGdi->GetImageSize();
                 break;
-            case SpriteCuttingEditor::Mode::GDIPlus:
+            case SpriteCuttingEditor::SpriteType::GDIPlus:
                 imageSize = pSpriteGdiPlus->GetImageSize();
                 break;
             }
@@ -121,7 +125,7 @@ public:
     {
         switch ( message )
         {
-            case WM_MOUSEMOVE:
+        case WM_MOUSEMOVE:
             {
                 mousePos.x = LOWORD( lParam );
                 mousePos.y = HIWORD( lParam );
@@ -135,25 +139,27 @@ public:
             }
             break;
 
-            case WM_LBUTTONDOWN:
+        case WM_LBUTTONDOWN:
             {
-                if ( !isSelectStart )
+                // Select Mode
+                if ( mode == Mode::Select )
                 {
                     isSelectStart = true;
                     selectStartPos = mousePos;
                 }
+
             }
             break;
 
-            case WM_LBUTTONUP:
+        case WM_LBUTTONUP:
             {
-                if ( isSelectStart )
+                if ( mode == Mode::Select )
                 {
                     selectEndPos = mousePos;
                     isSelectStart = false;
                     shouldCompactRect = true;
                     selectRect = { selectStartPos, selectEndPos };
-
+                    selectImageRect = { (coordMatI * selectStartPos).AddToY( imageSize.y ), (coordMatI * selectEndPos).AddToY( imageSize.y ) };
                 }
             }
             break;
@@ -167,7 +173,22 @@ public:
 
     void CaptureMenuProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam ) override
     {
-
+        switch ( message )
+        {
+        case WM_COMMAND:
+            {
+                switch ( LOWORD(wParam) )
+                {
+                case IDC_RADIO_Pick:
+                    mode = Mode::Chroma;
+                    break;
+                case IDC_RADIO_Select:
+                    mode = Mode::Select;
+                    break;
+                }
+            }
+            break;
+        }
     }
 
     void Draw( HDC hdc ) override
@@ -182,19 +203,19 @@ public:
         
         if ( wcscmp( fileExtension, L".bmp" ) == 0 )
         {
-            mode = Mode::GDI;
+            spriteType = SpriteType::GDI;
         }
         else
         {
-            mode = Mode::GDIPlus;
+            spriteType = SpriteType::GDIPlus;
         }
 
-        switch ( mode )
+        switch ( spriteType )
         {
-        case SpriteCuttingEditor::Mode::GDI:
+        case SpriteCuttingEditor::SpriteType::GDI:
             pSpriteGdi = std::make_unique<ImageGDI>( this->fileName );
             break;
-        case SpriteCuttingEditor::Mode::GDIPlus:
+        case SpriteCuttingEditor::SpriteType::GDIPlus:
             pSpriteGdiPlus = std::make_unique<ImagePlus>( this->fileName );
             break;
         }
@@ -218,20 +239,20 @@ public:
                         {
                             surf.SetTransformation( camTransform );
 
-                            switch ( mode )
+                            switch ( spriteType )
                             {
-                            case SpriteCuttingEditor::Mode::GDI:
+                            case SpriteCuttingEditor::SpriteType::GDI:
                                 DrawImageNonChromaGDILocal( hdc, pSpriteGdi->GetHBitmap(), { 0, 0 }, pSpriteGdi->GetImageSize(),
                                     { 0, 0 }, pSpriteGdi->GetImageSize() );
                                 break;
-                            case SpriteCuttingEditor::Mode::GDIPlus:
+                            case SpriteCuttingEditor::SpriteType::GDIPlus:
                                 surf.DrawImageNonChromaPlus( gfx, pSpriteGdiPlus->GetImagePtr(), { 0, 0 }, pSpriteGdiPlus->GetImageSize(),
                                     { 0, 0 }, pSpriteGdiPlus->GetImageSize() );
                                 break;
                             }
                 
                             // Draw mouse rect
-                            surf.DrawRectGDI( hdc, selectRect, RGB( 0, 255, 0 ), 1 );
+                            surf.DrawRectGDI( hdc, selectRect, chroma, 1 );
                         }
                     );
                 }
@@ -255,6 +276,28 @@ public:
         }
     }
 
+    void SetPivot( float x, float y )
+    {
+        if ( x < 0.0f )
+        {
+            x = 0.0f;
+        }
+        else if ( x > 1.0f )
+        {
+            x = 1.0f;
+        }
+        if ( y < 0.0f )
+        {
+            y = 0.0f;
+        }
+        else if ( x > 1.0f )
+        {
+            y = 1.0f;
+        }
+        ndcPivot.x = x;
+        ndcPivot.y = y;
+    }
+
 private:
     void FindMinRect(HDC hSrcImageDC, COLORREF chroma)
     {
@@ -273,7 +316,6 @@ private:
 
         shouldCompactRect = false;
     }
-
     int FindTopPos(HDC hSrcImageDC, COLORREF chroma ) const 
     {
         for ( int y = selectImageRect.top; y < selectImageRect.bottom; ++y )
@@ -348,7 +390,6 @@ private:
         }
         return selectImageRect.right;
     }
-
     void DrawImageNonChromaGDILocal( HDC hdc, const HBITMAP& hBitmap, const Vec2<int>& topLeft, const Vec2<int>& size,
         const Vec2<int>& imageStart, const Vec2<int>& imageEnd )
     {
@@ -388,7 +429,7 @@ private:
     DrawManager drawManagerSub;
     bool isClientSizeChanged = false;
     FrameTimer ft;
-    Mode mode = Mode::GDI;
+    SpriteType spriteType = SpriteType::GDI;
     bool isImageSet = false;
 
     // Camera
@@ -419,4 +460,9 @@ private:
     // Surface
     Surface<int> surf;
     Surface<float> screenSurf;
+
+    // Dialog
+    Mode mode = Mode::Chroma;
+    Vec2<float> ndcPivot = { 0.0f, 0.5f };
+    COLORREF chroma = RGB(255, 0, 255);
 };

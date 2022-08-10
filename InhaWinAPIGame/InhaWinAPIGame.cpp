@@ -309,17 +309,26 @@ INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 
 INT_PTR CALLBACK MenuDlg( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam )
 {
+    if ( pEditor )
+    {
+        pEditor->CaptureMenuProc(hWnd, message, wParam, lParam);
+    }
     UNREFERENCED_PARAMETER( lParam );
     switch ( message )
     {
-    case WM_INITDIALOG:
+        case WM_INITDIALOG:
+        {
+            CheckRadioButton( hWnd, IDC_RADIO_Select, IDC_RADIO_Pick, IDC_RADIO_Pick );
+        }
         return (INT_PTR)TRUE;
 
-    case WM_COMMAND:
-        if ( LOWORD( wParam ) == IDOK || LOWORD( wParam ) == IDCANCEL )
+        case WM_COMMAND:
         {
-            EndDialog( hWnd, LOWORD( wParam ) );
-            return (INT_PTR)TRUE;
+            if ( LOWORD( wParam ) == IDOK || LOWORD( wParam ) == IDCANCEL )
+            {
+                EndDialog( hWnd, LOWORD( wParam ) );
+                return (INT_PTR)TRUE;
+            }
         }
         break;
     }
