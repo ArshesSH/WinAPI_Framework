@@ -90,10 +90,16 @@ public:
 	{
 		using namespace Gdiplus;
 
-		const auto tl = transform * Vec2<float>( topLeft );
-		const auto br = transform * Vec2<float>( size );
+		auto tl = transform * Vec2<float>( topLeft );
+		auto br = transform * Vec2<float>( size );
+		if ( tl.y > br.y )
+		{
+			std::swap( tl.y, br.y );
+		}
 		const float width = br.x - tl.x;
 		const float height = br.y - tl.y;
+
+
 
 		Pen pen( color, penWidth );
 		graphics.DrawRectangle( &pen, tl.x, tl.y, width, height );

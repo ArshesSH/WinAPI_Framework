@@ -137,6 +137,26 @@ public:
 	{
 		return { scaleX * x, scaleY * y };
 	}
+	Vec2& AddToX( T rhs )
+	{
+		x += rhs;
+		return *this;
+	}
+	Vec2& AddToY( T rhs )
+	{
+		y += rhs;
+		return *this;
+	}
+	Vec2& MulToX( T rhs )
+	{
+		x *= rhs;
+		return *this;
+	}
+	Vec2& MulToY( T rhs )
+	{
+		y *= rhs;
+		return *this;
+	}
 public:
 	T x;
 	T y;
