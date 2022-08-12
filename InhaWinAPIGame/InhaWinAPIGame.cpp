@@ -318,7 +318,7 @@ INT_PTR CALLBACK MenuDlg( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam 
     {
     case WM_INITDIALOG:
         {
-            CheckRadioButton( hWnd, IDC_RADIO_Select, IDC_RADIO_Pick, IDC_RADIO_Pick );
+            //CheckRadioButton( hWnd, IDC_RADIO_Select, IDC_RADIO_Pick, IDC_RADIO_Pick );
         }
         return (INT_PTR)TRUE;
     }

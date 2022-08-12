@@ -205,6 +205,12 @@ public:
 
         switch ( message )
         {
+        case WM_INITDIALOG:
+            {
+                CheckRadioButton( hWnd, IDC_RADIO_Select, IDC_RADIO_Pick, IDC_RADIO_Pick );
+                hList = GetDlgItem( hWnd, IDC_LIST_Animation);
+            }
+            break;
         case WM_COMMAND:
             {
                 switch ( LOWORD( wParam ) )
@@ -229,6 +235,12 @@ public:
                         curFrame.pivot = CalcPivotFromNDC( curFrame.sprite );
                         curPivotGizmo.SetPos( CalcPivotFromNDC( selectRect ) );
                         isDrawPivot = true;
+                    }
+                    break;
+                case IDC_BUTTON_Add:
+                    {
+                        InsertFrameToList();
+
                     }
                     break;
                 }
@@ -353,6 +365,12 @@ public:
     }
 
 private:
+    void InsertFrameToList()
+    {
+        frames.push_back( curFrame );
+        SendMessage( hList, LB_ADDSTRING, 0, (LPARAM)pivotStr.c_str() );
+    }
+
     Vec2<int> CalcPivotFromNDC( const RectI& rect ) const
     {
         return rect.GetTopLeft() + Vec2<int>( int( rect.GetWidth() * pivotNDC.x ), int( rect.GetHeight() * pivotNDC.y ) );
@@ -522,8 +540,8 @@ private:
     Surface<float> screenSurf;
     
     // Animation
-    Animation anime;
     Animation::Frame curFrame;
+    std::vector<Animation::Frame> frames;
 
     // Dialog
     Mode mode = Mode::Chroma;
@@ -531,6 +549,8 @@ private:
     COLORREF chroma = RGB(255, 0, 255);
     PivotGizmo curPivotGizmo;
     bool isDrawPivot = false;
+    HWND hList;
+
 
     // DebugStr
     std::wstring camPosStr;

@@ -42,7 +42,7 @@
 #define IDC_STATIC_PivotY               1024
 #define IDC_BUTTON_Pivot                1025
 #define IDC_STATIC_Animations           1026
-#define IDC_LIST1                       1027
+#define IDC_LIST_Animation              1027
 #define IDC_BUTTON_Show                 1028
 #define IDC_BUTTON_Delete               1029
 #define IDC_BUTTON_Add                  1030
