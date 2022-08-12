@@ -66,12 +66,17 @@ public:
         if ( GetAsyncKeyState( 'Q' ) & 0x8001 )
         {
             cam.SetScale( cam.GetScale() - (2.0f * dt) );
+            if ( cam.GetScale() <= 0.1f )
+            {
+                cam.SetScale( 0.1f );
+            }
+            
         }
         else if ( GetAsyncKeyState( 'E' ) & 0x8001 )
         {
             cam.SetScale( cam.GetScale() + (2.0f * dt) );
         }
-        if ( GetAsyncKeyState( 'R' ) & 0x8001 )
+        if ( GetAsyncKeyState( 'F' ) & 0x8001 )
         {
             if ( isImageSet )
             {
@@ -84,6 +89,13 @@ public:
                     cam.SetPos( { 0.0f, (float)pSpriteGdiPlus->GetImageSize().y } );
                     break;
                 }
+            }
+        }
+        if ( GetAsyncKeyState( 'R' ) & 0x8001 )
+        {
+            if ( isImageSet )
+            {
+                cam.SetScale( 1.0f );
             }
         }
 
@@ -151,7 +163,8 @@ public:
                 }
                 else
                 {
-                    isPickChroma = true;
+                    isChromaPicked = true;
+                    shouldChangeChromaDlg = true;
                 }
             }
             break;
@@ -166,10 +179,6 @@ public:
                     selectRect = { selectStartPos, selectEndPos };
                     selectImageRect = { (coordMatI * selectStartPos).AddToY( imageSize.y ), (coordMatI * selectEndPos).AddToY( imageSize.y ) };
                 }
-                else
-                {
-
-                }
             }
             break;
 
@@ -182,6 +191,17 @@ public:
 
     void CaptureMenuProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam ) override
     {
+        if ( shouldChangeChromaDlg )
+        {
+            const std::wstring chromaR = L"R: " + std::to_wstring( GetRValue( chroma ) );
+            const std::wstring chromaG = L"G: " + std::to_wstring( GetGValue( chroma ) );
+            const std::wstring chromaB = L"B: " + std::to_wstring( GetBValue( chroma ) );
+            SetDlgItemText( hWnd, IDC_STATIC_ChromaR, chromaR.c_str() );
+            SetDlgItemText( hWnd, IDC_STATIC_ChromaG, chromaG.c_str() );
+            SetDlgItemText( hWnd, IDC_STATIC_ChromaB, chromaB.c_str() );
+            shouldChangeChromaDlg = false;
+        }
+
         switch ( message )
         {
         case WM_COMMAND:
@@ -195,16 +215,6 @@ public:
                     mode = Mode::Select;
                     break;
                 }
-            }
-            break;
-        case WM_LBUTTONUP:
-            {
-                    const std::wstring chromaR = L"R: " + std::to_wstring( GetRValue( chroma ) );
-                    const std::wstring chromaG = L"R: " + std::to_wstring( GetGValue( chroma ) );
-                    const std::wstring chromaB = L"R: " + std::to_wstring( GetBValue( chroma ) );
-                    SetDlgItemText( hWnd, IDC_STATIC_ChromaR, chromaR.c_str() );
-                    SetDlgItemText( hWnd, IDC_STATIC_ChromaG, chromaG.c_str() );
-                    SetDlgItemText( hWnd, IDC_STATIC_ChromaB, chromaB.c_str() );
             }
             break;
         }
@@ -384,7 +394,7 @@ private:
     }
     int FindRightPos( HDC hSrcImageDC, COLORREF chroma ) const
     {
-        for ( int x = selectImageRect.right; x > selectImageRect.left; --x )
+        for ( int x = selectImageRect.right - 1; x > selectImageRect.left; --x )
         {
             for ( int y = selectImageRect.top; y < selectImageRect.bottom; ++y )
             {
@@ -427,10 +437,10 @@ private:
         }
 
         // Get Chroma
-        if ( isPickChroma )
+        if ( isChromaPicked )
         {
             chroma = GetPixel( hMemDC, imageBasedMousePos.x, imageBasedMousePos.y );
-            isPickChroma = false;
+            isChromaPicked = false;
         }
 
         SelectObject( hMemDC, hOldBitmap );
@@ -474,7 +484,8 @@ private:
     RectI selectImageRect;
 
     // Select Chorma
-    bool isPickChroma = false;
+    bool isChromaPicked = false;
+    bool shouldChangeChromaDlg = false;
 
     // Sprite
     std::unique_ptr<ImagePlus> pSpriteGdiPlus;
@@ -490,6 +501,4 @@ private:
     Vec2<float> ndcPivot = { 0.0f, 0.5f };
     COLORREF chroma = RGB(255, 0, 255);
     std::wstring chromaStr;
-    bool isColorPicked
-
 };
