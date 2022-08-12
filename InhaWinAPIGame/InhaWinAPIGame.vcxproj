@@ -154,6 +154,7 @@
     <ClInclude Include="CollisionPatternMatching.h" />
     <ClInclude Include="CoordinateTransformer.h" />
     <ClInclude Include="EditorFrame.h" />
+    <ClInclude Include="PivotGizmo.h" />
     <ClInclude Include="SpriteCuttingEditor.h" />
     <ClInclude Include="FileManager.h" />
     <ClInclude Include="FrameTimer.h" />

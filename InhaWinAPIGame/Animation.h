@@ -21,6 +21,14 @@ public:
 			sprite( sprite ),
 			pivot( pivot )
 		{}
+		//void SetPivotFromNDC( const Vec2<float>& ndc )
+		//{
+		//	pivot = sprite.GetTopLeft() + Vec2<int>( int( sprite.GetWidth() * ndc.x ), int( sprite.GetHeight() * ndc.y ) );
+		//}
+		//static Vec2<int> CalcPivotFromNDC( const Vec2<int>& pos, const Vec2<float>& ndc, int width, int height )
+		//{
+		//	return pos + Vec2<int>( int( width * ndc.x ), int( height * ndc.y ) );
+		//}
 
 	public:
 		RectI sprite;
@@ -30,7 +38,6 @@ public:
 public:
 
 private:
-	
 	std::vector<Frame> frames;
 	float playSpeed;
 };

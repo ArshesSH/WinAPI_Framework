@@ -12,6 +12,7 @@
 #include "Camera.h"
 #include "Rect.h"
 #include "Animation.h"
+#include "PivotGizmo.h"
 
 class SpriteCuttingEditor : public EditorFrame
 {
@@ -41,7 +42,6 @@ public:
     void Update() override
     {
         float dt = ft.Mark();
-
 
         /*************************/
         /*      Update Camera    */
@@ -107,6 +107,7 @@ public:
         transMousePosStr = L"ImageMousePos : (" + std::to_wstring( imageBasedMousePos.x ) + L", " + std::to_wstring( imageBasedMousePos.y ) + L")";
         chromaStr = L"Chroma : (" + std::to_wstring( GetRValue( chroma ) ) + L"," + std::to_wstring( GetGValue( chroma ) ) +
             L"," + std::to_wstring( GetBValue( chroma ) ) + L")";
+        pivotStr = L"Pivot : (" + std::to_wstring( curFrame.pivot.x ) + L"," + std::to_wstring( curFrame.pivot.y ) + L")";
 
         /*************************/
         /*  Update Mouse Click   */
@@ -132,7 +133,6 @@ public:
                 break;
             }
         }
-
     }
 
     void CaptureWndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam ) override
@@ -178,6 +178,7 @@ public:
                     shouldCompactRect = true;
                     selectRect = { selectStartPos, selectEndPos };
                     selectImageRect = { (coordMatI * selectStartPos).AddToY( imageSize.y ), (coordMatI * selectEndPos).AddToY( imageSize.y ) };
+                    curFrame.sprite = selectImageRect;
                 }
             }
             break;
@@ -206,13 +207,29 @@ public:
         {
         case WM_COMMAND:
             {
-                switch ( LOWORD(wParam) )
+                switch ( LOWORD( wParam ) )
                 {
                 case IDC_RADIO_Pick:
                     mode = Mode::Chroma;
                     break;
                 case IDC_RADIO_Select:
                     mode = Mode::Select;
+                    break;
+                case IDC_BUTTON_Pivot:
+                    {
+                        TCHAR xChar[256];
+                        TCHAR yChar[256];
+                        GetDlgItemText( hWnd, IDC_EDIT_PivotX, xChar, 256 );
+                        GetDlgItemText( hWnd, IDC_EDIT_PivotY, yChar, 256 );
+
+                        if ( xChar != nullptr || yChar != nullptr )
+                        {
+                            SetPivotNDC( float( _wtof( xChar ) ), float( _wtof( yChar ) ) );
+                        }
+                        curFrame.pivot = CalcPivotFromNDC( curFrame.sprite );
+                        curPivotGizmo.SetPos( CalcPivotFromNDC( selectRect ) );
+                        isDrawPivot = true;
+                    }
                     break;
                 }
             }
@@ -282,6 +299,12 @@ public:
                 
                             // Draw mouse rect
                             surf.DrawRectGDI( hdc, selectRect, RGB(0,255,0), 1 );
+
+                            if ( isDrawPivot )
+                            {
+                                curPivotGizmo.SetTransform( camTransform );
+                                curPivotGizmo.Draw( hdc );
+                            }
                         }
                     );
                 }
@@ -301,12 +324,13 @@ public:
                     screenSurf.DrawStringGDI( hdc, { 0,40 }, mousePosStr );
                     screenSurf.DrawStringGDI( hdc, { 0,60 }, transMousePosStr );
                     screenSurf.DrawStringGDI( hdc, { 0,80 }, chromaStr );
+                    screenSurf.DrawStringGDI( hdc, { 0,100 }, pivotStr );
                 }
             );
         }
     }
 
-    void SetPivot( float x, float y )
+    void SetPivotNDC( float x, float y )
     {
         if ( x < 0.0f )
         {
@@ -324,11 +348,16 @@ public:
         {
             y = 1.0f;
         }
-        ndcPivot.x = x;
-        ndcPivot.y = y;
+        pivotNDC.x = x;
+        pivotNDC.y = y;
     }
 
 private:
+    Vec2<int> CalcPivotFromNDC( const RectI& rect ) const
+    {
+        return rect.GetTopLeft() + Vec2<int>( int( rect.GetWidth() * pivotNDC.x ), int( rect.GetHeight() * pivotNDC.y ) );
+    }
+
     void FindMinRect(HDC hSrcImageDC, COLORREF chroma)
     {
         selectImageRect.top = FindTopPos( hSrcImageDC, chroma );
@@ -466,14 +495,10 @@ private:
     // Camera
     CoordinateTransformer ct;
     Camera cam;
-    std::wstring camPosStr;
-    std::wstring camZoomStr;
     
     // Mouse
     Vec2<int> mousePos;
     Vec2<int> imageBasedMousePos;
-    std::wstring mousePosStr;
-    std::wstring transMousePosStr;
 
     // Select Rect
     bool isSelectRect = false;
@@ -495,10 +520,23 @@ private:
     // Surface
     Surface<int> surf;
     Surface<float> screenSurf;
+    
+    // Animation
+    Animation anime;
+    Animation::Frame curFrame;
 
     // Dialog
     Mode mode = Mode::Chroma;
-    Vec2<float> ndcPivot = { 0.0f, 0.5f };
+    Vec2<float> pivotNDC = { 0.0f, 0.5f };
     COLORREF chroma = RGB(255, 0, 255);
+    PivotGizmo curPivotGizmo;
+    bool isDrawPivot = false;
+
+    // DebugStr
+    std::wstring camPosStr;
+    std::wstring camZoomStr;
+    std::wstring mousePosStr;
+    std::wstring transMousePosStr;
     std::wstring chromaStr;
+    std::wstring pivotStr;
 };

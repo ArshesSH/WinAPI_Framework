@@ -222,6 +222,23 @@ public:
 	}
 
 	// Draw Line
+	void DrawLineGDI( HDC hdc, const Vec2<T>& startPos, const Vec2<T>& endPos, COLORREF color, int penWidth = 1 )
+	{
+		HPEN hPen;
+		HPEN oldPen;
+
+		hPen = CreatePen( PS_SOLID, penWidth, color );
+		oldPen = (HPEN)SelectObject( hdc, hPen );
+
+		const auto transStart = transform * Vec2<float>(startPos);
+		const auto transEnd = transform * Vec2<float>(endPos);
+
+		MoveToEx( hdc, transStart.x, transStart.y, nullptr );
+		LineTo( hdc, transEnd.x, transEnd.y );
+
+		SelectObject( hdc, oldPen );
+		DeleteObject( hPen );
+	}
 	void DrawLinePlus( Gdiplus::Graphics& graphics, const Vec2<T>& v1, const Vec2<T>& v2,  const Gdiplus::Color& color, float penWidth)
 	{
 		using namespace Gdiplus;
