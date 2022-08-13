@@ -205,12 +205,6 @@ public:
 
         switch ( message )
         {
-        case WM_INITDIALOG:
-            {
-                CheckRadioButton( hWnd, IDC_RADIO_Select, IDC_RADIO_Pick, IDC_RADIO_Pick );
-                hList = GetDlgItem( hWnd, IDC_LIST_Animation);
-            }
-            break;
         case WM_COMMAND:
             {
                 switch ( LOWORD( wParam ) )
@@ -223,15 +217,20 @@ public:
                     break;
                 case IDC_BUTTON_Pivot:
                     {
-                        TCHAR xChar[256];
-                        TCHAR yChar[256];
+                        TCHAR xChar[256] = L"";
+                        TCHAR yChar[256] = L"";
                         GetDlgItemText( hWnd, IDC_EDIT_PivotX, xChar, 256 );
                         GetDlgItemText( hWnd, IDC_EDIT_PivotY, yChar, 256 );
 
-                        if ( xChar != nullptr || yChar != nullptr )
+                        if ( xChar[0] == '\0' && yChar[0] == '\0' )
+                        {
+                            SetPivotNDC( 0.5f, 1.0f );
+                        }
+                        else
                         {
                             SetPivotNDC( float( _wtof( xChar ) ), float( _wtof( yChar ) ) );
                         }
+
                         curFrame.pivot = CalcPivotFromNDC( curFrame.sprite );
                         curPivotGizmo.SetPos( CalcPivotFromNDC( selectRect ) );
                         isDrawPivot = true;
@@ -240,7 +239,6 @@ public:
                 case IDC_BUTTON_Add:
                     {
                         InsertFrameToList();
-
                     }
                     break;
                 }
@@ -356,12 +354,17 @@ public:
         {
             y = 0.0f;
         }
-        else if ( x > 1.0f )
+        else if ( y > 1.0f )
         {
             y = 1.0f;
         }
         pivotNDC.x = x;
         pivotNDC.y = y;
+    }
+
+    void SetListHandle( HWND hWnd )
+    {
+        hList = hWnd;
     }
 
 private:

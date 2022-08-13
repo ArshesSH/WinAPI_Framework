@@ -37,6 +37,10 @@ public:
         DestroyWindow( hBottomWnd );
     }
 
+    virtual void InitWndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam ) = 0;
+    virtual void InitBottomProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam ) = 0;
+    virtual void InitMenuProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam ) = 0;
+
     virtual void CaptureWndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam ) = 0;
     virtual void CaptureBottomWndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam ) = 0;
     virtual void CaptureMenuProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam ) = 0;
