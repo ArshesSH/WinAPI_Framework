@@ -135,6 +135,18 @@ public:
         }
     }
 
+    void InitWndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam ) override
+    {
+    }
+    void InitBottomProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam ) override
+    {
+    }
+    void InitMenuProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam ) override
+    {
+        CheckRadioButton( hWnd, IDC_RADIO_Select, IDC_RADIO_Pick, IDC_RADIO_Pick );
+        hList = GetDlgItem( hWnd, IDC_LIST_Animation );
+        this->isMenuInit = true;
+    }
     void CaptureWndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam ) override
     {
         switch ( message )
@@ -149,7 +161,6 @@ public:
                     );
 
                 imageBasedMousePos = (coordMatI * mousePos).AddToY( imageSize.y );
-
             }
             break;
 
@@ -192,6 +203,11 @@ public:
 
     void CaptureMenuProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam ) override
     {
+        if ( !this->isMenuInit )
+        {
+            InitMenuProc( hWnd, message, wParam, lParam );
+        }
+
         if ( shouldChangeChromaDlg )
         {
             const std::wstring chromaR = L"R: " + std::to_wstring( GetRValue( chroma ) );
@@ -553,7 +569,6 @@ private:
     PivotGizmo curPivotGizmo;
     bool isDrawPivot = false;
     HWND hList;
-
 
     // DebugStr
     std::wstring camPosStr;

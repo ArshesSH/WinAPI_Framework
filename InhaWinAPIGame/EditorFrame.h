@@ -128,4 +128,8 @@ protected:
     SIZE bottomWndSize;
     static constexpr int menuDlgWidth = 300;
     RECT clientRect;
+
+    bool isMainWndInit = false;
+    bool isSubWndInit = false;
+    bool isMenuInit = false;
 };

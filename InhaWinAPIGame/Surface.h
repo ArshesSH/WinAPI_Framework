@@ -233,8 +233,8 @@ public:
 		const auto transStart = transform * Vec2<float>(startPos);
 		const auto transEnd = transform * Vec2<float>(endPos);
 
-		MoveToEx( hdc, transStart.x, transStart.y, nullptr );
-		LineTo( hdc, transEnd.x, transEnd.y );
+		MoveToEx( hdc, (int)transStart.x, (int)transStart.y, nullptr );
+		LineTo( hdc, (int)transEnd.x, (int)transEnd.y );
 
 		SelectObject( hdc, oldPen );
 		DeleteObject( hPen );
