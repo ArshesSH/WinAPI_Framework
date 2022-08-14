@@ -142,6 +142,15 @@ public:
                 break;
             }
         }
+
+        /*************************/
+        /*      Update Anime     */
+        /*************************/
+        if ( pSampleAnime != nullptr )
+        {
+            float dt = ft.Mark();
+            pSampleAnime->Update( dt );
+        }
     }
 
     void InitWndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam ) override
@@ -198,7 +207,6 @@ public:
                     shouldCompactRect = true;
                     selectRect = { selectStartPos, selectEndPos };
                     selectImageRect = { (coordMatI * selectStartPos).AddToY( imageSize.y ), (coordMatI * selectEndPos).AddToY( imageSize.y ) };
-                    curFrame.sprite = selectImageRect;
                 }
             }
             break;
@@ -232,67 +240,87 @@ public:
         {
         case WM_COMMAND:
             {
-                switch ( LOWORD( wParam ) )
+                if ( isImageSet )
                 {
-                case IDC_RADIO_Pick:
-                    mode = Mode::Chroma;
-                    break;
-                case IDC_RADIO_Select:
-                    mode = Mode::Select;
-                    break;
-                case IDC_BUTTON_Pivot:
+                    switch ( LOWORD( wParam ) )
                     {
-                        TCHAR xChar[256] = L"";
-                        TCHAR yChar[256] = L"";
-                        GetDlgItemText( hWnd, IDC_EDIT_PivotX, xChar, 256 );
-                        GetDlgItemText( hWnd, IDC_EDIT_PivotY, yChar, 256 );
+                    case IDC_RADIO_Pick:
+                        mode = Mode::Chroma;
+                        break;
+                    case IDC_RADIO_Select:
+                        mode = Mode::Select;
+                        break;
+                    case IDC_BUTTON_Pivot:
+                        {
+                            TCHAR xChar[256] = L"";
+                            TCHAR yChar[256] = L"";
+                            GetDlgItemText( hWnd, IDC_EDIT_PivotX, xChar, 256 );
+                            GetDlgItemText( hWnd, IDC_EDIT_PivotY, yChar, 256 );
 
-                        if ( xChar[0] == '\0' && yChar[0] == '\0' )
-                        {
-                            SetPivotNDC( 0.5f, 1.0f );
-                        }
-                        else
-                        {
-                            SetPivotNDC( float( _wtof( xChar ) ), float( _wtof( yChar ) ) );
-                        }
+                            if ( xChar[0] == '\0' && yChar[0] == '\0' )
+                            {
+                                SetPivotNDC( 0.5f, 1.0f );
+                            }
+                            else
+                            {
+                                SetPivotNDC( float( _wtof( xChar ) ), float( _wtof( yChar ) ) );
+                            }
 
-                        curFrame.pivot = CalcPivotFromNDC( curFrame.sprite );
-                        curPivotGizmo.SetPos( CalcPivotFromNDC( selectRect ) );
-                        isDrawPivot = true;
-                    }
-                    break;
-                case IDC_BUTTON_Add:
-                    {
-                        frames.push_back( curFrame );
-                        SendMessage( hList, LB_ADDSTRING, 0, (LPARAM)pivotStr.c_str() );
-                    }
-                    break;
-                case IDC_LIST_Animation:
-                    {
-                        if ( HIWORD( wParam ) == LBN_SELCHANGE )
-                        {
-                            listSelectIdx = SendMessage( hList, LB_GETCURSEL, 0, 0 );
+                            curFrame.pivot = CalcPivotFromNDC( curFrame.sprite );
+                            curPivotGizmo.SetPos( CalcPivotFromNDC( selectRect ) );
+                            isDrawPivot = true;
                         }
-                    }
-                    break;
-                case IDC_BUTTON_Delete:
-                    {
-                        if ( listSelectIdx <= frames.size() - 1 )
+                        break;
+                    case IDC_BUTTON_Add:
                         {
-                            frames.erase( frames.begin() + listSelectIdx );
-                            SendMessage( hList, LB_DELETESTRING, listSelectIdx, 0 );
+                            frames.push_back( curFrame );
+                            listStr = L"R:" + std::to_wstring( curFrame.sprite.left ) + L"," + std::to_wstring( curFrame.sprite.top ) + L"|" + std::to_wstring( curFrame.sprite.right ) + L"," + std::to_wstring( curFrame.sprite.bottom ) + L" / " + pivotStr;
+                            SendMessage( hList, LB_ADDSTRING, 0, (LPARAM)listStr.c_str() );
                         }
-                    }
-                    break;
-                case IDC_BUTTON_Insert:
-                    {
-                        if ( listSelectIdx <= frames.size() - 1 )
+                        break;
+                    case IDC_LIST_Animation:
                         {
-                            frames.insert( frames.begin() + listSelectIdx + 1, curFrame );
-                            SendMessage( hList, LB_INSERTSTRING, listSelectIdx + 1, (LPARAM)pivotStr.c_str() );
+                            if ( HIWORD( wParam ) == LBN_SELCHANGE )
+                            {
+                                listSelectIdx = (int)SendMessage( hList, LB_GETCURSEL, 0, 0 );
+                            }
                         }
+                        break;
+                    case IDC_BUTTON_Delete:
+                        {
+                            if ( listSelectIdx <= frames.size() - 1 )
+                            {
+                                frames.erase( frames.begin() + listSelectIdx );
+                                SendMessage( hList, LB_DELETESTRING, listSelectIdx, 0 );
+                            }
+                        }
+                        break;
+                    case IDC_BUTTON_Insert:
+                        {
+                            if ( listSelectIdx <= frames.size() - 1 )
+                            {
+                                frames.insert( frames.begin() + listSelectIdx + 1, curFrame );
+                                listStr = L"R:" + std::to_wstring( curFrame.sprite.left ) + L"," + std::to_wstring( curFrame.sprite.top ) + L"|" + std::to_wstring( curFrame.sprite.right ) + L"," + std::to_wstring( curFrame.sprite.bottom ) + L" / " + pivotStr;
+                                SendMessage( hList, LB_INSERTSTRING, listSelectIdx + 1, (LPARAM)listStr.c_str() );
+                            }
+                        }
+                        break;
+                    case IDC_BUTTON_Play:
+                        {
+                            switch ( spriteType )
+                            {
+                            case SpriteCuttingEditor::SpriteType::GDI:
+                                pSampleAnime = std::make_unique<Animation<int>>( Animation<int>::SpriteType::GDI, fileName, frames, playSpeed );
+                                break;
+                            case SpriteCuttingEditor::SpriteType::GDIPlus:
+                                pSampleAnime = std::make_unique<Animation<int>>( Animation<int>::SpriteType::GDIPlus, fileName, frames, playSpeed );
+                                break;
+                            }
+                            
+                            isPlayAnimation = true;
+                        }
+                        break;
                     }
-                    break;
                 }
             }
             break;
@@ -387,6 +415,26 @@ public:
                     screenSurf.DrawStringGDI( hdc, { 0,60 }, transMousePosStr );
                     screenSurf.DrawStringGDI( hdc, { 0,80 }, chromaStr );
                     screenSurf.DrawStringGDI( hdc, { 0,100 }, pivotStr );
+
+                    if ( pSampleAnime )
+                    {
+                        const std::wstring timeStr = std::to_wstring( pSampleAnime->playTime );
+                        screenSurf.DrawStringGDI( hdc, { 0,120 }, timeStr );
+                    }
+
+
+                    if ( isPlayAnimation )
+                    {
+                        switch ( spriteType )
+                        {
+                        case SpriteCuttingEditor::SpriteType::GDI:
+                            pSampleAnime->PlayGDI( hdc, { 400,100 }, { 100,100 }, chroma );
+                            break;
+                        case SpriteCuttingEditor::SpriteType::GDIPlus:
+                            break;
+                        }
+                    }
+
                 }
             );
         }
@@ -420,8 +468,6 @@ public:
     }
 
 private:
-    
-
     Vec2<int> CalcPivotFromNDC( const RectI& rect ) const
     {
         return rect.GetTopLeft() + Vec2<int>( int( rect.GetWidth() * pivotNDC.x ), int( rect.GetHeight() * pivotNDC.y ) );
@@ -441,6 +487,8 @@ private:
         const Vec2<int> bottomRight = coordMatI * Vec2<int>( selectImageRect.right, selectImageRect.bottom ).AddToY( -imageSize.y );
         selectRect.right = bottomRight.x;
         selectRect.bottom = bottomRight.y;
+
+        curFrame.sprite = selectImageRect;
 
         shouldCompactRect = false;
     }
@@ -546,6 +594,8 @@ private:
     }
 	
 private:
+    static constexpr float playSpeed = 0.1f;
+
     const Vec2<float> dirLeft = { -1.0f, 0.0f };
     const Vec2<float> dirUp = { 0.0f, 1.0f };
     const Vec2<float> dirRight = { 1.0f, 0.0f };
@@ -591,8 +641,9 @@ private:
     Surface<float> screenSurf;
     
     // Animation
-    Animation::Frame curFrame;
-    std::vector<Animation::Frame> frames;
+    Animation<int>::Frame curFrame;
+    std::vector<Animation<int>::Frame> frames;
+    std::unique_ptr<Animation<int>> pSampleAnime;
 
     // Dialog
     Mode mode = Mode::Chroma;
@@ -602,6 +653,7 @@ private:
     bool isDrawPivot = false;
     HWND hList;
     int listSelectIdx = 0;
+    bool isPlayAnimation = false;
 
     // DebugStr
     std::wstring camPosStr;
@@ -610,4 +662,5 @@ private:
     std::wstring transMousePosStr;
     std::wstring chromaStr;
     std::wstring pivotStr;
+    std::wstring listStr;
 };

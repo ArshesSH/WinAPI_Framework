@@ -229,10 +229,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 LRESULT CALLBACK BottomWndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam )
 {
-    //if ( pEditor )
-    //{
-    //    pEditor->CaptureBottomWndProc( hWnd, message, wParam, lParam );
-    //}
     switch ( message )
     {
         case WM_CREATE:
@@ -318,7 +314,6 @@ INT_PTR CALLBACK MenuDlg( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam 
     {
     case WM_INITDIALOG:
         {
-
         }
         return (INT_PTR)TRUE;
     }

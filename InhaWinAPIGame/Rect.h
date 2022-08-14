@@ -113,6 +113,10 @@ public:
 	{
 		return { left, top };
 	}
+	inline Vec2<T> GetBottomRight() const
+	{
+		return { right, bottom };
+	}
 	inline Vec2<T> GetCenter() const
 	{
 		const auto topLeft = GetTopLeft();

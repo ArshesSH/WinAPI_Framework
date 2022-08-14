@@ -4,6 +4,7 @@
 #include <ObjIdl.h>
 #include <gdiplus.h>
 #pragma comment(lib, "Gdiplus.lib")
+#pragma comment(lib, "Msimg32.lib")
 
 #include <string>
 #include <vector>
@@ -324,7 +325,7 @@ public:
 
 	// Draw NonChroma Image
 	void DrawImageNonChromaGDI( HDC hdc, const HBITMAP& hBitmap, const Vec2<T>& topLeft, const Vec2<T>& size,
-		const Vec2<T>& imageStart, const Vec2<T>& imageEnd )
+		const Vec2<T>& imageStart, const Vec2<T>& imageSize )
 	{
 		HDC hMemDC = CreateCompatibleDC( hdc );
 		HBITMAP hOldBitmap = (HBITMAP)SelectObject( hMemDC, hBitmap );
@@ -338,14 +339,14 @@ public:
 		const auto sizeT = br - tl;
 
 		StretchBlt( hdc, (int)tl.x, (int)tl.y, (int)sizeT.x, (int)sizeT.y,
-			hMemDC, (int)imageStart.x, (int)imageStart.y, (int)imageEnd.x, (int)imageEnd.y, SRCCOPY );
+			hMemDC, (int)imageStart.x, (int)imageStart.y, (int)imageSize.x, (int)imageSize.y, SRCCOPY );
 		SelectObject( hMemDC, hOldBitmap );
 		DeleteObject( hMemDC );
 	}
 	void DrawImageNonChromaGDI( HDC hdc, const Image::ImageGDI<T>& image, const Vec2<T>& topLeft, const Vec2<T>& size,
-		const Vec2<T>& imageStart, const Vec2<T>& imageEnd )
+		const Vec2<T>& imageStart, const Vec2<T>& imageSize )
 	{
-		DrawImageNonChromaGDI( hdc, image.GetHBitmap(), topLeft, size, imageStart, imageEnd );
+		DrawImageNonChromaGDI( hdc, image.GetHBitmap(), topLeft, size, imageStart, imageSize );
 	}
 	void DrawImageNonChromaPlus( Gdiplus::Graphics& graphics, Gdiplus::Image* image, const Vec2<T>& topLeft, const Vec2<T>& size,
 		const Vec2<T>& imageStart, const Vec2<T>& imageEnd )
@@ -406,8 +407,8 @@ public:
 		}
 		const auto sizeT = br - tl;
 
-		TransparentBlt( hdc, tl.x, tl.y, sizeT.x, sizeT.y, hMemDC,
-			imageStart.x, imageStart.y, imageEnd.x, imageEnd.y, chroma );
+		TransparentBlt( hdc, (int)tl.x, (int)tl.y, (int)sizeT.x, (int)sizeT.y, hMemDC,
+			(int)imageStart.x, (int)imageStart.y, (int)imageEnd.x, (int)imageEnd.y, chroma );
 		SelectObject( hMemDC, hOldBitmap );
 		DeleteObject( hMemDC );
 	}
