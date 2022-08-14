@@ -98,6 +98,15 @@ public:
                 cam.SetScale( 1.0f );
             }
         }
+        if ( GetAsyncKeyState( 'T' ) & 0x0001 )
+        {
+            if ( isImageSet )
+            {
+                curFrame.pivot = CalcPivotFromNDC( curFrame.sprite );
+                curPivotGizmo.SetPos( CalcPivotFromNDC( selectRect ) );
+                isDrawPivot = true;
+            }
+        }
 
         const auto camPos = cam.GetPos();
         const auto camZoom = cam.GetScale();
@@ -254,7 +263,34 @@ public:
                     break;
                 case IDC_BUTTON_Add:
                     {
-                        InsertFrameToList();
+                        frames.push_back( curFrame );
+                        SendMessage( hList, LB_ADDSTRING, 0, (LPARAM)pivotStr.c_str() );
+                    }
+                    break;
+                case IDC_LIST_Animation:
+                    {
+                        if ( HIWORD( wParam ) == LBN_SELCHANGE )
+                        {
+                            listSelectIdx = SendMessage( hList, LB_GETCURSEL, 0, 0 );
+                        }
+                    }
+                    break;
+                case IDC_BUTTON_Delete:
+                    {
+                        if ( listSelectIdx <= frames.size() - 1 )
+                        {
+                            frames.erase( frames.begin() + listSelectIdx );
+                            SendMessage( hList, LB_DELETESTRING, listSelectIdx, 0 );
+                        }
+                    }
+                    break;
+                case IDC_BUTTON_Insert:
+                    {
+                        if ( listSelectIdx <= frames.size() - 1 )
+                        {
+                            frames.insert( frames.begin() + listSelectIdx + 1, curFrame );
+                            SendMessage( hList, LB_INSERTSTRING, listSelectIdx + 1, (LPARAM)pivotStr.c_str() );
+                        }
                     }
                     break;
                 }
@@ -384,11 +420,7 @@ public:
     }
 
 private:
-    void InsertFrameToList()
-    {
-        frames.push_back( curFrame );
-        SendMessage( hList, LB_ADDSTRING, 0, (LPARAM)pivotStr.c_str() );
-    }
+    
 
     Vec2<int> CalcPivotFromNDC( const RectI& rect ) const
     {
@@ -564,11 +596,12 @@ private:
 
     // Dialog
     Mode mode = Mode::Chroma;
-    Vec2<float> pivotNDC = { 0.0f, 0.5f };
+    Vec2<float> pivotNDC = { 0.5f, 1.0f };
     COLORREF chroma = RGB(255, 0, 255);
     PivotGizmo curPivotGizmo;
     bool isDrawPivot = false;
     HWND hList;
+    int listSelectIdx = 0;
 
     // DebugStr
     std::wstring camPosStr;

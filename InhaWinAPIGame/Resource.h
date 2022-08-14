@@ -43,10 +43,10 @@
 #define IDC_BUTTON_Pivot                1025
 #define IDC_STATIC_Animations           1026
 #define IDC_LIST_Animation              1027
-#define IDC_BUTTON_Show                 1028
+#define IDC_BUTTON_Insert               1028
 #define IDC_BUTTON_Delete               1029
 #define IDC_BUTTON_Add                  1030
-#define IDC_BUTTON_Sample               1031
+#define IDC_BUTTON_Play                 1031
 #define IDC_BUTTON_Open                 1032
 #define IDC_BUTTON_Save                 1033
 #define ID_TOOLMENU_OPEN                32773
