@@ -58,6 +58,10 @@ public:
 			playTime = 0.0f;
 		}
 	}
+	void SetPlaySpeed( float speed )
+	{
+		playSpeed = speed;
+	}
 	int GetFrameIndex() const
 	{
 		return curIdx;

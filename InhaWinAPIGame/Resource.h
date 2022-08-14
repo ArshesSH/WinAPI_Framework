@@ -49,6 +49,14 @@
 #define IDC_BUTTON_Play                 1031
 #define IDC_BUTTON_Open                 1032
 #define IDC_BUTTON_Save                 1033
+#define IDC_BUTTON_Edit                 1034
+#define IDC_EDIT_PlayScale              1035
+#define IDC_STATIC_PlayScale            1036
+#define IDC_BUTTON_ApplyScale           1037
+#define IDC_STATIC_PlaySpeed            1038
+#define IDC_EDIT_PlaySpeed              1039
+#define IDC_BUTTON_ApplySpeed           1040
+#define IDC_BUTTON_Stop                 1041
 #define ID_TOOLMENU_OPEN                32773
 #define ID_TOOLMENU_SAVE                32774
 #define IDC_STATIC                      -1
@@ -60,7 +68,7 @@
 #define _APS_NO_MFC                     1
 #define _APS_NEXT_RESOURCE_VALUE        133
 #define _APS_NEXT_COMMAND_VALUE         32775
-#define _APS_NEXT_CONTROL_VALUE         1033
+#define _APS_NEXT_CONTROL_VALUE         1042
 #define _APS_NEXT_SYMED_VALUE           110
 #endif
 #endif

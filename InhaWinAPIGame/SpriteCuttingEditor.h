@@ -159,7 +159,7 @@ public:
         /*************************/
         /*      Update Anime     */
         /*************************/
-        if ( pPlayAnim != nullptr )
+        if ( isPlayAnimation )
         {
             float dt = ft.Mark();
             pPlayAnim->Update( dt );
@@ -318,6 +318,7 @@ public:
                             }
                         }
                         break;
+
                     case IDC_BUTTON_Play:
                         {
                             switch ( spriteType )
@@ -329,8 +330,38 @@ public:
                                 pPlayAnim = std::make_unique<Animation<int>>( Animation<int>::SpriteType::GDIPlus, fileName, frames, playSpeed );
                                 break;
                             }
-                            
                             isPlayAnimation = true;
+                        }
+                        break;
+
+                    case IDC_BUTTON_Stop:
+                        {
+                            isPlayAnimation = false;
+                        }
+                        break;
+
+                    case IDC_BUTTON_ApplyScale:
+                        {
+                            TCHAR scaleStr[256] = L"";
+                            GetDlgItemText( hWnd, IDC_EDIT_PlayScale, scaleStr, 256 );
+                            playScale = _wtof( scaleStr );
+                            if ( playScale < 0.5f )
+                            {
+                                playScale = 0.5f;
+                            }
+                        }
+                        break;
+
+                    case IDC_BUTTON_ApplySpeed:
+                        {
+                            TCHAR speedStr[256] = L"";
+                            GetDlgItemText( hWnd, IDC_EDIT_PlaySpeed, speedStr, 256 );
+                            playSpeed = _wtof( speedStr );
+                            if ( playSpeed < 0.0f )
+                            {
+                                playSpeed = 0.0f;
+                            }
+                            pPlayAnim->SetPlaySpeed( playSpeed );
                         }
                         break;
                     }
@@ -428,14 +459,15 @@ public:
                     screenSurf.DrawStringGDI( hdc, { 0,60 }, transMousePosStr );
                     screenSurf.DrawStringGDI( hdc, { 0,80 }, chromaStr );
                     screenSurf.DrawStringGDI( hdc, { 0,100 }, pivotStr );
-                    screenSurf.DrawStringGDI( hdc, { 0,120 }, animFrameStr );
+
 
                     if ( isPlayAnimation )
                     {
+                        screenSurf.DrawStringGDI( hdc, { 0,120 }, animFrameStr );
                         switch ( spriteType )
                         {
                         case SpriteCuttingEditor::SpriteType::GDI:
-                            pPlayAnim->PlayGDI( hdc, { 400,100 }, 2.0f, chroma );
+                            pPlayAnim->PlayGDI( hdc, { 400,100 }, playScale, chroma );
                             break;
                         case SpriteCuttingEditor::SpriteType::GDIPlus:
                             break;
@@ -583,8 +615,6 @@ private:
     }
 	
 private:
-    static constexpr float playSpeed = 0.1f;
-
     const Vec2<float> dirLeft = { -1.0f, 0.0f };
     const Vec2<float> dirUp = { 0.0f, 1.0f };
     const Vec2<float> dirRight = { 1.0f, 0.0f };
@@ -633,6 +663,8 @@ private:
     Animation<int>::Frame curFrame;
     std::vector<Animation<int>::Frame> frames;
     std::unique_ptr<Animation<int>> pPlayAnim;
+    float playSpeed = 0.2f;
+    float playScale = 1.0f;
 
     // Dialog
     Mode mode = Mode::Chroma;
