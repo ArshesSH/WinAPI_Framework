@@ -58,11 +58,24 @@ public:
 			playTime = 0.0f;
 		}
 	}
-	void PlayGDI(HDC hdc, const Vec2<T>& topLeft, const Vec2<T>& size, COLORREF chroma )
+	int GetFrameIndex() const
+	{
+		return curIdx;
+	}
+	void PlayGDI(HDC hdc, const Vec2<T>& topLeft, float power, COLORREF chroma )
 	{
 		static Image::ImageGDI sprite( spritePath );
 		const auto curSprite = frames[curIdx].sprite;
-		surf.DrawImageChromaGDI( hdc, sprite.GetHBitmap(), topLeft, size, curSprite.GetTopLeft(), { curSprite.GetWidth(), curSprite.GetHeight() }, chroma );
+		const auto curPivot = frames[curIdx].pivot;
+		const Vec2<T> curTopLeft = topLeft -curPivot;
+
+		if ( curIdx == 1 )
+		{
+			int a = 9;
+		}
+
+		const Vec2<T>& size = { curSprite.GetWidth(), curSprite.GetHeight() };
+		surf.DrawImageChromaGDI( hdc, sprite.GetHBitmap(), curTopLeft, Vec2<T>( size * power ), curSprite.GetTopLeft(), size, chroma );
 	}
 	void PlayGDIPlus(Gdiplus::Graphics& gfx, const Vec2<T>& topLeft, const Vec2<T>& size, const Gdiplus::Color& chroma )
 	{

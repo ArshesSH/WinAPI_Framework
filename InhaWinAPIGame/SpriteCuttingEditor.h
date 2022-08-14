@@ -103,8 +103,17 @@ public:
             if ( isImageSet )
             {
                 curFrame.pivot = CalcPivotFromNDC( curFrame.sprite );
-                curPivotGizmo.SetPos( CalcPivotFromNDC( selectRect ) );
+                curPivotGizmo.SetPos( CalcPivotCoordFromNDC( selectRect ) );
                 isDrawPivot = true;
+            }
+        }
+        if ( GetAsyncKeyState( 'G' ) & 0x0001 )
+        {
+            if ( isImageSet )
+            {
+                frames.push_back( curFrame );
+                listStr = L"R:" + std::to_wstring( curFrame.sprite.left ) + L"," + std::to_wstring( curFrame.sprite.top ) + L"|" + std::to_wstring( curFrame.sprite.right ) + L"," + std::to_wstring( curFrame.sprite.bottom ) + L" / " + pivotStr;
+                SendMessage( hList, LB_ADDSTRING, 0, (LPARAM)listStr.c_str() );
             }
         }
 
@@ -117,6 +126,10 @@ public:
         chromaStr = L"Chroma : (" + std::to_wstring( GetRValue( chroma ) ) + L"," + std::to_wstring( GetGValue( chroma ) ) +
             L"," + std::to_wstring( GetBValue( chroma ) ) + L")";
         pivotStr = L"Pivot : (" + std::to_wstring( curFrame.pivot.x ) + L"," + std::to_wstring( curFrame.pivot.y ) + L")";
+        if ( pPlayAnim )
+        {
+            animFrameStr = L"Frame : " + std::to_wstring( pPlayAnim->GetFrameIndex() );
+        }
 
         /*************************/
         /*  Update Mouse Click   */
@@ -146,10 +159,10 @@ public:
         /*************************/
         /*      Update Anime     */
         /*************************/
-        if ( pSampleAnime != nullptr )
+        if ( pPlayAnim != nullptr )
         {
             float dt = ft.Mark();
-            pSampleAnime->Update( dt );
+            pPlayAnim->Update( dt );
         }
     }
 
@@ -259,15 +272,15 @@ public:
 
                             if ( xChar[0] == '\0' && yChar[0] == '\0' )
                             {
-                                SetPivotNDC( 0.5f, 1.0f );
+                                pivotNDC = { 0.5f, 1.0f };
                             }
                             else
                             {
-                                SetPivotNDC( float( _wtof( xChar ) ), float( _wtof( yChar ) ) );
+                                pivotNDC = { float( _wtof( xChar ) ), float( _wtof( yChar ) ) };
                             }
 
                             curFrame.pivot = CalcPivotFromNDC( curFrame.sprite );
-                            curPivotGizmo.SetPos( CalcPivotFromNDC( selectRect ) );
+                            curPivotGizmo.SetPos( CalcPivotCoordFromNDC( selectRect ) );
                             isDrawPivot = true;
                         }
                         break;
@@ -288,7 +301,7 @@ public:
                         break;
                     case IDC_BUTTON_Delete:
                         {
-                            if ( listSelectIdx <= frames.size() - 1 )
+                            if ( !frames.empty() && listSelectIdx <= frames.size() - 1 )
                             {
                                 frames.erase( frames.begin() + listSelectIdx );
                                 SendMessage( hList, LB_DELETESTRING, listSelectIdx, 0 );
@@ -310,10 +323,10 @@ public:
                             switch ( spriteType )
                             {
                             case SpriteCuttingEditor::SpriteType::GDI:
-                                pSampleAnime = std::make_unique<Animation<int>>( Animation<int>::SpriteType::GDI, fileName, frames, playSpeed );
+                                pPlayAnim = std::make_unique<Animation<int>>( Animation<int>::SpriteType::GDI, fileName, frames, playSpeed );
                                 break;
                             case SpriteCuttingEditor::SpriteType::GDIPlus:
-                                pSampleAnime = std::make_unique<Animation<int>>( Animation<int>::SpriteType::GDIPlus, fileName, frames, playSpeed );
+                                pPlayAnim = std::make_unique<Animation<int>>( Animation<int>::SpriteType::GDIPlus, fileName, frames, playSpeed );
                                 break;
                             }
                             
@@ -415,20 +428,14 @@ public:
                     screenSurf.DrawStringGDI( hdc, { 0,60 }, transMousePosStr );
                     screenSurf.DrawStringGDI( hdc, { 0,80 }, chromaStr );
                     screenSurf.DrawStringGDI( hdc, { 0,100 }, pivotStr );
-
-                    if ( pSampleAnime )
-                    {
-                        const std::wstring timeStr = std::to_wstring( pSampleAnime->playTime );
-                        screenSurf.DrawStringGDI( hdc, { 0,120 }, timeStr );
-                    }
-
+                    screenSurf.DrawStringGDI( hdc, { 0,120 }, animFrameStr );
 
                     if ( isPlayAnimation )
                     {
                         switch ( spriteType )
                         {
                         case SpriteCuttingEditor::SpriteType::GDI:
-                            pSampleAnime->PlayGDI( hdc, { 400,100 }, { 100,100 }, chroma );
+                            pPlayAnim->PlayGDI( hdc, { 400,100 }, 2.0f, chroma );
                             break;
                         case SpriteCuttingEditor::SpriteType::GDIPlus:
                             break;
@@ -440,28 +447,6 @@ public:
         }
     }
 
-    void SetPivotNDC( float x, float y )
-    {
-        if ( x < 0.0f )
-        {
-            x = 0.0f;
-        }
-        else if ( x > 1.0f )
-        {
-            x = 1.0f;
-        }
-        if ( y < 0.0f )
-        {
-            y = 0.0f;
-        }
-        else if ( y > 1.0f )
-        {
-            y = 1.0f;
-        }
-        pivotNDC.x = x;
-        pivotNDC.y = y;
-    }
-
     void SetListHandle( HWND hWnd )
     {
         hList = hWnd;
@@ -469,6 +454,10 @@ public:
 
 private:
     Vec2<int> CalcPivotFromNDC( const RectI& rect ) const
+    {
+        return Vec2<int>( int( rect.GetWidth() * pivotNDC.x ), int( rect.GetHeight() * pivotNDC.y ) );
+    }
+    Vec2<int> CalcPivotCoordFromNDC( const RectI& rect ) const
     {
         return rect.GetTopLeft() + Vec2<int>( int( rect.GetWidth() * pivotNDC.x ), int( rect.GetHeight() * pivotNDC.y ) );
     }
@@ -643,7 +632,7 @@ private:
     // Animation
     Animation<int>::Frame curFrame;
     std::vector<Animation<int>::Frame> frames;
-    std::unique_ptr<Animation<int>> pSampleAnime;
+    std::unique_ptr<Animation<int>> pPlayAnim;
 
     // Dialog
     Mode mode = Mode::Chroma;
@@ -663,4 +652,5 @@ private:
     std::wstring chromaStr;
     std::wstring pivotStr;
     std::wstring listStr;
+    std::wstring animFrameStr;
 };
