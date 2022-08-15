@@ -13,14 +13,14 @@ public:
 		filename( filename )
 	{}
 
-	std::vector<std::wstring> GetLineVector() const
+	std::vector<std::string> GetLineVector() const
 	{
-		std::vector<std::wstring> list;
-		std::wifstream input( filename, std::ios::binary );
+		std::vector<std::string> list;
+		std::ifstream input( filename, std::ios::binary );
 
 		assert( !input.fail() );
 
-		for ( std::wstring str; std::getline( input, str ); )
+		for ( std::string str; std::getline( input, str ); )
 		{
 			if ( str.empty() )
 			{
@@ -33,19 +33,19 @@ public:
 		return list;
 	}
 
-	std::wstring GetSingleLine() const
+	std::string GetSingleLine() const
 	{
-		std::wifstream input( filename, std::ios::binary );
+		std::ifstream input( filename, std::ios::binary );
 		assert( !input.fail() );
 
-		std::wstring str;
+		std::string str;
 		std::getline( input, str );
 		return std::move( str );
 	}
 
-	void SaveToFile( const std::vector<std::wstring>& data )
+	void SaveToFile( const std::vector<std::string>& data )
 	{
-		std::wofstream output( filename, std::ios::binary );
+		std::ofstream output( filename, std::ios::binary );
 
 		for ( auto str : data )
 		{

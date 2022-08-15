@@ -5,6 +5,7 @@
 #include "Image.h"
 #include "UtilSH.h"
 #include <fstream>
+#include "FileManager.h"
 
 template <typename T>
 class Animation
@@ -80,43 +81,6 @@ public:
 
 		const Vec2<T>& size = { curSprite.GetWidth(), curSprite.GetHeight() };
 		surf.DrawImageChromaGDI( hdc, image.GetHBitmap(), curTopLeft, ( size * (T)power ), curSprite.GetTopLeft(), size, chroma );
-	}
-
-	void LoadFramesFromFile( const std::wstring& filePath )
-	{
-		std::ifstream in( filePath, std::ios::binary );
-
-		if ( in.is_open() )
-		{
-			if ( !frames.empty() )
-			{
-				frames.clear();
-			}
-
-			while ( !in.eof() )
-			{
-				Frame frame;
-				in.read( reinterpret_cast<char*>(&frame), sizeof( Frame ) );
-				frames.push_back( frame );
-			}
-		}
-		in.close();
-	}
-
-	void SaveFramesToFile(const std::wstring& filePath)
-	{
-		std::ofstream out( filePath, std::ios::binary );
-
-		if ( out.is_open() )
-		{
-			
-			for ( Frame& frame : frames )
-			{
-				out.write( reinterpret_cast<char*>(&frame), sizeof( Frame ) );
-			}
-			
-		}
-		out.close();
 	}
 
 private:

@@ -565,15 +565,53 @@ public:
 private:
     void LoadAnimation( const std::wstring& name )
     {
-        Animation<int> anim;
-        anim.LoadFramesFromFile( fileName );
-        pPlayAnim = std::make_unique<Animation<int>>( anim );
+        FileManager fileManager( name );
+        std::vector<std::string> data = fileManager.GetLineVector();
+        
+        std::vector<Animation<int>::Frame> loadedFrames;
+
+        
+        for ( size_t i = 0; i < data.size(); i += 6 )
+        {
+            Animation<int>::Frame frame;
+            frame.sprite = { VecFromData( data, i ), VecFromData( data, i + 2 ) };
+            frame.pivot = VecFromData( data, i + 4 );
+
+            loadedFrames.push_back( frame );
+        }
+
+
+        pPlayAnim = std::make_unique<Animation<int>>( Animation<int>::SpriteType::GDI, loadedFrames );
     }
 
     void SaveAnimation( const std::wstring& name )
     {
         const std::wstring filename = name + L".anim";
-        pPlayAnim->SaveFramesToFile( filename );
+        auto frames = pPlayAnim->GetFrames();
+
+        std::vector<std::string> data;
+        for ( const auto& frame : frames )
+        {
+            AddVecToData( data, frame.sprite.GetTopLeft() );
+            AddVecToData( data, frame.sprite.GetBottomRight() );
+            AddVecToData( data, frame.pivot );
+        }
+
+        FileManager fileManager( filename );
+        fileManager.SaveToFile( data );
+
+        //pPlayAnim->SaveFramesToFile( filename );
+    }
+
+    void AddVecToData( std::vector<std::string>& data, const Vec2<int>& v )
+    {
+        data.push_back( std::to_string( v.x ) );
+        data.push_back( std::to_string( v.y ) );
+    }
+
+    Vec2<int> VecFromData( const std::vector<std::string>& data, int idx )
+    {
+        return { std::stoi( data[idx] ), std::stoi( data[idx + 1] ) };
     }
 
     void AddFrameToList()
