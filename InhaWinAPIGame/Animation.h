@@ -109,14 +109,12 @@ public:
 
 		if ( out.is_open() )
 		{
-			out.write( reinterpret_cast<const char*>(&frames), sizeof( Frame ) );
-
-			/*
-			for ( const Frame& frame : frames )
+			
+			for ( Frame& frame : frames )
 			{
-				out.write( reinterpret_cast<const char*>(&frame), sizeof( Frame ) );
+				out.write( reinterpret_cast<char*>(&frame), sizeof( Frame ) );
 			}
-			*/
+			
 		}
 		out.close();
 	}
