@@ -2,30 +2,58 @@
 
 #include <fstream>
 #include <string>
+#include <vector>
+#include <cassert>
 
 class FileManager
 {
 public:
-	template <class Data>
-	Data Load( const std::wstring& filename)
+	FileManager( const std::wstring& filename )
+		:
+		filename( filename )
+	{}
+
+	std::vector<std::wstring> GetLineVector() const
 	{
-		Data data;
-
+		std::vector<std::wstring> list;
 		std::wifstream input( filename, std::ios::binary );
-		if ( input.is_open() )
-		{
 
-			input.read( reinterpret_cast<char*>(&data, sizeof( Data )) );
-			input.close();
+		assert( !input.fail() );
+
+		for ( std::wstring str; std::getline( input, str ); )
+		{
+			if ( str.empty() )
+			{
+				continue;
+			}
+			list.push_back( str );
 		}
-		return data;
+		input.close();
+
+		return list;
 	}
 
-	template <class Data>
-	void Save( const std::wstring& filename, const Data& data )
+	std::wstring GetSingleLine() const
+	{
+		std::wifstream input( filename, std::ios::binary );
+		assert( !input.fail() );
+
+		std::wstring str;
+		std::getline( input, str );
+		return std::move( str );
+	}
+
+	void SaveToFile( const std::vector<std::wstring>& data )
 	{
 		std::wofstream output( filename, std::ios::binary );
-		output.write( reinterpret_cast<const char*>(&data), sizeof( Data ) );
-		output.close();
+
+		for ( auto str : data )
+		{
+			output << str;
+		}
 	}
+
+private:
+	std::wstring filename;
 };
+

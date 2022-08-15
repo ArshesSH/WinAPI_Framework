@@ -4,6 +4,7 @@
 #include "Surface.h"
 #include "Image.h"
 #include "UtilSH.h"
+#include <fstream>
 
 template <typename T>
 class Animation
@@ -37,19 +38,19 @@ public:
 	};
 
 public:
-	Animation( SpriteType spriteType, const std::wstring& spritePath, const std::vector<Frame>& frames, float playSpeed )
+	Animation() {};
+	Animation( SpriteType spriteType, const std::vector<Frame>& frames )
 		:
 		spriteType(spriteType),
-		spritePath(spritePath),
-		frames(frames),
-		playSpeed(playSpeed)
+		frames(frames)
 	{
 	}
+
 	void SetTransform( const Mat3<float>& transform )
 	{
 		surf.SetTransformation( transform );
 	}
-	void Update( float dt )
+	void Update( float dt, float playSpeed )
 	{
 		playTime += dt;
 		if ( playTime >= playSpeed )
@@ -58,19 +59,18 @@ public:
 			playTime = 0.0f;
 		}
 	}
-	void SetPlaySpeed( float speed )
-	{
-		playSpeed = speed;
-	}
 	int GetFrameIndex() const
 	{
 		return curIdx;
 	}
-	void PlayGDI(HDC hdc, const Vec2<T>& topLeft, float power, COLORREF chroma )
+	std::vector<Frame> GetFrames() const
 	{
-		static Image::ImageGDI sprite( spritePath );
+		return frames;
+	}
+	void PlayGDI(HDC hdc, const Image::ImageGDI<T>& image, const Vec2<T>& topLeft, float power, COLORREF chroma )
+	{
 		const auto curSprite = frames[curIdx].sprite;
-		const auto curPivot = frames[curIdx].pivot;
+		const auto curPivot = frames[curIdx].pivot * (T)power;
 		const Vec2<T> curTopLeft = topLeft -curPivot;
 
 		if ( curIdx == 1 )
@@ -79,21 +79,52 @@ public:
 		}
 
 		const Vec2<T>& size = { curSprite.GetWidth(), curSprite.GetHeight() };
-		surf.DrawImageChromaGDI( hdc, sprite.GetHBitmap(), curTopLeft, ( size * (T)power ), curSprite.GetTopLeft(), size, chroma );
+		surf.DrawImageChromaGDI( hdc, image.GetHBitmap(), curTopLeft, ( size * (T)power ), curSprite.GetTopLeft(), size, chroma );
 	}
-	void PlayGDIPlus(Gdiplus::Graphics& gfx, const Vec2<T>& topLeft, const Vec2<T>& size, const Gdiplus::Color& chroma )
+
+	void LoadFramesFromFile( const std::wstring& filePath )
 	{
-		static Image::ImageGDIPlus sprite( spritePath );
-		const auto curSprite = frames[curIdx].sprite;
-		surf.DrawImageChromaPlus( gfx, sprite, topLeft, size, curSprite.GetTopLeft(), { curSprite.GetWidth(), curSprite.GetHeight() }, 0, chroma );
+		std::ifstream in( filePath, std::ios::binary );
+
+		if ( in.is_open() )
+		{
+			if ( !frames.empty() )
+			{
+				frames.clear();
+			}
+
+			while ( !in.eof() )
+			{
+				Frame frame;
+				in.read( reinterpret_cast<char*>(&frame), sizeof( Frame ) );
+				frames.push_back( frame );
+			}
+		}
+		in.close();
+	}
+
+	void SaveFramesToFile(const std::wstring& filePath)
+	{
+		std::ofstream out( filePath, std::ios::binary );
+
+		if ( out.is_open() )
+		{
+			out.write( reinterpret_cast<const char*>(&frames), sizeof( Frame ) );
+
+			/*
+			for ( const Frame& frame : frames )
+			{
+				out.write( reinterpret_cast<const char*>(&frame), sizeof( Frame ) );
+			}
+			*/
+		}
+		out.close();
 	}
 
 private:
 	Surface<T> surf;
 	SpriteType spriteType;
-	const std::wstring spritePath;
 	std::vector<Frame> frames;
-	float playSpeed;
 	float playTime = 0.0f;
 	int curIdx = 0;
 };

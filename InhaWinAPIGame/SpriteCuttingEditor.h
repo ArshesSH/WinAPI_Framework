@@ -7,7 +7,6 @@
 #include "FrameTimer.h"
 #include "Surface.h"
 #include "Vec2.h"
-#include "FileManager.h"
 
 #include "CoordinateTransformer.h"
 #include "Camera.h"
@@ -163,7 +162,7 @@ public:
         if ( isPlayAnimation )
         {
             float dt = ft.Mark();
-            pPlayAnim->Update( dt );
+            pPlayAnim->Update( dt, playSpeed );
         }
     }
 
@@ -287,9 +286,7 @@ public:
                         break;
                     case IDC_BUTTON_Add:
                         {
-                            frames.push_back( curFrame );
-                            listStr = L"R:" + std::to_wstring( curFrame.sprite.left ) + L"," + std::to_wstring( curFrame.sprite.top ) + L"|" + std::to_wstring( curFrame.sprite.right ) + L"," + std::to_wstring( curFrame.sprite.bottom ) + L" / " + pivotStr;
-                            SendMessage( hList, LB_ADDSTRING, 0, (LPARAM)listStr.c_str() );
+                            AddFrameToList();
                         }
                         break;
                     case IDC_LIST_Animation:
@@ -343,16 +340,19 @@ public:
 
                     case IDC_BUTTON_Play:
                         {
-                            switch ( spriteType )
+                            if ( !frames.empty() )
                             {
-                            case SpriteCuttingEditor::SpriteType::GDI:
-                                pPlayAnim = std::make_unique<Animation<int>>( Animation<int>::SpriteType::GDI, fileName, frames, playSpeed );
-                                break;
-                            case SpriteCuttingEditor::SpriteType::GDIPlus:
-                                pPlayAnim = std::make_unique<Animation<int>>( Animation<int>::SpriteType::GDIPlus, fileName, frames, playSpeed );
-                                break;
+                                switch ( spriteType )
+                                {
+                                case SpriteCuttingEditor::SpriteType::GDI:
+                                    pPlayAnim = std::make_unique<Animation<int>>( Animation<int>::SpriteType::GDI, frames);
+                                    break;
+                                case SpriteCuttingEditor::SpriteType::GDIPlus:
+                                    pPlayAnim = std::make_unique<Animation<int>>( Animation<int>::SpriteType::GDIPlus, frames );
+                                    break;
+                                }
+                                isPlayAnimation = true;
                             }
-                            isPlayAnimation = true;
                         }
                         break;
 
@@ -362,25 +362,62 @@ public:
                         }
                         break;
 
-                    case IDC_BUTTON_Save:
+                    case IDC_BUTTON_Open:
                         {
-                            ZeroMemory( &ofn, sizeof( ofn ) );
-                            ofn.lStructSize = sizeof( ofn );
-                            ofn.hwndOwner = hWnd;
-                            ofn.lpstrTitle = L"Save Directory";
-                            ofn.lpstrFile = fileName;
-                            ofn.lpstrFilter = L"Animation File(*.anim)\0*.anim\0";
-                            ofn.nMaxFile = MAX_PATH;
-                            ofn.nMaxFileTitle = MAX_PATH;
-                            if ( GetSaveFileName( &ofn ) != 0 )
+                            ZeroMemory( &animOfn, sizeof( animOfn ) );
+                            animOfn.lStructSize = sizeof( animOfn );
+                            animOfn.hwndOwner = hWnd;
+                            animOfn.lpstrTitle = L"Open Directory";
+                            animOfn.lpstrFile = animFileName;
+                            animOfn.lpstrFilter = L"Animation File(*.anim)\0*.anim\0";
+                            animOfn.nMaxFile = MAX_PATH;
+                            animOfn.nMaxFileTitle = MAX_PATH;
+
+                            if ( !frames.empty() )
                             {
-                                switch ( ofn.nFilterIndex )
+                                for ( size_t i = 0; i < frames.size(); ++i )
+                                {
+                                    SendMessage( hList, LB_DELETESTRING, i, 0 );
+                                }
+                                frames.clear();
+                            }
+
+                            if ( GetOpenFileName( &animOfn ) != 0 )
+                            {
+                                switch ( animOfn.nFilterIndex )
                                 {
                                 case 1:
                                     {
-                                        FileSave();
+                                        LoadAnimation(animFileName);
                                     }
                                     break;
+                                }
+                            }
+                        }
+                        break;
+
+                    case IDC_BUTTON_Save:
+                        {
+                            if ( pPlayAnim )
+                            {
+                                ZeroMemory( &animOfn, sizeof( animOfn ) );
+                                animOfn.lStructSize = sizeof( animOfn );
+                                animOfn.hwndOwner = hWnd;
+                                animOfn.lpstrTitle = L"Save Directory";
+                                animOfn.lpstrFile = animFileName;
+                                animOfn.lpstrFilter = L"Animation File(*.anim)\0*.anim\0";
+                                animOfn.nMaxFile = MAX_PATH;
+                                animOfn.nMaxFileTitle = MAX_PATH;
+                                if ( GetSaveFileName( &animOfn ) != 0 )
+                                {
+                                    switch ( animOfn.nFilterIndex )
+                                    {
+                                    case 1:
+                                        {
+                                            SaveAnimation( animFileName );
+                                        }
+                                        break;
+                                    }
                                 }
                             }
                         }
@@ -407,7 +444,6 @@ public:
                             {
                                 playSpeed = 0.0f;
                             }
-                            pPlayAnim->SetPlaySpeed( playSpeed );
                         }
                         break;
                     }
@@ -509,7 +545,7 @@ public:
                         switch ( spriteType )
                         {
                         case SpriteCuttingEditor::SpriteType::GDI:
-                            pPlayAnim->PlayGDI( hdc, { 400,100 }, playScale, chroma );
+                            pPlayAnim->PlayGDI( hdc, *pSpriteGdi.get(), { 400,200 }, playScale, chroma );
                             break;
                         case SpriteCuttingEditor::SpriteType::GDIPlus:
                             break;
@@ -527,9 +563,24 @@ public:
     }
 
 private:
-    void SaveAnimation()
+    void LoadAnimation( const std::wstring& name )
     {
+        Animation<int> anim;
+        anim.LoadFramesFromFile( fileName );
+        pPlayAnim = std::make_unique<Animation<int>>( anim );
+    }
 
+    void SaveAnimation( const std::wstring& name )
+    {
+        const std::wstring filename = name + L".anim";
+        pPlayAnim->SaveFramesToFile( filename );
+    }
+
+    void AddFrameToList()
+    {
+        frames.push_back( curFrame );
+        listStr = L"R:" + std::to_wstring( curFrame.sprite.left ) + L"," + std::to_wstring( curFrame.sprite.top ) + L"|" + std::to_wstring( curFrame.sprite.right ) + L"," + std::to_wstring( curFrame.sprite.bottom ) + L" / " + pivotStr;
+        SendMessage( hList, LB_ADDSTRING, 0, (LPARAM)listStr.c_str() );
     }
 
     Vec2<int> CalcPivotFromNDC( const RectI& rect ) const
@@ -670,7 +721,6 @@ private:
     const Mat3<int> coordMatI = Mat3<int>::ScaleIndependent( 1, -1 );
     const Mat3<float> coordMatF = Mat3<float>::ScaleIndependent( 1.0f, -1.0f );
 
-    FileManager fileManager;
     DrawManager drawManagerMain;
     DrawManager drawManagerSub;
     bool isClientSizeChanged = false;
@@ -712,7 +762,9 @@ private:
     std::vector<Animation<int>::Frame> frames;
     std::unique_ptr<Animation<int>> pPlayAnim;
     float playSpeed = 0.2f;
-    float playScale = 1.0f;
+    float playScale = 3.0f;
+    OPENFILENAME animOfn;
+    TCHAR animFileName[MAX_PATH];
 
     // Dialog
     Mode mode = Mode::Chroma;
