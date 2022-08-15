@@ -319,6 +319,27 @@ public:
                         }
                         break;
 
+                    case IDC_BUTTON_Edit:
+                        {
+                            if ( !frames.empty() && listSelectIdx <= frames.size() - 1 )
+                            {
+                                TCHAR xChar[256] = L"";
+                                TCHAR yChar[256] = L"";
+                                GetDlgItemText( hWnd, IDC_EDIT_PivotX, xChar, 256 );
+                                GetDlgItemText( hWnd, IDC_EDIT_PivotY, yChar, 256 );
+                                if ( xChar[0] == '\0' && yChar[0] == '\0' )
+                                {
+                                    pivotNDC = { 0.5f, 1.0f };
+                                }
+                                else
+                                {
+                                    pivotNDC = { float( _wtof( xChar ) ), float( _wtof( yChar ) ) };
+                                }
+                                frames[listSelectIdx].pivot = CalcPivotFromNDC( frames[listSelectIdx].sprite );
+                            }
+                        }
+                        break;
+
                     case IDC_BUTTON_Play:
                         {
                             switch ( spriteType )
