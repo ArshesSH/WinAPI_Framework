@@ -2,58 +2,30 @@
 
 #include <fstream>
 #include <string>
-#include <vector>
-#include <cassert>
 
 class FileManager
 {
 public:
-	FileManager( const std::wstring& filename )
-		:
-		filename( filename )
-	{}
-
-	std::vector<std::wstring> GetLineVector() const
+	template <class Data>
+	Data Load( const std::wstring& filename)
 	{
-		std::vector<std::wstring> list;
-		std::wifstream input( filename );
+		Data data;
 
-		assert( !input.fail() );
-
-		for ( std::wstring str; std::getline( input, str ); )
+		std::wifstream input( filename, std::ios::binary );
+		if ( input.is_open() )
 		{
-			if ( str.empty() )
-			{
-				continue;
-			}
-			list.push_back( str );
+
+			input.read( reinterpret_cast<char*>(&data, sizeof( Data )) );
+			input.close();
 		}
-		input.close();
-
-		return list;
+		return data;
 	}
 
-	std::wstring GetSingleLine() const
+	template <class Data>
+	void Save( const std::wstring& filename, const Data& data )
 	{
-		std::wifstream input( filename );
-		assert( !input.fail() );
-
-		std::wstring str;
-		std::getline( input, str );
-		return std::move( str );
+		std::wofstream output( filename, std::ios::binary );
+		output.write( reinterpret_cast<const char*>(&data), sizeof( Data ) );
+		output.close();
 	}
-
-	void SaveToFile(const std::vector<std::wstring>& data)
-	{
-		std::wofstream output( filename );
-
-		for ( auto str : data )
-		{
-			output << str;
-		}
-	}
-
-private:
-	std::wstring filename;
 };
-

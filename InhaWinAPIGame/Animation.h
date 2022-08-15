@@ -79,7 +79,7 @@ public:
 		}
 
 		const Vec2<T>& size = { curSprite.GetWidth(), curSprite.GetHeight() };
-		surf.DrawImageChromaGDI( hdc, sprite.GetHBitmap(), curTopLeft, Vec2<T>( size * power ), curSprite.GetTopLeft(), size, chroma );
+		surf.DrawImageChromaGDI( hdc, sprite.GetHBitmap(), curTopLeft, ( size * (T)power ), curSprite.GetTopLeft(), size, chroma );
 	}
 	void PlayGDIPlus(Gdiplus::Graphics& gfx, const Vec2<T>& topLeft, const Vec2<T>& size, const Gdiplus::Color& chroma )
 	{

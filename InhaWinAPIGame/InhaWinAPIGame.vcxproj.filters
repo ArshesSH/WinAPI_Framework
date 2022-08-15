@@ -129,7 +129,7 @@
     <ClInclude Include="DrawManager.h">
       <Filter>헤더 파일\Engine\Graphics</Filter>
     </ClInclude>
-    <ClInclude Include="FileManager.h">
+    <ClInclude Include="TextFileManager.h">
       <Filter>헤더 파일\Engine\Utilities</Filter>
     </ClInclude>
     <ClInclude Include="GDIPlusManager.h">
@@ -218,6 +218,9 @@
     </ClInclude>
     <ClInclude Include="PivotGizmo.h">
       <Filter>헤더 파일\Editors\SpriteEditor</Filter>
+    </ClInclude>
+    <ClInclude Include="FileManager.h">
+      <Filter>헤더 파일\Engine\Utilities</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

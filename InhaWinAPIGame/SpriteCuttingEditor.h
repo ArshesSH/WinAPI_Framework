@@ -7,6 +7,7 @@
 #include "FrameTimer.h"
 #include "Surface.h"
 #include "Vec2.h"
+#include "FileManager.h"
 
 #include "CoordinateTransformer.h"
 #include "Camera.h"
@@ -301,7 +302,7 @@ public:
                         break;
                     case IDC_BUTTON_Delete:
                         {
-                            if ( !frames.empty() && listSelectIdx <= frames.size() - 1 )
+                            if ( !frames.empty() && listSelectIdx <= (int)frames.size() - 1 )
                             {
                                 frames.erase( frames.begin() + listSelectIdx );
                                 SendMessage( hList, LB_DELETESTRING, listSelectIdx, 0 );
@@ -310,7 +311,7 @@ public:
                         break;
                     case IDC_BUTTON_Insert:
                         {
-                            if ( listSelectIdx <= frames.size() - 1 )
+                            if ( listSelectIdx <= (int)frames.size() - 1 )
                             {
                                 frames.insert( frames.begin() + listSelectIdx + 1, curFrame );
                                 listStr = L"R:" + std::to_wstring( curFrame.sprite.left ) + L"," + std::to_wstring( curFrame.sprite.top ) + L"|" + std::to_wstring( curFrame.sprite.right ) + L"," + std::to_wstring( curFrame.sprite.bottom ) + L" / " + pivotStr;
@@ -321,7 +322,7 @@ public:
 
                     case IDC_BUTTON_Edit:
                         {
-                            if ( !frames.empty() && listSelectIdx <= frames.size() - 1 )
+                            if ( !frames.empty() && listSelectIdx <= (int)frames.size() - 1 )
                             {
                                 TCHAR xChar[256] = L"";
                                 TCHAR yChar[256] = L"";
@@ -333,7 +334,7 @@ public:
                                 }
                                 else
                                 {
-                                    pivotNDC = { float( _wtof( xChar ) ), float( _wtof( yChar ) ) };
+                                    pivotNDC = { (float)_wtof( xChar ), (float)_wtof( yChar ) };
                                 }
                                 frames[listSelectIdx].pivot = CalcPivotFromNDC( frames[listSelectIdx].sprite );
                             }
@@ -361,11 +362,35 @@ public:
                         }
                         break;
 
+                    case IDC_BUTTON_Save:
+                        {
+                            ZeroMemory( &ofn, sizeof( ofn ) );
+                            ofn.lStructSize = sizeof( ofn );
+                            ofn.hwndOwner = hWnd;
+                            ofn.lpstrTitle = L"Save Directory";
+                            ofn.lpstrFile = fileName;
+                            ofn.lpstrFilter = L"Animation File(*.anim)\0*.anim\0";
+                            ofn.nMaxFile = MAX_PATH;
+                            ofn.nMaxFileTitle = MAX_PATH;
+                            if ( GetSaveFileName( &ofn ) != 0 )
+                            {
+                                switch ( ofn.nFilterIndex )
+                                {
+                                case 1:
+                                    {
+                                        FileSave();
+                                    }
+                                    break;
+                                }
+                            }
+                        }
+                        break;
+
                     case IDC_BUTTON_ApplyScale:
                         {
                             TCHAR scaleStr[256] = L"";
                             GetDlgItemText( hWnd, IDC_EDIT_PlayScale, scaleStr, 256 );
-                            playScale = _wtof( scaleStr );
+                            playScale = (float)_wtof( scaleStr );
                             if ( playScale < 0.5f )
                             {
                                 playScale = 0.5f;
@@ -377,7 +402,7 @@ public:
                         {
                             TCHAR speedStr[256] = L"";
                             GetDlgItemText( hWnd, IDC_EDIT_PlaySpeed, speedStr, 256 );
-                            playSpeed = _wtof( speedStr );
+                            playSpeed = (float)_wtof( speedStr );
                             if ( playSpeed < 0.0f )
                             {
                                 playSpeed = 0.0f;
@@ -421,10 +446,6 @@ public:
             break;
         }
         isImageSet = true;
-    }
-    void FileSave() override
-    {
-        EditorFrame::FileSave();
     }
 
     void DrawMainWnd( HDC hdc )
@@ -506,6 +527,11 @@ public:
     }
 
 private:
+    void SaveAnimation()
+    {
+
+    }
+
     Vec2<int> CalcPivotFromNDC( const RectI& rect ) const
     {
         return Vec2<int>( int( rect.GetWidth() * pivotNDC.x ), int( rect.GetHeight() * pivotNDC.y ) );
@@ -644,6 +670,7 @@ private:
     const Mat3<int> coordMatI = Mat3<int>::ScaleIndependent( 1, -1 );
     const Mat3<float> coordMatF = Mat3<float>::ScaleIndependent( 1.0f, -1.0f );
 
+    FileManager fileManager;
     DrawManager drawManagerMain;
     DrawManager drawManagerSub;
     bool isClientSizeChanged = false;
