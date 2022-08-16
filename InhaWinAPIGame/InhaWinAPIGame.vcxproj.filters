@@ -204,9 +204,6 @@
     <ClInclude Include="Character.h">
       <Filter>헤더 파일\Engine\Actor</Filter>
     </ClInclude>
-    <ClInclude Include="TestCharacter.h">
-      <Filter>헤더 파일\GameObjects\DynamicActor</Filter>
-    </ClInclude>
     <ClInclude Include="Animation.h">
       <Filter>헤더 파일\Engine\Graphics</Filter>
     </ClInclude>
@@ -221,6 +218,9 @@
     </ClInclude>
     <ClInclude Include="FileManager.h">
       <Filter>헤더 파일\Engine\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="ActorTestScene.h">
+      <Filter>헤더 파일\Engine\Scene</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -252,6 +252,9 @@
       <Filter>소스 파일\Engine\Physics</Filter>
     </ClCompile>
     <ClCompile Include="TestScene.cpp">
+      <Filter>소스 파일\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="ActorTestScene.cpp">
       <Filter>소스 파일\Scene</Filter>
     </ClCompile>
   </ItemGroup>

@@ -1,28 +1,24 @@
 #pragma once
 
 #include "Actor.h"
-#include "Surface.h"
-#include "Image.h"
 #include "Collider.h"
-
+#include "Animation.h"
+#include <unordered_map>
 #include <string>
 
 template <typename T>
 class Character: public Actor
 {
 public:
-	Character(const std::wstring& imageName, const Vec2<T>& pos)
+	Character(const Vec2<T>& pos)
 		:
-		image(imageName),
 		pos(pos)
 	{}
 
 protected:
-	virtual void Control( float dt ) = 0;
-	virtual bool CanMove( const Vec2<T>& pos ) = 0;
 	virtual void Move( float dt, const Vec2<T>& dir )
 	{
-		nextPos = pos + dir;
+		const Vec2<T> nextPos = pos + (dir * moveSpeed * dt);
 		if ( CanMove( nextPos ) )
 		{
 			pos = nextPos;
@@ -30,10 +26,8 @@ protected:
 	}
 
 protected:
-	Image::ImageGDIPlus<T> image;
-	Surface<T> surf;
 	ConvexCollider<T> collider;
+	std::unordered_map<int, Animation<T>> animationMap;
 	Vec2<T> pos;
-	Vec2<T> nextPos;
-	T speed;
+	T moveSpeed;
 };
