@@ -188,6 +188,18 @@ public:
     {
         switch ( message )
         {
+        case WM_ACTIVATE:
+            {
+                if ( wParam == WA_INACTIVE )
+                {
+                    isStopShortcut = true;
+                }
+                else
+                {
+                    isStopShortcut = false;
+                }
+               
+            }
         case WM_MOUSEMOVE:
             {
                 mousePos.x = LOWORD( lParam );
@@ -367,7 +379,6 @@ public:
 
                     case IDC_BUTTON_Open:
                         {
-                            isStopShortcut = true;
                             ZeroMemory( &animOfn, sizeof( animOfn ) );
                             animOfn.lStructSize = sizeof( animOfn );
                             animOfn.hwndOwner = hWnd;
@@ -389,13 +400,12 @@ public:
                                 }
                             }
 
-                            isStopShortcut = false;
+                            
                         }
                         break;
 
                     case IDC_BUTTON_Save:
                         {
-                            isStopShortcut = true;
                             if ( pPlayAnim )
                             {
                                 ZeroMemory( &animOfn, sizeof( animOfn ) );
@@ -418,7 +428,6 @@ public:
                                     }
                                 }
                             }
-                            isStopShortcut = false;
                         }
                         break;
 
