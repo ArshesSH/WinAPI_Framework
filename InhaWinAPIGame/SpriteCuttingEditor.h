@@ -25,8 +25,9 @@ public:
     };
     enum class Mode
     {
-        Select,
-        Chroma
+        SelectRect,
+        SelectChroma,
+        SelectPivot
     };
 public:
     using ImagePlus = Image::ImageGDIPlus<int>;
@@ -179,7 +180,7 @@ public:
     }
     void InitMenuProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam ) override
     {
-        CheckRadioButton( hWnd, IDC_RADIO_Select, IDC_RADIO_Pick, IDC_RADIO_Pick );
+        CheckRadioButton( hWnd, IDC_RADIO_SelectRect, IDC_RADIO_SelectPivot, IDC_RADIO_SelectChroma );
         hList = GetDlgItem( hWnd, IDC_LIST_Animation );
         this->isMenuInit = true;
     }
@@ -202,23 +203,29 @@ public:
 
         case WM_LBUTTONDOWN:
             {
-                // Select Mode
-                if ( mode == Mode::Select )
+                switch ( mode )
                 {
+                case SpriteCuttingEditor::Mode::SelectRect:
                     isSelectRect = true;
                     selectStartPos = mousePos;
-                }
-                else
-                {
+                    break;
+                case SpriteCuttingEditor::Mode::SelectChroma:
                     isChromaPicked = true;
                     shouldChangeChromaDlg = true;
+                    break;
+                case SpriteCuttingEditor::Mode::SelectPivot:
+                    const int relativePosY = (imageBasedMousePos - curFrame.sprite.GetTopLeft()).y;
+                    curFrame.pivot = { curFrame.sprite.GetWidth() / 2 , relativePosY };
+                    curPivotGizmo.SetPos( CalcPivotGizmoFromPivot(selectRect, curFrame.pivot ) );
+                    isDrawPivot = true;
+                    break;
                 }
             }
             break;
 
         case WM_LBUTTONUP:
             {
-                if ( mode == Mode::Select )
+                if ( mode == Mode::SelectRect )
                 {
                     selectEndPos = mousePos;
                     isSelectRect = false;
@@ -262,12 +269,16 @@ public:
                 {
                     switch ( LOWORD( wParam ) )
                     {
-                    case IDC_RADIO_Pick:
-                        mode = Mode::Chroma;
+                    case IDC_RADIO_SelectChroma:
+                        mode = Mode::SelectChroma;
                         break;
-                    case IDC_RADIO_Select:
-                        mode = Mode::Select;
+                    case IDC_RADIO_SelectRect:
+                        mode = Mode::SelectRect;
                         break;
+                    case IDC_RADIO_SelectPivot:
+                        mode = Mode::SelectPivot;
+                        break;
+
                     case IDC_BUTTON_Pivot:
                         {
                             TCHAR xChar[256] = L"";
@@ -345,6 +356,12 @@ public:
                     case IDC_BUTTON_Stop:
                         {
                             isPlayAnimation = false;
+                        }
+                        break;
+
+                    case IDC_BUTTON_Clear:
+                        {
+                            ClearFrames();
                         }
                         break;
 
@@ -545,15 +562,20 @@ public:
     }
 
 private:
+    void ClearFrames()
+    {
+        for ( size_t i = 0; i < frames.size(); ++i )
+        {
+            SendMessage( hList, LB_DELETESTRING, 0, 0 );
+        }
+        frames.clear();
+    }
+
     void LoadAnimation( const std::wstring& name )
     {
         if ( !frames.empty() )
         {
-            for ( size_t i = 0; i < frames.size(); ++i )
-            {
-                SendMessage( hList, LB_DELETESTRING, 0, 0 );
-            }
-            frames.clear();
+            ClearFrames();
         }
 
         FileManager fm( name, FileManager::Mode::Read );
@@ -615,6 +637,12 @@ private:
             listStr = L"R:" + std::to_wstring( curFrame.sprite.left ) + L"," + std::to_wstring( curFrame.sprite.top ) + L"|" + std::to_wstring( curFrame.sprite.right ) + L"," + std::to_wstring( curFrame.sprite.bottom ) + L" / " + pivotStr;
             SendMessage( hList, LB_INSERTSTRING, listSelectIdx + 1, (LPARAM)listStr.c_str() );
         }
+    }
+
+    Vec2<int> CalcPivotGizmoFromPivot( const RectI& rect, const Vec2<int>& pivot ) const
+    {
+        const Vec2<int> tl = rect.GetTopLeft();
+        return { tl.x + pivot.x, tl.y - pivot.y };
     }
 
     Vec2<int> CalcPivotFromNDC( const RectI& rect ) const
@@ -802,7 +830,7 @@ private:
     TCHAR animFileName[MAX_PATH];
 
     // Dialog
-    Mode mode = Mode::Chroma;
+    Mode mode = Mode::SelectChroma;
     Vec2<float> pivotNDC = { 0.5f, 1.0f };
     COLORREF chroma = RGB(255, 0, 255);
     PivotGizmo curPivotGizmo;
