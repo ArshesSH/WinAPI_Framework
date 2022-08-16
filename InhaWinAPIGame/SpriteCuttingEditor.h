@@ -25,8 +25,8 @@ public:
     };
     enum class Mode
     {
-        Select,
-        Chroma,
+        SelectRect,
+        SelectChroma,
         SelectPivot
     };
 public:
@@ -180,7 +180,7 @@ public:
     }
     void InitMenuProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam ) override
     {
-        CheckRadioButton( hWnd, IDC_RADIO_Select, IDC_RADIO_Pivot, IDC_RADIO_Pick );
+        CheckRadioButton( hWnd, IDC_RADIO_SelectRect, IDC_RADIO_SelectPivot, IDC_RADIO_SelectChroma );
         hList = GetDlgItem( hWnd, IDC_LIST_Animation );
         this->isMenuInit = true;
     }
@@ -205,18 +205,18 @@ public:
             {
                 switch ( mode )
                 {
-                case SpriteCuttingEditor::Mode::Select:
+                case SpriteCuttingEditor::Mode::SelectRect:
                     isSelectRect = true;
                     selectStartPos = mousePos;
                     break;
-                case SpriteCuttingEditor::Mode::Chroma:
+                case SpriteCuttingEditor::Mode::SelectChroma:
                     isChromaPicked = true;
                     shouldChangeChromaDlg = true;
                     break;
                 case SpriteCuttingEditor::Mode::SelectPivot:
-                    const auto relativePos = imageBasedMousePos - curFrame.sprite.GetTopLeft();
-                    curFrame.pivot = relativePos;
-                    curPivotGizmo.SetPos( CalcPivotGizmoFromPivot(selectRect, relativePos) );
+                    const int relativePosY = (imageBasedMousePos - curFrame.sprite.GetTopLeft()).y;
+                    curFrame.pivot = { curFrame.sprite.GetWidth() / 2 , relativePosY };
+                    curPivotGizmo.SetPos( CalcPivotGizmoFromPivot(selectRect, curFrame.pivot ) );
                     isDrawPivot = true;
                     break;
                 }
@@ -225,7 +225,7 @@ public:
 
         case WM_LBUTTONUP:
             {
-                if ( mode == Mode::Select )
+                if ( mode == Mode::SelectRect )
                 {
                     selectEndPos = mousePos;
                     isSelectRect = false;
@@ -269,13 +269,13 @@ public:
                 {
                     switch ( LOWORD( wParam ) )
                     {
-                    case IDC_RADIO_Pick:
-                        mode = Mode::Chroma;
+                    case IDC_RADIO_SelectChroma:
+                        mode = Mode::SelectChroma;
                         break;
-                    case IDC_RADIO_Select:
-                        mode = Mode::Select;
+                    case IDC_RADIO_SelectRect:
+                        mode = Mode::SelectRect;
                         break;
-                    case IDC_RADIO_Pivot:
+                    case IDC_RADIO_SelectPivot:
                         mode = Mode::SelectPivot;
                         break;
 
@@ -830,7 +830,7 @@ private:
     TCHAR animFileName[MAX_PATH];
 
     // Dialog
-    Mode mode = Mode::Chroma;
+    Mode mode = Mode::SelectChroma;
     Vec2<float> pivotNDC = { 0.5f, 1.0f };
     COLORREF chroma = RGB(255, 0, 255);
     PivotGizmo curPivotGizmo;
