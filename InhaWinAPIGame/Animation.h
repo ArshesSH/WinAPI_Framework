@@ -4,7 +4,6 @@
 #include "Surface.h"
 #include "Image.h"
 #include "UtilSH.h"
-#include <fstream>
 #include "FileManager.h"
 
 template <typename T>
@@ -81,6 +80,28 @@ public:
 
 		const Vec2<T>& size = { curSprite.GetWidth(), curSprite.GetHeight() };
 		surf.DrawImageChromaGDI( hdc, image.GetHBitmap(), curTopLeft, ( size * (T)power ), curSprite.GetTopLeft(), size, chroma );
+	}
+
+	void LoadFrames( const std::wstring& filePath )
+	{
+		FileManager fm( filePath, FileManager::Mode::Read );
+		if ( fm.CanLoad() )
+		{
+			frames.clear();
+			fm.LoadVector( frames );
+		}
+	}
+
+	void SaveFrames(const std::wstring& filePath)
+	{
+		FileManager fm( filePath, FileManager::Mode::Write );
+		fm.SaveVector( frames );
+
+
+		//for ( size_t i = 0; i < frames.size(); ++i )
+		//{
+		//	fm.Save( frames[i] );
+		//}
 	}
 
 private:

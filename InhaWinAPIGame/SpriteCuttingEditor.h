@@ -565,42 +565,14 @@ public:
 private:
     void LoadAnimation( const std::wstring& name )
     {
-        FileManager fileManager( name );
-        std::vector<std::string> data = fileManager.GetLineVector();
-        
-        std::vector<Animation<int>::Frame> loadedFrames;
-
-        
-        for ( size_t i = 0; i < data.size(); i += 6 )
-        {
-            Animation<int>::Frame frame;
-            frame.sprite = { VecFromData( data, i ), VecFromData( data, i + 2 ) };
-            frame.pivot = VecFromData( data, i + 4 );
-
-            loadedFrames.push_back( frame );
-        }
-
-
-        pPlayAnim = std::make_unique<Animation<int>>( Animation<int>::SpriteType::GDI, loadedFrames );
+        pPlayAnim->LoadFrames(name);
     }
 
     void SaveAnimation( const std::wstring& name )
     {
         const std::wstring filename = name + L".anim";
-        auto frames = pPlayAnim->GetFrames();
 
-        std::vector<std::string> data;
-        for ( const auto& frame : frames )
-        {
-            AddVecToData( data, frame.sprite.GetTopLeft() );
-            AddVecToData( data, frame.sprite.GetBottomRight() );
-            AddVecToData( data, frame.pivot );
-        }
-
-        FileManager fileManager( filename );
-        fileManager.SaveToFile( data );
-
-        //pPlayAnim->SaveFramesToFile( filename );
+        pPlayAnim->SaveFrames(filename);
     }
 
     void AddVecToData( std::vector<std::string>& data, const Vec2<int>& v )
