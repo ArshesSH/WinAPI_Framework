@@ -47,77 +47,81 @@ public:
         /*************************/
         /*      Update Camera    */
         /*************************/
-        if ( GetAsyncKeyState( 'A' ) & 0x8001 )
-        {
-            cam.MoveBy( dirLeft * dt * 200 );
-        }
-        else if ( GetAsyncKeyState( 'D' ) & 0x8001 )
-        {
-            cam.MoveBy( dirRight * dt * 200 );
-        }
-        if ( GetAsyncKeyState( 'W' ) & 0x8001 )
-        {
-            cam.MoveBy( dirUp * dt * 200 );
-        }
-        else if ( GetAsyncKeyState( 'S' ) & 0x8001 )
-        {
-            cam.MoveBy( dirDown * dt * 200 );
-        }
 
-        if ( GetAsyncKeyState( 'Q' ) & 0x8001 )
+        if ( !isStopShortcut )
         {
-            cam.SetScale( cam.GetScale() - (2.0f * dt) );
-            if ( cam.GetScale() <= 0.1f )
+            if ( GetAsyncKeyState( 'A' ) & 0x8001 )
             {
-                cam.SetScale( 0.1f );
+                cam.MoveBy( dirLeft * dt * 200 );
             }
-            
-        }
-        else if ( GetAsyncKeyState( 'E' ) & 0x8001 )
-        {
-            cam.SetScale( cam.GetScale() + (2.0f * dt) );
-        }
-        if ( GetAsyncKeyState( 'F' ) & 0x8001 )
-        {
-            if ( isImageSet )
+            else if ( GetAsyncKeyState( 'D' ) & 0x8001 )
             {
-                switch ( spriteType )
+                cam.MoveBy( dirRight * dt * 200 );
+            }
+            if ( GetAsyncKeyState( 'W' ) & 0x8001 )
+            {
+                cam.MoveBy( dirUp * dt * 200 );
+            }
+            else if ( GetAsyncKeyState( 'S' ) & 0x8001 )
+            {
+                cam.MoveBy( dirDown * dt * 200 );
+            }
+
+            if ( GetAsyncKeyState( 'Q' ) & 0x8001 )
+            {
+                cam.SetScale( cam.GetScale() - (2.0f * dt) );
+                if ( cam.GetScale() <= 0.1f )
                 {
-                case SpriteCuttingEditor::SpriteType::GDI:
-                    cam.SetPos( { 0.0f, (float)pSpriteGdi->GetImageSize().y } );
-                    break;
-                case SpriteCuttingEditor::SpriteType::GDIPlus:
-                    cam.SetPos( { 0.0f, (float)pSpriteGdiPlus->GetImageSize().y } );
-                    break;
+                    cam.SetScale( 0.1f );
+                }
+
+            }
+            else if ( GetAsyncKeyState( 'E' ) & 0x8001 )
+            {
+                cam.SetScale( cam.GetScale() + (2.0f * dt) );
+            }
+            if ( GetAsyncKeyState( 'F' ) & 0x8001 )
+            {
+                if ( isImageSet )
+                {
+                    switch ( spriteType )
+                    {
+                    case SpriteCuttingEditor::SpriteType::GDI:
+                        cam.SetPos( { 0.0f, (float)pSpriteGdi->GetImageSize().y } );
+                        break;
+                    case SpriteCuttingEditor::SpriteType::GDIPlus:
+                        cam.SetPos( { 0.0f, (float)pSpriteGdiPlus->GetImageSize().y } );
+                        break;
+                    }
+                }
+            }
+            if ( GetAsyncKeyState( 'R' ) & 0x8001 )
+            {
+                if ( isImageSet )
+                {
+                    cam.SetScale( 1.0f );
+                }
+            }
+            if ( GetAsyncKeyState( 'T' ) & 0x0001 )
+            {
+                if ( isImageSet )
+                {
+                    curFrame.pivot = CalcPivotFromNDC( curFrame.sprite );
+                    curPivotGizmo.SetPos( CalcPivotCoordFromNDC( selectRect ) );
+                    isDrawPivot = true;
+                }
+            }
+            if ( GetAsyncKeyState( 'G' ) & 0x0001 )
+            {
+                if ( isImageSet )
+                {
+                    frames.push_back( curFrame );
+                    listStr = L"R:" + std::to_wstring( curFrame.sprite.left ) + L"," + std::to_wstring( curFrame.sprite.top ) + L"|" + std::to_wstring( curFrame.sprite.right ) + L"," + std::to_wstring( curFrame.sprite.bottom ) + L" / " + pivotStr;
+                    SendMessage( hList, LB_ADDSTRING, 0, (LPARAM)listStr.c_str() );
                 }
             }
         }
-        if ( GetAsyncKeyState( 'R' ) & 0x8001 )
-        {
-            if ( isImageSet )
-            {
-                cam.SetScale( 1.0f );
-            }
-        }
-        if ( GetAsyncKeyState( 'T' ) & 0x0001 )
-        {
-            if ( isImageSet )
-            {
-                curFrame.pivot = CalcPivotFromNDC( curFrame.sprite );
-                curPivotGizmo.SetPos( CalcPivotCoordFromNDC( selectRect ) );
-                isDrawPivot = true;
-            }
-        }
-        if ( GetAsyncKeyState( 'G' ) & 0x0001 )
-        {
-            if ( isImageSet )
-            {
-                frames.push_back( curFrame );
-                listStr = L"R:" + std::to_wstring( curFrame.sprite.left ) + L"," + std::to_wstring( curFrame.sprite.top ) + L"|" + std::to_wstring( curFrame.sprite.right ) + L"," + std::to_wstring( curFrame.sprite.bottom ) + L" / " + pivotStr;
-                SendMessage( hList, LB_ADDSTRING, 0, (LPARAM)listStr.c_str() );
-            }
-        }
-
+      
         const auto camPos = cam.GetPos();
         const auto camZoom = cam.GetScale();
         camPosStr = L"CamPos : (" + std::to_wstring( camPos.x ) + L", " + std::to_wstring( camPos.y ) + L")";
@@ -301,21 +305,12 @@ public:
                         break;
                     case IDC_BUTTON_Delete:
                         {
-                            if ( !frames.empty() && listSelectIdx <= (int)frames.size() - 1 )
-                            {
-                                frames.erase( frames.begin() + listSelectIdx );
-                                SendMessage( hList, LB_DELETESTRING, listSelectIdx, 0 );
-                            }
+                            DeleteFrameFromList();
                         }
                         break;
                     case IDC_BUTTON_Insert:
                         {
-                            if ( listSelectIdx <= (int)frames.size() - 1 )
-                            {
-                                frames.insert( frames.begin() + listSelectIdx + 1, curFrame );
-                                listStr = L"R:" + std::to_wstring( curFrame.sprite.left ) + L"," + std::to_wstring( curFrame.sprite.top ) + L"|" + std::to_wstring( curFrame.sprite.right ) + L"," + std::to_wstring( curFrame.sprite.bottom ) + L" / " + pivotStr;
-                                SendMessage( hList, LB_INSERTSTRING, listSelectIdx + 1, (LPARAM)listStr.c_str() );
-                            }
+                            InsertFrameToList();
                         }
                         break;
 
@@ -323,19 +318,8 @@ public:
                         {
                             if ( !frames.empty() && listSelectIdx <= (int)frames.size() - 1 )
                             {
-                                TCHAR xChar[256] = L"";
-                                TCHAR yChar[256] = L"";
-                                GetDlgItemText( hWnd, IDC_EDIT_PivotX, xChar, 256 );
-                                GetDlgItemText( hWnd, IDC_EDIT_PivotY, yChar, 256 );
-                                if ( xChar[0] == '\0' && yChar[0] == '\0' )
-                                {
-                                    pivotNDC = { 0.5f, 1.0f };
-                                }
-                                else
-                                {
-                                    pivotNDC = { (float)_wtof( xChar ), (float)_wtof( yChar ) };
-                                }
-                                frames[listSelectIdx].pivot = CalcPivotFromNDC( frames[listSelectIdx].sprite );
+                                InsertFrameToList();
+                                DeleteFrameFromList();
                             }
                         }
                         break;
@@ -366,6 +350,7 @@ public:
 
                     case IDC_BUTTON_Open:
                         {
+                            isStopShortcut = true;
                             ZeroMemory( &animOfn, sizeof( animOfn ) );
                             animOfn.lStructSize = sizeof( animOfn );
                             animOfn.hwndOwner = hWnd;
@@ -386,11 +371,14 @@ public:
                                     break;
                                 }
                             }
+
+                            isStopShortcut = false;
                         }
                         break;
 
                     case IDC_BUTTON_Save:
                         {
+                            isStopShortcut = true;
                             if ( pPlayAnim )
                             {
                                 ZeroMemory( &animOfn, sizeof( animOfn ) );
@@ -413,6 +401,7 @@ public:
                                     }
                                 }
                             }
+                            isStopShortcut = false;
                         }
                         break;
 
@@ -609,6 +598,25 @@ private:
         SendMessage( hList, LB_ADDSTRING, 0, (LPARAM)listStr.c_str() );
     }
 
+    void DeleteFrameFromList()
+    {
+        if ( !frames.empty() && listSelectIdx <= (int)frames.size() - 1 )
+        {
+            frames.erase( frames.begin() + listSelectIdx );
+            SendMessage( hList, LB_DELETESTRING, listSelectIdx, 0 );
+        }
+    }
+
+    void InsertFrameToList()
+    {
+        if ( listSelectIdx <= (int)frames.size() - 1 )
+        {
+            frames.insert( frames.begin() + listSelectIdx + 1, curFrame );
+            listStr = L"R:" + std::to_wstring( curFrame.sprite.left ) + L"," + std::to_wstring( curFrame.sprite.top ) + L"|" + std::to_wstring( curFrame.sprite.right ) + L"," + std::to_wstring( curFrame.sprite.bottom ) + L" / " + pivotStr;
+            SendMessage( hList, LB_INSERTSTRING, listSelectIdx + 1, (LPARAM)listStr.c_str() );
+        }
+    }
+
     Vec2<int> CalcPivotFromNDC( const RectI& rect ) const
     {
         return Vec2<int>( int( rect.GetWidth() * pivotNDC.x ), int( rect.GetHeight() * pivotNDC.y ) );
@@ -654,7 +662,7 @@ private:
     }
     int FindBottomPos( HDC hSrcImageDC, COLORREF chroma ) const
     {
-        for ( int y = selectImageRect.bottom; y > selectImageRect.top; --y )
+        for ( int y = selectImageRect.bottom - 1; y > selectImageRect.top; --y )
         {
             for ( int x = selectImageRect.left; x < selectImageRect.right; ++x )
             {
@@ -753,6 +761,7 @@ private:
     FrameTimer ft;
     SpriteType spriteType = SpriteType::GDI;
     bool isImageSet = false;
+    bool isStopShortcut = false;
 
     // Camera
     CoordinateTransformer ct;
