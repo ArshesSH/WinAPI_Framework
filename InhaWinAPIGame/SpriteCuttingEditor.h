@@ -7,6 +7,7 @@
 #include "FrameTimer.h"
 #include "Surface.h"
 #include "Vec2.h"
+#include "FileManager.h"
 
 #include "CoordinateTransformer.h"
 #include "Camera.h"
@@ -286,6 +287,7 @@ public:
                         break;
                     case IDC_BUTTON_Add:
                         {
+                            frames.push_back( curFrame );
                             AddFrameToList();
                         }
                         break;
@@ -372,15 +374,6 @@ public:
                             animOfn.lpstrFilter = L"Animation File(*.anim)\0*.anim\0";
                             animOfn.nMaxFile = MAX_PATH;
                             animOfn.nMaxFileTitle = MAX_PATH;
-
-                            if ( !frames.empty() )
-                            {
-                                for ( size_t i = 0; i < frames.size(); ++i )
-                                {
-                                    SendMessage( hList, LB_DELETESTRING, i, 0 );
-                                }
-                                frames.clear();
-                            }
 
                             if ( GetOpenFileName( &animOfn ) != 0 )
                             {
@@ -565,14 +558,36 @@ public:
 private:
     void LoadAnimation( const std::wstring& name )
     {
-        pPlayAnim->LoadFrames(name);
+        if ( !frames.empty() )
+        {
+            for ( size_t i = 0; i < frames.size(); ++i )
+            {
+                SendMessage( hList, LB_DELETESTRING, 0, 0 );
+            }
+            frames.clear();
+        }
+
+        FileManager fm( name, FileManager::Mode::Read );
+        if ( fm.CanLoad() )
+        {
+            fm.LoadVector( frames );
+        }
+
+        for ( const auto& frame : frames )
+        {
+            curFrame = frame;
+            AddFrameToList();
+        }
+
+        pPlayAnim = std::make_unique<Animation<int>>( Animation<int>::SpriteType::GDI, frames );
     }
 
     void SaveAnimation( const std::wstring& name )
     {
         const std::wstring filename = name + L".anim";
 
-        pPlayAnim->SaveFrames(filename);
+        FileManager fm( filename, FileManager::Mode::Write );
+        fm.SaveVector( pPlayAnim->GetFrames() );
     }
 
     void AddVecToData( std::vector<std::string>& data, const Vec2<int>& v )
@@ -588,8 +603,9 @@ private:
 
     void AddFrameToList()
     {
-        frames.push_back( curFrame );
-        listStr = L"R:" + std::to_wstring( curFrame.sprite.left ) + L"," + std::to_wstring( curFrame.sprite.top ) + L"|" + std::to_wstring( curFrame.sprite.right ) + L"," + std::to_wstring( curFrame.sprite.bottom ) + L" / " + pivotStr;
+        listStr = L"R:" + std::to_wstring( curFrame.sprite.left ) + L"," + std::to_wstring( curFrame.sprite.top ) + L"|" + std::to_wstring( curFrame.sprite.right ) + L"," + std::to_wstring( curFrame.sprite.bottom ) + L" / ";
+        const std::wstring framePivotStr = L"P:" + std::to_wstring( curFrame.pivot.x ) + L", " + std::to_wstring( curFrame.pivot.y );
+        listStr += framePivotStr;
         SendMessage( hList, LB_ADDSTRING, 0, (LPARAM)listStr.c_str() );
     }
 
