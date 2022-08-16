@@ -153,7 +153,11 @@
     <ClInclude Include="CollisionManager.h" />
     <ClInclude Include="CollisionPatternMatching.h" />
     <ClInclude Include="CoordinateTransformer.h" />
+    <ClInclude Include="EditorFrame.h" />
     <ClInclude Include="FileManager.h" />
+    <ClInclude Include="PivotGizmo.h" />
+    <ClInclude Include="SpriteCuttingEditor.h" />
+    <ClInclude Include="TextFileManager.h" />
     <ClInclude Include="FrameTimer.h" />
     <ClInclude Include="GDIPlusManager.h" />
     <ClInclude Include="framework.h" />

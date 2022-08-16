@@ -111,8 +111,8 @@ void TestScene::Draw( HDC hdc )
 		//auto transform2 = Mat3<float>::Translation( { 200,200 } );
 		surf.SetTransformation( camTransform );
 		surf2.SetTransformation( camTransform );
-		surf.DrawRectGDI( hdc, 0, 0, 100, 100, RGB( 255, 255, 255 ) );
-		surf.DrawRectGDI( hdc, 100, 100, 300, 300, RGB( 255, 0, 0 ) );
+		surf.DrawFillRectGDI( hdc, 0, 0, 100, 100, RGB( 255, 255, 255 ) );
+		surf.DrawFillRectGDI( hdc, 100, 100, 300, 300, RGB( 255, 0, 0 ) );
 		surf2.DrawImageNonChromaGDI( hdc, imageTest.GetHBitmap(), { 0,0 }, { 100,100 }, { 0,0 }, imageTest.GetImageSize() );
 		surf.DrawFillRectPlus( gfx, { 300,0 }, { 100,100 }, Gdiplus::Color{ 255,255,255,0 } );
 		surf2.DrawImageChromaPlus( gfx, imageTest2, dudePos, dudeSize, { 0,0 }, imageTest2.GetImageSize() );

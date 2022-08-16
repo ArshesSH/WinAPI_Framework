@@ -3,57 +3,94 @@
 #include <fstream>
 #include <string>
 #include <vector>
-#include <cassert>
 
 class FileManager
 {
 public:
-	FileManager( const std::wstring& filename )
+	enum class Mode
+	{
+		Read,
+		Write
+	};
+
+public:
+	FileManager(const std::wstring& filePath, Mode mode)
 		:
-		filename( filename )
-	{}
-
-	std::vector<std::wstring> GetLineVector() const
+		filePath(filePath),
+		mode(mode)
 	{
-		std::vector<std::wstring> list;
-		std::wifstream input( filename );
-
-		assert( !input.fail() );
-
-		for ( std::wstring str; std::getline( input, str ); )
+		switch ( mode )
 		{
-			if ( str.empty() )
-			{
-				continue;
-			}
-			list.push_back( str );
+		case FileManager::Mode::Read:
+			in.open( filePath, std::ios::binary );
+			break;
+		case FileManager::Mode::Write:
+			out.open( filePath, std::ios::binary );
+			break;
 		}
-		input.close();
-
-		return list;
 	}
-
-	std::wstring GetSingleLine() const
+	~FileManager()
 	{
-		std::wifstream input( filename );
-		assert( !input.fail() );
-
-		std::wstring str;
-		std::getline( input, str );
-		return std::move( str );
+		FinishRead();
+		FinishWrite();
 	}
-
-	void SaveToFile(const std::vector<std::wstring>& data)
+	void FinishRead()
 	{
-		std::wofstream output( filename );
-
-		for ( auto str : data )
+		if ( in.is_open() )
 		{
-			output << str;
+			in.close();
+		}
+	}
+	void FinishWrite()
+	{
+		if ( out.is_open() )
+		{
+			out.close();
+		}
+	}
+
+	bool CanLoad() const
+	{
+		return in.is_open();
+	}
+
+	template <class Data>
+	bool Load(Data& data)
+	{
+		if ( in.read( reinterpret_cast<char*>(&data), sizeof( Data ) ) )
+		{
+			return true;
+		}
+		return false;
+	}
+
+	template <class Data>
+	void Save(const Data& data)
+	{
+		out.write( reinterpret_cast<const char*>(&data), sizeof( Data ) );
+	}
+
+	template <class Data>
+	void LoadVector( std::vector<Data>& datas )
+	{
+		for ( Data data; Load( data ); )
+		{
+			datas.push_back( data );
+		}
+	}
+
+	template <class Data>
+	void SaveVector( const std::vector<Data>& datas )
+	{
+		for ( const auto& data : datas )
+		{
+			Save( data );
 		}
 	}
 
 private:
-	std::wstring filename;
+	std::wstring filePath;
+	Mode mode;
+	std::ifstream in;
+	std::ofstream out;
 };
-

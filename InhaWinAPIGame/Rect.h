@@ -7,7 +7,13 @@ template < typename T >
 class _Rect
 {
 public:
-	inline	_Rect() {}
+	inline	_Rect()
+		:
+		top( T( 0 ) ),
+		bottom( T( 0 ) ),
+		left( T( 0 ) ),
+		right( T( 0 ) )
+	{}
 	inline	_Rect( T top, T bottom, T left, T right )
 		:
 		top( top ),
@@ -106,6 +112,10 @@ public:
 	inline Vec2<T> GetTopLeft() const
 	{
 		return { left, top };
+	}
+	inline Vec2<T> GetBottomRight() const
+	{
+		return { right, bottom };
 	}
 	inline Vec2<T> GetCenter() const
 	{

@@ -6,7 +6,8 @@
 #include "InhaWinAPIGame.h"
 #include "Game.h"
 #include <memory>
-
+#include <commdlg.h>
+#include "SpriteCuttingEditor.h"
 
 #define MAX_LOADSTRING 100
 
@@ -15,24 +16,31 @@ HINSTANCE hInst;                                // 현재 인스턴스입니다.
 WCHAR szTitle[MAX_LOADSTRING];                  // 제목 표시줄 텍스트입니다.
 WCHAR szWindowClass[MAX_LOADSTRING];            // 기본 창 클래스 이름입니다.
 
+TCHAR strFileTitle[MAX_PATH];
+TCHAR strFileExtension[10];
+TCHAR strFile[100];
+
+std::unique_ptr<EditorFrame> pEditor;
+
+GDIPlusManager gdi;
+//std::unique_ptr<Game> pGame;
+
+
 // 이 코드 모듈에 포함된 함수의 선언을 전달합니다:
 ATOM                MyRegisterClass(HINSTANCE hInstance);
 BOOL                InitInstance(HINSTANCE, int);
 LRESULT CALLBACK    WndProc(HWND, UINT, WPARAM, LPARAM);
+LRESULT CALLBACK    BottomWndProc( HWND, UINT, WPARAM, LPARAM );
 INT_PTR CALLBACK    About(HWND, UINT, WPARAM, LPARAM);
+INT_PTR CALLBACK    MenuDlg( HWND, UINT, WPARAM, LPARAM );
 VOID    CALLBACK    TimerProc( HWND, UINT, WPARAM, DWORD );
-
-GDIPlusManager gdi;
-std::unique_ptr<Game> pGame;
-
-
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
                      _In_opt_ HINSTANCE hPrevInstance,
                      _In_ LPWSTR    lpCmdLine,
                      _In_ int       nCmdShow)
 {
-    pGame = std::make_unique<Game>();
+    //pGame = std::make_unique<Game>();
     UNREFERENCED_PARAMETER(hPrevInstance);
     UNREFERENCED_PARAMETER(lpCmdLine);
 
@@ -66,7 +74,11 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
         }
         //else
         {
-            pGame->UpdateModel();
+            //pGame->UpdateModel();
+            if ( pEditor )
+            {
+                pEditor->Update();
+            }
         }
     }
     return (int)msg.wParam;
@@ -91,10 +103,17 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
     wcex.hIcon          = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_INHAWINAPIGAME));
     wcex.hCursor        = LoadCursor(nullptr, IDC_ARROW);
     wcex.hbrBackground  = (HBRUSH)(COLOR_WINDOW+1);
-    wcex.lpszMenuName   = MAKEINTRESOURCEW(IDC_INHAWINAPIGAME);
+    wcex.lpszMenuName   = MAKEINTRESOURCEW(IDR_TOOLMENU);
     wcex.lpszClassName  = szWindowClass;
     wcex.hIconSm        = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
 
+    // Register Main Window
+    RegisterClassExW( &wcex );
+
+    //Register Bottom Sub window
+    wcex.lpszMenuName = nullptr;
+    wcex.lpfnWndProc = BottomWndProc;
+    wcex.lpszClassName = _T("BottomWndClass");
     return RegisterClassExW(&wcex);
 }
 
@@ -112,7 +131,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 {
    hInst = hInstance; // 인스턴스 핸들을 전역 변수에 저장합니다.
 
-   HWND hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
+   HWND hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW & ~WS_MAXIMIZEBOX,
       CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, nullptr, nullptr, hInstance, nullptr);
 
    if (!hWnd)
@@ -138,54 +157,68 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 //
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
+    if ( pEditor )
+    {
+        pEditor->CaptureWndProc(hWnd, message, wParam, lParam);
+    }
     switch (message)
     {
     case WM_CREATE:
-        if ( pGame )
         {
-            //pGame->SetScreenSize( hWnd );
-            pGame->SetClientSize( hWnd );
+            pEditor = std::make_unique<SpriteCuttingEditor>( hWnd, hInst, IDD_MenuDlg, MenuDlg );
             SetTimer( hWnd, 0, 0, TimerProc );
         }
+        break;
 
-        break;
     case WM_SIZE:
-        if ( pGame )
         {
-            pGame->SetScreenSize( hWnd );
         }
         break;
+
+    case WM_MOVE:
+        {
+        }
+        break;
+
     case WM_COMMAND:
+    {
+        int wmId = LOWORD( wParam );
+        // 메뉴 선택을 구문 분석합니다:
+        switch ( wmId )
         {
-            int wmId = LOWORD(wParam);
-            // 메뉴 선택을 구문 분석합니다:
-            switch (wmId)
+        case WM_INITDIALOG:
+            return (INT_PTR)TRUE;
+
+        case ID_TOOLMENU_OPEN:
             {
-            case IDM_ABOUT:
-                DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
-                break;
-            case IDM_EXIT:
-                DestroyWindow(hWnd);
-                break;
-            default:
-                return DefWindowProc(hWnd, message, wParam, lParam);
+                pEditor->FileOpenFrame( hWnd );
             }
+            break;
+
+        case ID_TOOLMENU_SAVE:
+            {
+                pEditor->FileSaveFrame( hWnd );
+            }
+            break;
         }
-        break;
+    }
+    break;
     case WM_PAINT:
         {
             PAINTSTRUCT ps;
             HDC hdc = BeginPaint(hWnd, &ps);
             // TODO: 여기에 hdc를 사용하는 그리기 코드를 추가합니다...
-            if ( pGame )
+
+            if ( pEditor )
             {
-                pGame->ComposeFrame( hdc );
+                pEditor->Draw( hdc );
             }
             EndPaint(hWnd, &ps);
         }
         break;
     case WM_DESTROY:
         KillTimer( hWnd, 0 );
+        pEditor.release();
         PostQuitMessage(0);
         break;
     default:
@@ -194,22 +227,95 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     return 0;
 }
 
+LRESULT CALLBACK BottomWndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam )
+{
+    switch ( message )
+    {
+        case WM_CREATE:
+        {
+            SetTimer( hWnd, 0, 0, TimerProc );
+        }
+        break;
+
+        case WM_SIZE:
+        {
+        }
+        break;
+
+        case WM_MOVE:
+        {
+        }
+        break;
+
+        case WM_COMMAND:
+        {
+            int wmId = LOWORD( wParam );
+            // 메뉴 선택을 구문 분석합니다:
+            switch ( wmId )
+            {
+                case WM_INITDIALOG:
+                    return (INT_PTR)TRUE;
+
+                break;
+            }
+        }
+        break;
+
+        case WM_PAINT:
+        {
+            PAINTSTRUCT ps;
+            HDC hdc = BeginPaint( hWnd, &ps );
+            {
+                if ( pEditor )
+                {
+                    pEditor->DrawBottomWnd( hdc );
+                }
+            }
+            EndPaint( hWnd, &ps );
+        }
+        break;
+        case WM_DESTROY:
+            PostQuitMessage( 0 );
+            break;
+        default:
+            return DefWindowProc( hWnd, message, wParam, lParam );
+    }
+    return 0;
+}
+
 // 정보 대화 상자의 메시지 처리기입니다.
 INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 {
     UNREFERENCED_PARAMETER(lParam);
-    switch (message)
+    switch ( message )
+    {
+        case WM_INITDIALOG:
+            return (INT_PTR)TRUE;
+
+        case WM_COMMAND:
+            if ( LOWORD( wParam ) == IDOK || LOWORD( wParam ) == IDCANCEL )
+            {
+                EndDialog( hDlg, LOWORD( wParam ) );
+                return (INT_PTR)TRUE;
+            }
+            break;
+    }
+    return (INT_PTR)FALSE;
+}
+
+INT_PTR CALLBACK MenuDlg( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam )
+{
+    if ( pEditor )
+    {
+        pEditor->CaptureMenuProc(hWnd, message, wParam, lParam);
+    }
+    UNREFERENCED_PARAMETER( lParam );
+    switch ( message )
     {
     case WM_INITDIALOG:
-        return (INT_PTR)TRUE;
-
-    case WM_COMMAND:
-        if (LOWORD(wParam) == IDOK || LOWORD(wParam) == IDCANCEL)
         {
-            EndDialog(hDlg, LOWORD(wParam));
-            return (INT_PTR)TRUE;
         }
-        break;
+        return (INT_PTR)TRUE;
     }
     return (INT_PTR)FALSE;
 }

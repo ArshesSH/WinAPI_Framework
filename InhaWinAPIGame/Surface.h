@@ -4,6 +4,7 @@
 #include <ObjIdl.h>
 #include <gdiplus.h>
 #pragma comment(lib, "Gdiplus.lib")
+#pragma comment(lib, "Msimg32.lib")
 
 #include <string>
 #include <vector>
@@ -33,11 +34,11 @@ public:
 	// String
 	void DrawStringGDI(HDC hdc, T x, T y, const std::wstring& str )
 	{
-		TextOut( hdc, (int)x, (int)y, str.c_str(), str.size() );
+		TextOut( hdc, (int)x, (int)y, str.c_str(), (int)str.size() );
 	}
 	void DrawStringGDI( HDC hdc, const Vec2<T>& pos, const std::wstring& str )
 	{
-		TextOut( hdc, (int)pos.x, (int)pos.y, str.c_str(), str.size() );
+		TextOut( hdc, (int)pos.x, (int)pos.y, str.c_str(), (int)str.size() );
 	}
 	void DrawStringPlus( Gdiplus::Graphics& graphics, const std::wstring& str, const Vec2<T>& pos, const Gdiplus::Color& color, float fontSize = 24.0f,
 		const std::wstring& fontType = L"Consolas", const Gdiplus::FontStyle& fontStyle = Gdiplus::FontStyleRegular )
@@ -49,37 +50,57 @@ public:
 		Font font( &fontFamily, fontSize, fontStyle, UnitPixel );
 		PointF pointF( pos.x, pos.y );
 
-		graphics.DrawString( str.c_str(), str.size(), &font, pointF, &brush );
+		graphics.DrawString( str.c_str(), (int)str.size(), &font, pointF, &brush );
 	}
 
 	// Rect
-	void DrawRectGDI(HDC hdc, T left, T top, T right, T bottom, COLORREF color )
+	void DrawRectGDI( HDC hdc, T left, T top, T right, T bottom, COLORREF color, int penWidth )
 	{
+		HPEN hPen;
+		HPEN oldPen;
 		HBRUSH hBrush;
 		HBRUSH oldBrush;
-		hBrush = CreateSolidBrush( color );
+
+		hPen = CreatePen( PS_SOLID, penWidth, color );
+		oldPen = (HPEN)SelectObject( hdc, hPen );
+		hBrush = (HBRUSH)GetStockObject( NULL_BRUSH );
 		oldBrush = (HBRUSH)SelectObject( hdc, hBrush );
 
-		auto topLeft =  transform * Vec3<float>{ left, top, 1 };
-		auto bottomRight = transform * Vec3<float>{ right, bottom, 1 };
-		std::swap( topLeft.y, bottomRight.y );
+		auto tl = transform * Vec3<float>{ (float)left, (float)top, 1 };
+		auto br = transform * Vec3<float>{ (float)right, (float)bottom, 1 };
+		if ( tl.y > br.y )
+		{
+			std::swap( tl.y, br.y );
+		}
 
-		Rectangle( hdc, (int)topLeft.x, (int)topLeft.y, (int)bottomRight.x, (int)bottomRight.y );
+		Rectangle( hdc, (int)tl.x, (int)tl.y, (int)br.x, (int)br.y );
 		SelectObject( hdc, oldBrush );
 		DeleteObject( hBrush );
+		SelectObject( hdc, oldPen );
+		DeleteObject( hPen );
 	}
-	void DrawRectGDI( HDC hdc, const _Rect<T>& rect, COLORREF color )
+	void DrawRectGDI( HDC hdc, const _Rect<T>& rect, COLORREF color, int penWidth )
 	{
-		DrawRectGDI( hdc, (int)rect.left, (int)rect.top, (int)rect.right, (int)rect.bottom, color );
+		DrawRectGDI( hdc, rect.left, rect.top, rect.right, rect.bottom, color, penWidth );
+	}
+	void DrawRectGDI( HDC hdc, const Vec2<T>& topLeft, const Vec2<T>& bottomRight, COLORREF color, int penWidth )
+	{
+		DrawRectGDI( hdc, topLeft.x, topLeft.y, bottomRight.x, bottomRight.y, color, penWidth );
 	}
 	void DrawRectPlus( Gdiplus::Graphics& graphics, const Vec2<T>& topLeft, const Vec2<T>& size, const Gdiplus::Color& color, float penWidth )
 	{
 		using namespace Gdiplus;
 
-		const auto tl = transform * Vec2<float>( topLeft );
-		const auto br = transform * Vec2<float>( size );
+		auto tl = transform * Vec2<float>( topLeft );
+		auto br = transform * Vec2<float>( size );
+		if ( tl.y > br.y )
+		{
+			std::swap( tl.y, br.y );
+		}
 		const float width = br.x - tl.x;
 		const float height = br.y - tl.y;
+
+
 
 		Pen pen( color, penWidth );
 		graphics.DrawRectangle( &pen, tl.x, tl.y, width, height );
@@ -106,7 +127,10 @@ public:
 
 		auto tl = transform * Vec2<float>( topLeft );
 		auto br = transform * Vec2<float>( topLeft + size );
-		std::swap( tl.y, br.y );
+		if ( tl.y > br.y )
+		{
+			std::swap( tl.y, br.y );
+		}
 		const auto sizeT = br - tl;
 		const Gdiplus::RectF r( { tl.x, tl.y }, { sizeT.x, sizeT.y } );
 
@@ -124,13 +148,42 @@ public:
 	}
 
 	// Fill Rect
+	void DrawFillRectGDI( HDC hdc, T left, T top, T right, T bottom, COLORREF color )
+	{
+		HBRUSH hBrush;
+		HBRUSH oldBrush;
+		hBrush = CreateSolidBrush( color );
+		oldBrush = (HBRUSH)SelectObject( hdc, hBrush );
+
+		auto tl = transform * Vec3<float>{ left, top, 1 };
+		auto br = transform * Vec3<float>{ right, bottom, 1 };
+		if ( tl.y > br.y )
+		{
+			std::swap( tl.y, br.y );
+		}
+
+		Rectangle( hdc, (int)tl.x, (int)tl.y, (int)br.x, (int)br.y );
+		SelectObject( hdc, oldBrush );
+		DeleteObject( hBrush );
+	}
+	void DrawFillRectGDI( HDC hdc, const _Rect<T>& rect, COLORREF color )
+	{
+		DrawFillRectGDI( hdc, (int)rect.left, (int)rect.top, (int)rect.right, (int)rect.bottom, color );
+	}
+	void DrawFillRectGDI( HDC hdc, const Vec2<T>& topLeft, const Vec2<T>& bottomRight, COLORREF color )
+	{
+		DrawFillRectGDI( hdc, topLeft.x, topLeft.y, bottomRight.x, bottomRight.y, color );
+	}
 	void DrawFillRectPlus( Gdiplus::Graphics& graphics, const Vec2<T>& topLeft, const Vec2<T>& size, Gdiplus::Color color )
 	{
 		using namespace Gdiplus;
 
 		auto tl = transform * Vec2<float>( topLeft );
 		auto br = transform * Vec2<float>( topLeft + size );
-		std::swap( tl.y, br.y );
+		if ( tl.y > br.y )
+		{
+			std::swap( tl.y, br.y );
+		}
 		const auto sizeT = br - tl;
 		const Gdiplus::RectF r( { tl.x, tl.y }, { sizeT.x, sizeT.y } );
 
@@ -153,7 +206,10 @@ public:
 
 		auto tl = transform * Vec2<float>( topLeft );
 		auto br = transform * Vec2<float>( topLeft + size );
-		std::swap( tl.y, br.y );
+		if ( tl.y > br.y )
+		{
+			std::swap( tl.y, br.y );
+		}
 		const auto sizeT = br - tl;
 		const Gdiplus::RectF r( { tl.x, tl.y }, { sizeT.x, sizeT.y } );
 
@@ -167,6 +223,23 @@ public:
 	}
 
 	// Draw Line
+	void DrawLineGDI( HDC hdc, const Vec2<T>& startPos, const Vec2<T>& endPos, COLORREF color, int penWidth = 1 )
+	{
+		HPEN hPen;
+		HPEN oldPen;
+
+		hPen = CreatePen( PS_SOLID, penWidth, color );
+		oldPen = (HPEN)SelectObject( hdc, hPen );
+
+		const auto transStart = transform * Vec2<float>(startPos);
+		const auto transEnd = transform * Vec2<float>(endPos);
+
+		MoveToEx( hdc, (int)transStart.x, (int)transStart.y, nullptr );
+		LineTo( hdc, (int)transEnd.x, (int)transEnd.y );
+
+		SelectObject( hdc, oldPen );
+		DeleteObject( hPen );
+	}
 	void DrawLinePlus( Gdiplus::Graphics& graphics, const Vec2<T>& v1, const Vec2<T>& v2,  const Gdiplus::Color& color, float penWidth)
 	{
 		using namespace Gdiplus;
@@ -252,25 +325,28 @@ public:
 
 	// Draw NonChroma Image
 	void DrawImageNonChromaGDI( HDC hdc, const HBITMAP& hBitmap, const Vec2<T>& topLeft, const Vec2<T>& size,
-		const Vec2<T>& imageStart, const Vec2<T>& imageEnd )
+		const Vec2<T>& imageStart, const Vec2<T>& imageSize )
 	{
 		HDC hMemDC = CreateCompatibleDC( hdc );
 		HBITMAP hOldBitmap = (HBITMAP)SelectObject( hMemDC, hBitmap );
 
 		auto tl = transform * Vec2<float>( topLeft );
 		auto br = transform * Vec2<float>( topLeft + size);
-		std::swap( tl.y, br.y );
+		if ( tl.y > br.y )
+		{
+			std::swap( tl.y, br.y );
+		}
 		const auto sizeT = br - tl;
 
 		StretchBlt( hdc, (int)tl.x, (int)tl.y, (int)sizeT.x, (int)sizeT.y,
-			hMemDC, (int)imageStart.x, (int)imageStart.y, (int)imageEnd.x, (int)imageEnd.y, SRCCOPY );
+			hMemDC, (int)imageStart.x, (int)imageStart.y, (int)imageSize.x, (int)imageSize.y, SRCCOPY );
 		SelectObject( hMemDC, hOldBitmap );
 		DeleteObject( hMemDC );
 	}
 	void DrawImageNonChromaGDI( HDC hdc, const Image::ImageGDI<T>& image, const Vec2<T>& topLeft, const Vec2<T>& size,
-		const Vec2<T>& imageStart, const Vec2<T>& imageEnd )
+		const Vec2<T>& imageStart, const Vec2<T>& imageSize )
 	{
-		DrawImageNonChromaGDI( hdc, image.GetHBitmap(), topLeft, size, imageStart, imageEnd );
+		DrawImageNonChromaGDI( hdc, image.GetHBitmap(), topLeft, size, imageStart, imageSize );
 	}
 	void DrawImageNonChromaPlus( Gdiplus::Graphics& graphics, Gdiplus::Image* image, const Vec2<T>& topLeft, const Vec2<T>& size,
 		const Vec2<T>& imageStart, const Vec2<T>& imageEnd )
@@ -279,11 +355,14 @@ public:
 
 		auto tl = transform * Vec2<float>( topLeft );
 		auto br = transform * Vec2<float>( topLeft + size );
-		std::swap( tl.y, br.y );
+		if ( tl.y > br.y )
+		{
+			std::swap( tl.y, br.y );
+		}
 		const auto sizeT = br - tl;
 		const Gdiplus::RectF r( { tl.x, tl.y }, { sizeT.x, sizeT.y } );
 
-		graphics.DrawImage( image, r, (int)imageStart.x, (int)imageStart.y, (int)imageEnd.x, (int)imageEnd.y, UnitPixel );
+		graphics.DrawImage( image, r, (float)imageStart.x, (float)imageStart.y, (float)imageEnd.x, (float)imageEnd.y, UnitPixel );
 	}
 	void DrawImageNonChromaPlus( Gdiplus::Graphics& graphics, const Image::ImageGDIPlus<T>& image, const Vec2<T>& topLeft, const Vec2<T>& size,
 		const Vec2<T>& imageStart, const Vec2<T>& imageEnd )
@@ -322,11 +401,14 @@ public:
 
 		auto tl = transform * Vec2<float>( topLeft );
 		auto br = transform * Vec2<float>( topLeft + size );
-		std::swap( tl.y, br.y );
+		if ( tl.y > br.y )
+		{
+			std::swap( tl.y, br.y );
+		}
 		const auto sizeT = br - tl;
 
-		TransparentBlt( hdc, tl.x, tl.y, sizeT.x, sizeT.y, hMemDC,
-			imageStart.x, imageStart.y, imageEnd.x, imageEnd.y, chroma );
+		TransparentBlt( hdc, (int)tl.x, (int)tl.y, (int)sizeT.x, (int)sizeT.y, hMemDC,
+			(int)imageStart.x, (int)imageStart.y, (int)imageEnd.x, (int)imageEnd.y, chroma );
 		SelectObject( hMemDC, hOldBitmap );
 		DeleteObject( hMemDC );
 	}
@@ -346,7 +428,10 @@ public:
 
 		auto tl = transform * Vec2<float>( topLeft );
 		auto br = transform * Vec2<float>( topLeft + size );
-		std::swap( tl.y, br.y );
+		if ( tl.y > br.y )
+		{
+			std::swap( tl.y, br.y );
+		}
 		const auto sizeT = br - tl;
 		const Gdiplus::RectF r( { tl.x, tl.y }, { sizeT.x, sizeT.y } );
 
