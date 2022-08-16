@@ -13,7 +13,6 @@
 #include "Collider.h"
 #include "CollisionManager.h"
 
-#include "TestCharacter.h"
 
 class TestScene : public Scene
 {

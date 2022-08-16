@@ -1,13 +1,15 @@
 #pragma once
 
-#include <string>
-#include "ImageCodex.h"
-#include "Surface.h"
+#include "framework.h"
+#include "ActorTag.h"
 
 class Actor
 {
 public:
-	Actor() {}
+	Actor(ActorTag tag)
+		:
+		tag(tag)
+	{}
 	virtual ~Actor() {}
 	Actor( const Actor& ) = default;
 	Actor( Actor&& ) = default;
@@ -25,4 +27,5 @@ public:
 	}
 protected:
 	bool shouldDestroy = false;
+	ActorTag tag;
 };

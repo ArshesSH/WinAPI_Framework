@@ -42,7 +42,43 @@ public:
 			}
 		}
 	}
-
+	Vec2<T> CalcCorrectVecOfRef( const Collider<T>& ref, const Collider<T>& target )
+	{
+		if ( ref.GetType() == Collider<T>::Type::Convex )
+		{
+			if ( target.GetType() == Collider<T>::Type::Line )
+			{
+				return CheckConvexOverlapLine( ref, target );
+			}
+			else
+			{
+				return ref.GetRect().Overlaps( target.GetRect() );
+			}
+		}
+		else if ( ref.GetType() == Collider<T>::Type::Circle )
+		{
+			if ( target.GetType() == Collider<T>::Type::Line )
+			{
+				return CheckConvexOverlapLine( ref, target );
+			}
+			else
+			{
+				return ref.GetRect().Overlaps( target.GetRect() );
+			}
+		}
+		else
+		{
+			if ( target.GetType() == Collider<T>::Type::Line )
+			{
+				return CheckLineOverlapLine( ref, target );
+			}
+			else
+			{
+				return CheckConvexOverlapLine( target, ref );
+			}
+		}
+	}
+	
 	bool IsOverlapWithOBB( const Collider<T>& ref, const Collider<T>& target ) const
 	{
 		if ( ref.GetType() == Collider<T>::Type::Convex )

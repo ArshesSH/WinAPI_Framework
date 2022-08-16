@@ -290,6 +290,7 @@ public:
 		graphics.DrawPolygon( &pen, &tPoints, pointCnt );
 	}
 
+
 	// Fill Polygon
 	void DrawFillPolygonPlus( Gdiplus::Graphics& graphics, const std::vector<Vec2<T>>& vertices, int pointCnt, const Gdiplus::Color& color )
 	{

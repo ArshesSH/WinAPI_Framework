@@ -144,6 +144,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Actor.h" />
+    <ClInclude Include="ActorTag.h" />
     <ClInclude Include="ActorTestScene.h" />
     <ClInclude Include="Animation.h" />
     <ClInclude Include="Camera.h" />
@@ -156,7 +157,9 @@
     <ClInclude Include="CoordinateTransformer.h" />
     <ClInclude Include="EditorFrame.h" />
     <ClInclude Include="FileManager.h" />
+    <ClInclude Include="Wall.h" />
     <ClInclude Include="PivotGizmo.h" />
+    <ClInclude Include="PlayerX.h" />
     <ClInclude Include="SpriteCuttingEditor.h" />
     <ClInclude Include="TextFileManager.h" />
     <ClInclude Include="FrameTimer.h" />
@@ -198,9 +201,11 @@
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GDIPlusManager.cpp" />
     <ClCompile Include="InhaWinAPIGame.cpp" />
+    <ClCompile Include="PlayerX.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="Surface.cpp" />
     <ClCompile Include="TestScene.cpp" />
+    <ClCompile Include="Wall.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="InhaWinAPIGame.rc" />
