@@ -30,8 +30,6 @@
 #define IDC_TOPPLAYER2                  1012
 #define IDC_TOPPLAYER3                  1013
 #define IDC_STATIC_Mode                 1014
-#define IDC_RADIO_Select                1015
-#define IDC_RADIO_Pick                  1016
 #define IDC_STATIC_ChromaR              1017
 #define IDC_STATIC_ChromaG              1018
 #define IDC_STATIC_ChromaB              1019
@@ -57,6 +55,10 @@
 #define IDC_EDIT_PlaySpeed              1039
 #define IDC_BUTTON_ApplySpeed           1040
 #define IDC_BUTTON_Stop                 1041
+#define IDC_BUTTON_Clear                1042
+#define IDC_RADIO_SelectRect            1045
+#define IDC_RADIO_SelectChroma          1046
+#define IDC_RADIO_SelectPivot           1047
 #define ID_TOOLMENU_OPEN                32773
 #define ID_TOOLMENU_SAVE                32774
 #define IDC_STATIC                      -1
@@ -68,7 +70,7 @@
 #define _APS_NO_MFC                     1
 #define _APS_NEXT_RESOURCE_VALUE        133
 #define _APS_NEXT_COMMAND_VALUE         32775
-#define _APS_NEXT_CONTROL_VALUE         1042
+#define _APS_NEXT_CONTROL_VALUE         1048
 #define _APS_NEXT_SYMED_VALUE           110
 #endif
 #endif
