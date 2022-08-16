@@ -85,6 +85,9 @@
     <Filter Include="헤더 파일\Editors\SpriteEditor">
       <UniqueIdentifier>{90e84c48-7aa5-4f06-95dd-1dc919387c5a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="헤더 파일\Editors\MapEditor">
+      <UniqueIdentifier>{da6be49c-5ff8-4fde-9edf-d3f2eb2d4bc4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -221,6 +224,9 @@
     </ClInclude>
     <ClInclude Include="FileManager.h">
       <Filter>헤더 파일\Engine\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="MapEditor.h">
+      <Filter>헤더 파일\Editors\MapEditor</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
