@@ -42,41 +42,33 @@ public:
 			}
 		}
 	}
-	Vec2<T> CalcCorrectVecOfRef( const Collider<T>& ref, const Collider<T>& target )
+
+	bool CalcCollisionVec( Collider<T>& convex1, Collider<T>& convex2,
+		Vec2<float>& minTransVec1, Vec2<float>& minTransVec2, bool isOnlyApplyToConvex1 = false )
 	{
-		if ( ref.GetType() == Collider<T>::Type::Convex )
+		Vec2<float> minTranslateVecConvex1;
+		Vec2<float> minTranslateVecConvex2;
+
+		if ( CheckVerticesSAT( convex1, convex2, minTranslateVecConvex1 ) == false )
 		{
-			if ( target.GetType() == Collider<T>::Type::Line )
-			{
-				return CheckConvexOverlapLine( ref, target );
-			}
-			else
-			{
-				return ref.GetRect().Overlaps( target.GetRect() );
-			}
+			return false;
 		}
-		else if ( ref.GetType() == Collider<T>::Type::Circle )
+		if ( CheckVerticesSAT( convex2, convex1, minTranslateVecConvex2 ) == false )
 		{
-			if ( target.GetType() == Collider<T>::Type::Line )
-			{
-				return CheckConvexOverlapLine( ref, target );
-			}
-			else
-			{
-				return ref.GetRect().Overlaps( target.GetRect() );
-			}
+			return false;
+		}
+
+		if ( isOnlyApplyToConvex1 )
+		{
+			minTransVec1 = minTranslateVecConvex1 * 2.0f;
 		}
 		else
 		{
-			if ( target.GetType() == Collider<T>::Type::Line )
-			{
-				return CheckLineOverlapLine( ref, target );
-			}
-			else
-			{
-				return CheckConvexOverlapLine( target, ref );
-			}
+			minTransVec1 = minTranslateVecConvex1;
+			minTransVec2 = minTranslateVecConvex2;
 		}
+
+		return true;
 	}
 	
 	bool IsOverlapWithOBB( const Collider<T>& ref, const Collider<T>& target ) const
@@ -216,6 +208,59 @@ private:
 
 		return line1.IsOverlapWith( line2 );
 	}
+	
+	bool CheckVerticesSAT( const Collider<T>& refObj, const Collider<T>& target, Vec2<float>& minTransVec )
+	{
+		auto refObjVertices = refObj.GetVertices();
+		auto refObjVerticesSize = refObjVertices.size();
+		auto targetVertices = target.GetVertices();
+
+		// Create Translate things
+		float minTranslateScalar = INFINITY;
+		Vec2<float> minTranslateNormalVec;
+
+		// Check for each axis
+		for ( int vIdx = 0; vIdx < refObjVerticesSize; ++vIdx )
+		{
+			const int vIdxNext = (vIdx + 1) % refObjVerticesSize;
+			Vec2<float> axisProj = (refObjVertices[vIdx] - refObjVertices[vIdxNext]).GetNormalRightVec2().GetNormalized();
+
+			float minThis = INFINITY;
+			float maxThis = -INFINITY;
+			for ( auto e : refObjVertices )
+			{
+				const float p = e * axisProj;
+				minThis = (std::min)(minThis, p);
+				maxThis = (std::max)(maxThis, p);
+			}
+
+			float minOther = INFINITY;
+			float maxOther = -INFINITY;
+			for ( auto e : targetVertices )
+			{
+				const float p = e * axisProj;
+				minOther = (std::min)(minOther, p);
+				maxOther = (std::max)(maxOther, p);
+			}
+
+			if ( !(maxOther >= minThis && maxThis >= minOther) )
+			{
+				return false;
+			}
+
+			const float curMinTrans = maxOther - minThis;
+			if ( curMinTrans < minTranslateScalar )
+			{
+				minTranslateScalar = curMinTrans;
+				minTranslateNormalVec = axisProj;
+			}
+		}
+
+		minTransVec = minTranslateNormalVec * (minTranslateScalar * 0.5);
+		return true;
+	}
+
+
 	bool CheckConvexOverlapLine( const Collider<T>& convex, const Collider<T>& line ) const
 	{
 		const auto convexVertices = convex.GetVertices();

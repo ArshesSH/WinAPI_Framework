@@ -3,6 +3,7 @@
 #include "Actor.h"
 #include "ActorTag.h"
 #include "Collider.h"
+#include "CollisionManager.h"
 
 class Wall : public Actor
 {
@@ -18,6 +19,11 @@ public:
 		//Debug
 		Gdiplus::Graphics gfx(hdc);
 		collider.Draw( gfx, { 255,255,255,255 } );
+	}
+
+	void CollisionWith( CollisionManager<float>& cm, Actor& target )
+	{
+		cm.CalcCollisionVec()
 	}
 
 private:
