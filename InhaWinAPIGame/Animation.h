@@ -46,7 +46,7 @@ public:
 	{}
 	Animation( SpriteType spriteType, const std::wstring& fileName )
 	{
-		FileManager fm( name, FileManager::Mode::Read );
+		FileManager fm( fileName, FileManager::Mode::Read );
 		if ( fm.CanLoad() )
 		{
 			fm.LoadVector( frames );

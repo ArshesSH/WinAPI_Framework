@@ -15,9 +15,10 @@ public:
 	};
 
 public:
-	PlayerX( const Vec2<float>& startPos )
+	PlayerX( const Vec2<float>& startPos, const Vec2<float>& imgHalfSize )
 		:
-		Character( ActorTag::Player, RectF::FromCenter( startPos, colliderHalfWidth, colliderHalfHeight ) , defaultSpeed )
+		Character( ActorTag::Player, RectF::FromCenter( startPos, colliderHalfWidth, colliderHalfHeight ), defaultSpeed,
+			L"Images/RockmanX5/X/ForthArmorSprite.bmp", imgHalfSize)
 	{
 		animationMap[(int)State::Idle] = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/Idle.anim" );
 		animationMap[(int)State::IdleBlink] = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/IdleBlink.anim" );
@@ -58,10 +59,17 @@ private:
 		}
 	}
 
+	Animation<int> GetCurAnimation() const
+	{
+		return animationMap.at( (int)state );
+	}
+
 private:
 	static constexpr float colliderHalfWidth = 15.0f;
 	static constexpr float colliderHalfHeight = 50.0f;
 	static constexpr float defaultSpeed = 10.0f;
+	static constexpr COLORREF chroma = RGB( 84, 165, 75 );
 
 	State state = State::Idle;
+
 };

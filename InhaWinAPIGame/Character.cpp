@@ -4,7 +4,7 @@
 bool Character::IsCollideWithWall( const Vec2<float>& nextPos, const Scene& scene ) const
 {
 	const ConvexCollider<float> nextCollider( RectF::FromCenter( nextPos, colliderHalfWidth, colliderHalfHeight ) );
-	const auto walls = scene.GetWallPtrs();
+	const auto& walls = scene.GetWallPtrs();
 	for ( const auto& wall : walls )
 	{
 		if ( wall->IsCollideWith( scene.GetCollisionManager(), nextCollider ) )

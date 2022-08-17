@@ -9,6 +9,7 @@ public:
 		:
 		Actor( ActorTag::Wall, startPos, std::make_unique<ConvexCollider<float>>( RectF::FromCenter( startPos, halfWidth, halfHeight ) ) )
 	{}
+
 	void Update( float dt, class Scene& scene ) override;
 	void Draw( HDC hdc ) override
 	{
