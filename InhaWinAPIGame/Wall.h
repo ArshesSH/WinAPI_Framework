@@ -1,31 +1,20 @@
 #pragma once
 
 #include "Actor.h"
-#include "ActorTag.h"
-#include "Collider.h"
-#include "CollisionManager.h"
 
 class Wall : public Actor
 {
 public:
-	Wall( const Vec2<float>& topLeft, float width, float height )
+	Wall( CollisionManager<float>& cm, const Vec2<float>& startPos, float halfWidth, float halfHeight )
 		:
-		Actor(ActorTag::Wall),
-		collider(topLeft, width, height)
+		Actor( cm, ActorTag::Wall, startPos, std::make_unique<ConvexCollider<float>>( RectF::FromCenter( startPos, halfWidth, halfHeight ) ) )
 	{}
-	void Update( float dt, class Game& game ) override;
+	void Update( float dt, class Scene& scene ) override;
 	void Draw( HDC hdc ) override
 	{
-		//Debug
-		Gdiplus::Graphics gfx(hdc);
-		collider.Draw( gfx, { 255,255,255,255 } );
-	}
-
-	void CollisionWith( CollisionManager<float>& cm, Actor& target )
-	{
-		cm.CalcCollisionVec()
+		Gdiplus::Graphics gfx( hdc );
+		DrawCollider( gfx );
 	}
 
 private:
-	ConvexCollider<float> collider;
 };

@@ -2,8 +2,6 @@
 
 #include "Actor.h"
 #include "ActorTag.h"
-#include "Collider.h"
-#include "CollisionManager.h"
 #include "Animation.h"
 #include <unordered_map>
 #include <string>
@@ -11,17 +9,23 @@
 class Character: public Actor
 {
 public:
-	Character(ActorTag tag, const Vec2<float>& pos)
+	Character( CollisionManager<float>& cm, ActorTag tag, const Vec2<float>& startPos, float colliderHalfWidth, float colliderHalfHeight )
 		:
-		Actor(tag),
-		pos(pos)
+		colliderHalfWidth( colliderHalfWidth ),
+		colliderHalfHeight( colliderHalfHeight ),
+		Actor( cm, tag, startPos, std::make_unique<ConvexCollider<float>>( RectF::FromCenter( startPos, colliderHalfWidth, colliderHalfWidth ) ) )
 	{}
 	virtual ~Character() {}
 protected:
+	bool IsCollideWithWall( const Vec2<float>& nextPos, const class Scene& scene ) const;
+	void Move( float dt, const class Scene& scene );
 
 protected:
-	//ConvexCollider<float> collider;
 	std::unordered_map<int, Animation<int>> animationMap;
-	Vec2<float> pos;
-	float moveSpeed;
+
+	Vec2<float> dir;
+	float moveSpeed = 0.0f;
+
+	float colliderHalfWidth;
+	float colliderHalfHeight;
 };

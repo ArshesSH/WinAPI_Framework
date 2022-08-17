@@ -272,6 +272,9 @@
     <ClCompile Include="Wall.cpp">
       <Filter>소스 파일\GameObjects\StaticActor</Filter>
     </ClCompile>
+    <ClCompile Include="Character.cpp">
+      <Filter>소스 파일\Engine\Actor</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="InhaWinAPIGame.rc">

@@ -2,6 +2,9 @@
 
 #include "framework.h"
 #include "Vec2.h"
+#include <vector>
+#include "Actor.h"
+#include "Wall.h"
 
 class Scene
 {
@@ -32,6 +35,24 @@ public:
 	{
 		isSceneFinish = true;
 	}
+
+	const std::vector<std::unique_ptr<Wall>>& GetWallPtrs() const
+	{
+		return wallPtrs;
+	}
+
+	std::vector<Actor*> FindByTag(ActorTag tag)
+	{
+		std::vector<Actor*> targets;
+		for ( const auto& pActor : actorPtrs )
+		{
+			if ( pActor->IsTagSameWith( tag ) )
+			{
+				targets.push_back( pActor.get() );
+			}
+		}
+		return targets;
+	}
 protected:
 	void UpdateSceneRect( class Game& game );
 protected:
@@ -43,5 +64,8 @@ protected:
 	RECT sceneRect = {0,0,0,0};
 	Vec2<int> sceneTopLeft;
 	Vec2<int> sceneBottomRight;
+
+	std::vector<std::unique_ptr<Actor>> actorPtrs;
+	std::vector<std::unique_ptr<Wall>> wallPtrs;
 };
 

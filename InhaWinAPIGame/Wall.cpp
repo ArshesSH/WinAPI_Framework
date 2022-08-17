@@ -1,7 +1,7 @@
 #include "Wall.h"
 
-#include "Game.h"
+#include "Scene.h"
 
-void Wall::Update( float dt, Game& game )
+void Wall::Update( float dt, Scene& scene )
 {
 }

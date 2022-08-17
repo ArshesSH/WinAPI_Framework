@@ -11,6 +11,7 @@
 #include "Scene.h"
 #include "TestScene.h"
 #include "ActorTestScene.h"
+#include "CollisionManager.h"
 
 class Game
 {
@@ -40,6 +41,7 @@ private:
 	FrameTimer ft;
 	DrawManager drawManager;
 	CoordinateTransformer ct;
+	CollisionManager<float> cm;
 
 
 	bool isScreenChanged = true;

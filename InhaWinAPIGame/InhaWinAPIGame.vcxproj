@@ -194,6 +194,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ActorTestScene.cpp" />
+    <ClCompile Include="Character.cpp" />
     <ClCompile Include="ColliderTypeTrait.cpp" />
     <ClCompile Include="CoordinateTransformer.cpp" />
     <ClCompile Include="FileManager.cpp" />

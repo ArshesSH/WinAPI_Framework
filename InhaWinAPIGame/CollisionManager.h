@@ -43,6 +43,7 @@ public:
 		}
 	}
 
+
 	bool CalcCollisionVec( Collider<T>& convex1, Collider<T>& convex2,
 		Vec2<float>& minTransVec1, Vec2<float>& minTransVec2, bool isOnlyApplyToConvex1 = false )
 	{
@@ -70,6 +71,9 @@ public:
 
 		return true;
 	}
+
+
+
 	
 	bool IsOverlapWithOBB( const Collider<T>& ref, const Collider<T>& target ) const
 	{
@@ -121,6 +125,7 @@ public:
 	}
 
 private:
+
 	bool CheckVerticesSAT( const Collider<T>& ref, const Collider<T>& other ) const
 	{
 		const std::vector<Vec2<T>>& refObjVertices = ref.GetVertices();

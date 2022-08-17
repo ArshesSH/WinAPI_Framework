@@ -7,6 +7,5 @@ enum class ActorTag
 	Player,
 	Enemy,
 	PlayerBullet,
-	EnemyBullet,
-	TagCount
+	EnemyBullet
 };
