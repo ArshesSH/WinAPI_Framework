@@ -36,17 +36,19 @@ public:
 		curAnimation.SetTransform( transform );
 	}
 private:
-	void KbdInput()
+	void KbdInput(float dt, class Scene& scene)
 	{
 		state = State::Idle;
 		dir = { 0.0f, 0.0f };
 		if ( GetAsyncKeyState( VK_LEFT ) & 0x8001 )
 		{
 			dir = dirLeft;
+			Move( dt, scene );
 		}
 		if ( GetAsyncKeyState( VK_RIGHT ) & 0x8001 )
 		{
 			dir = dirRight;
+			Move( dt, scene );
 		}
 	}
 

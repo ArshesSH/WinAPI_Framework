@@ -59,10 +59,14 @@ protected:
 	{
 		return pos;
 	}
+	Vec2<float> GetColliderPos()
+	{
+		return pCollider->GetPos();
+	}
 	void SetPos(const Vec2<float>& pos_in)
 	{
 		pos = pos_in;
-		pCollider->SetPos( pos_in );
+		pCollider-> ( pos_in );
 	}
 
 protected:

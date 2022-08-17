@@ -2,6 +2,7 @@
 
 Game::Game()
 {
+	//pScenes.push_back( std::make_unique<TestScene>( screenWidth, screenHeight, ct ) );
 	pScenes.push_back( std::make_unique<ActorTestScene>( screenWidth, screenHeight, ct ) );
 	curScene = pScenes.begin();
 }
