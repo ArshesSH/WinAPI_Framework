@@ -61,9 +61,6 @@
     <Filter Include="헤더 파일\Engine\Scene">
       <UniqueIdentifier>{0dd70e61-ae7d-4a0e-b7f3-6d09a3a852fb}</UniqueIdentifier>
     </Filter>
-    <Filter Include="소스 파일\Scene">
-      <UniqueIdentifier>{928bb001-9a17-4d2f-ba20-e76146f001b1}</UniqueIdentifier>
-    </Filter>
     <Filter Include="소스 파일\Engine\Actor">
       <UniqueIdentifier>{aad163b2-003d-4531-81aa-f111508c2b07}</UniqueIdentifier>
     </Filter>
@@ -87,6 +84,9 @@
     </Filter>
     <Filter Include="헤더 파일\GameObjects\Actor\DynamicActor">
       <UniqueIdentifier>{50dc631d-5d3c-4073-969e-04aa6b826b03}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\GameObjects\Scene">
+      <UniqueIdentifier>{928bb001-9a17-4d2f-ba20-e76146f001b1}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -267,10 +267,10 @@
       <Filter>소스 파일\Engine\Physics</Filter>
     </ClCompile>
     <ClCompile Include="TestScene.cpp">
-      <Filter>소스 파일\Scene</Filter>
+      <Filter>소스 파일\GameObjects\Scene</Filter>
     </ClCompile>
     <ClCompile Include="ActorTestScene.cpp">
-      <Filter>소스 파일\Scene</Filter>
+      <Filter>소스 파일\GameObjects\Scene</Filter>
     </ClCompile>
     <ClCompile Include="PlayerX.cpp">
       <Filter>소스 파일\GameObjects\DynamicActor</Filter>

@@ -86,11 +86,6 @@ public:
 		const auto curPivot = frames[curIdx].pivot * (T)power;
 		const Vec2<T> curTopLeft = topLeft -curPivot;
 
-		if ( curIdx == 1 )
-		{
-			int a = 9;
-		}
-
 		const Vec2<T>& size = { curSprite.GetWidth(), curSprite.GetHeight() };
 		surf.DrawImageChromaGDI( hdc, image.GetHBitmap(), curTopLeft, ( size * (T)power ), curSprite.GetTopLeft(), size, chroma );
 	}

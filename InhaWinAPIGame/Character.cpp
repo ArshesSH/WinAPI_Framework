@@ -9,10 +9,10 @@ bool Character::IsCollideWithWall( const Vec2<float>& nextPos, const Scene& scen
 	{
 		if ( wall->IsCollideWith( scene.GetCollisionManager(), nextCollider ) )
 		{
-			return false;
+			return true;
 		}
 	}
-	return true;
+	return false;
 }
 
 void Character::Move( float dt, const Scene& scene )

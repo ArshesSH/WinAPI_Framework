@@ -13,5 +13,5 @@ public:
 
 private:
 	Camera cam;
-	//PlayerX<int> playerX;
+
 };

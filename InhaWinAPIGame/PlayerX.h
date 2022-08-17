@@ -24,6 +24,9 @@ public:
 		animationMap[(int)State::IdleBlink] = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/IdleBlink.anim" );
 		animationMap[(int)State::WalkStart] = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/WalkStart.anim" );
 		animationMap[(int)State::WalkLoop] = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/walkLoop.anim" );
+
+
+		curAnimation = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/Idle.anim" );
 	}
 
 	void Update( float dt, class Scene& scene ) override;
@@ -65,11 +68,11 @@ private:
 	}
 
 private:
-	static constexpr float colliderHalfWidth = 15.0f;
-	static constexpr float colliderHalfHeight = 50.0f;
-	static constexpr float defaultSpeed = 10.0f;
+	static constexpr float colliderHalfWidth = 25.0f;
+	static constexpr float colliderHalfHeight = 25.0f;
+	static constexpr float defaultSpeed = 100.0f;
 	static constexpr COLORREF chroma = RGB( 84, 165, 75 );
 
 	State state = State::Idle;
-
+	Animation<int> curAnimation;
 };
