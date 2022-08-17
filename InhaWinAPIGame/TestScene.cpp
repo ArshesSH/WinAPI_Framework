@@ -5,10 +5,9 @@
 
 TestScene::TestScene( int sceneWidth, int sceneHeight, CoordinateTransformer& ct )
 	:
-	Scene( sceneWidth, sceneHeight ),
+	Scene( sceneWidth, sceneHeight, ct ),
 	imageTest( L"Images/awsom.bmp" ),
 	imageTest2( L"Images/awsom.bmp" ),
-	cam( ct ),
 	dudeGravity( 9.8f ),
 	testCollider( testRect )
 {

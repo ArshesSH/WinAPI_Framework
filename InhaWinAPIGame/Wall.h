@@ -14,7 +14,6 @@ public:
 	void Draw( HDC hdc ) override
 	{
 		Gdiplus::Graphics gfx( hdc );
-		DrawCollider( gfx );
 	}
 
 private:

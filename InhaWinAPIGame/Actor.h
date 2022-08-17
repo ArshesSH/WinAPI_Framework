@@ -7,6 +7,7 @@
 #include "Vec2.h"
 #include "Collider.h"
 #include "CollisionManager.h"
+#include "Mat3.h"
 
 class Actor
 {
@@ -24,10 +25,12 @@ public:
 	Actor& operator=( Actor&& ) = default;
 
 	virtual void Update( float dt, class Scene& scene ) = 0;
+	virtual void SetTransform( const Mat3<float>& transform ) = 0;
 	virtual void Draw( HDC hdc ) = 0;
 
-	void DrawCollider( Gdiplus::Graphics& gfx )
+	void DrawCollider( Gdiplus::Graphics& gfx, const Mat3<float>& transform )
 	{
+		pCollider->UpdateMatrix( transform );
 		pCollider->Draw( gfx, { 144,255,255,255 } );
 	}
 	bool IsCollideWith( const CollisionManager<float>& cm, const Collider<float>& otherCollider ) const
@@ -45,6 +48,10 @@ public:
 	bool IsTagSameWith( ActorTag tag_in ) const
 	{
 		return tag == tag_in;
+	}
+	const std::unique_ptr<Collider<float>>& GetColliderPtr() const
+	{
+		return pCollider;
 	}
 
 protected:

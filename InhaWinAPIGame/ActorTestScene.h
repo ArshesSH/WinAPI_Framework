@@ -12,6 +12,5 @@ public:
 	void Draw( HDC hdc ) override;
 
 private:
-	Camera cam;
 
 };

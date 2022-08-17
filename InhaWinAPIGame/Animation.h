@@ -83,11 +83,21 @@ public:
 	void PlayGDI(HDC hdc, const Image::ImageGDI<T>& image, const Vec2<T>& topLeft, float power, COLORREF chroma )
 	{
 		const auto curSprite = frames[curIdx].sprite;
-		const auto curPivot = frames[curIdx].pivot * (T)power;
-		const Vec2<T> curTopLeft = topLeft -curPivot;
+		const auto curPivot = frames[curIdx].pivot;
+		const Vec2<T> curTopLeft = (topLeft - curPivot) * (T)power;
 
 		const Vec2<T>& size = { curSprite.GetWidth(), curSprite.GetHeight() };
 		surf.DrawImageChromaGDI( hdc, image.GetHBitmap(), curTopLeft, ( size * (T)power ), curSprite.GetTopLeft(), size, chroma );
+	}
+	void PlayByCamGDI( HDC hdc, const Image::ImageGDI<T>& image, const Vec2<T>& topLeft, float power, COLORREF chroma )
+	{
+		const auto curSprite = frames[curIdx].sprite;
+		const auto curPivot = (Vec2<T>{ frames[curIdx].pivot.x, curSprite.GetHeight() - frames[curIdx].pivot.y })* (T)power;
+
+		const Vec2<T> curTopLeft = (topLeft - curPivot);
+
+		const Vec2<T>& size = { curSprite.GetWidth(), curSprite.GetHeight() };
+		surf.DrawImageChromaGDI( hdc, image.GetHBitmap(), curTopLeft, (size * (T)power), curSprite.GetTopLeft(), size, chroma );
 	}
 
 private:

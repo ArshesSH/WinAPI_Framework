@@ -11,10 +11,7 @@ void PlayerX::Update( float dt, Scene& scene )
 
 void PlayerX::Draw( HDC hdc )
 {
-	curAnimation.PlayGDI( hdc, sprite, Vec2<int>( GetPos() + imgHalfSize ), 2, chroma );
-
-
-	DrawCollider( *(Gdiplus::Graphics::FromHDC( hdc )) );
+	curAnimation.PlayByCamGDI( hdc, sprite, Vec2<int>( GetPos() + imgHalfSize ), 2, chroma );
 }
 
 

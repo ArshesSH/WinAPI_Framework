@@ -23,7 +23,6 @@ public:
 private:
 	Surface<float> surf;
 	Surface<float> surf2;
-	Camera cam;
 
 	Vec2<float> dudePos = { 300.0f, 0.0f };
 	Vec2<float> dudeVel = { 0.0f, 0.0f };

@@ -5,8 +5,7 @@
 
 ActorTestScene::ActorTestScene( int sceneWidth, int sceneHeight, CoordinateTransformer& ct )
 	:
-	Scene( sceneWidth, sceneHeight ),
-	cam( ct )
+	Scene( sceneWidth, sceneHeight, ct )
 {
 	actorPtrs.emplace_back( std::make_unique<PlayerX>( Vec2<float>{ 0.0f, 0.0f }, Vec2<float>{ 30.0f, 100.0f } ) );
 }
@@ -21,8 +20,21 @@ void ActorTestScene::Update( float dt, Game & game )
 
 void ActorTestScene::Draw( HDC hdc )
 {
-	for ( auto& pActor : actorPtrs )
+	Gdiplus::Graphics gfx( hdc );
+	auto drawFuncs = [&]( HDC hdc, const Mat3<float>& camTransform )
 	{
-		pActor->Draw( hdc );
-	}
+		for ( auto& pActor : actorPtrs )
+		{
+			pActor->SetTransform( camTransform );
+			pActor->Draw( hdc );
+			const auto& pCollider = pActor->GetColliderPtr();
+			pCollider->UpdateMatrix( camTransform );
+			pCollider->Draw( gfx, {144,255,255,255} );
+		}
+	};
+
+	const float screenX = (sceneBottomRight.x - sceneTopLeft.x) / 2.0f;
+	const float screenY = (sceneBottomRight.y - sceneTopLeft.y) / 2.0f;
+
+	cam.Draw( hdc, { screenX, screenY }, drawFuncs );
 }

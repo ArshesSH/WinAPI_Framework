@@ -31,7 +31,10 @@ public:
 
 	void Update( float dt, class Scene& scene ) override;
 	void Draw( HDC hdc ) override;
-
+	void SetTransform( const Mat3<float>& transform ) override
+	{
+		curAnimation.SetTransform( transform );
+	}
 private:
 	void KbdInput()
 	{
