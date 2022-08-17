@@ -6,24 +6,30 @@
 #include <unordered_map>
 #include <string>
 
-class Character: public Actor
+class Character : public Actor
 {
 public:
-	Character( CollisionManager<float>& cm, ActorTag tag, const Vec2<float>& startPos, float colliderHalfWidth, float colliderHalfHeight )
+	Character( ActorTag tag, RectF colliderRect, float moveSpeed )
 		:
-		colliderHalfWidth( colliderHalfWidth ),
-		colliderHalfHeight( colliderHalfHeight ),
-		Actor( cm, tag, startPos, std::make_unique<ConvexCollider<float>>( RectF::FromCenter( startPos, colliderHalfWidth, colliderHalfWidth ) ) )
+		colliderHalfWidth( colliderRect.GetWidth() / 2.0f ),
+		colliderHalfHeight( colliderRect.GetHeight() / 2.0f ),
+		moveSpeed( moveSpeed ),
+		Actor( tag, colliderRect.GetCenter(), std::make_unique<ConvexCollider<float>>( colliderRect ) )
 	{}
 	virtual ~Character() {}
 protected:
 	bool IsCollideWithWall( const Vec2<float>& nextPos, const class Scene& scene ) const;
 	void Move( float dt, const class Scene& scene );
-
 protected:
-	std::unordered_map<int, Animation<int>> animationMap;
+	const Vec2<float> dirLeft = { -1.0f, 0.0f };
+	const Vec2<float> dirUp = { 0.0f, 1.0f };
+	const Vec2<float> dirRight = { 1.0f, 0.0f };
+	const Vec2<float> dirDown = { 0.0f, -1.0f };
 
-	Vec2<float> dir;
+	std::unordered_map<int, Animation<int>> animationMap;
+	Image::ImageGDI<int> sprite;
+
+	Vec2<float> dir = { 0.0f, 0.0f };
 	float moveSpeed = 0.0f;
 
 	float colliderHalfWidth;

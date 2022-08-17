@@ -157,6 +157,7 @@
     <ClInclude Include="CoordinateTransformer.h" />
     <ClInclude Include="EditorFrame.h" />
     <ClInclude Include="FileManager.h" />
+    <ClInclude Include="PlayerController.h" />
     <ClInclude Include="Wall.h" />
     <ClInclude Include="PivotGizmo.h" />
     <ClInclude Include="PlayerX.h" />

@@ -7,7 +7,7 @@ bool Character::IsCollideWithWall( const Vec2<float>& nextPos, const Scene& scen
 	const auto walls = scene.GetWallPtrs();
 	for ( const auto& wall : walls )
 	{
-		if ( wall->IsCollideWith( nextCollider ) )
+		if ( wall->IsCollideWith( scene.GetCollisionManager(), nextCollider ) )
 		{
 			return false;
 		}
@@ -24,3 +24,4 @@ void Character::Move( float dt, const Scene& scene )
 		SetPos( nextPos );
 	}
 }
+

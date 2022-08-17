@@ -5,6 +5,7 @@
 #include <vector>
 #include "Actor.h"
 #include "Wall.h"
+#include "CollisionManager.h"
 
 class Scene
 {
@@ -53,6 +54,10 @@ public:
 		}
 		return targets;
 	}
+	CollisionManager<float> GetCollisionManager() const 
+	{
+		return cm;
+	}
 protected:
 	void UpdateSceneRect( class Game& game );
 protected:
@@ -65,6 +70,7 @@ protected:
 	Vec2<int> sceneTopLeft;
 	Vec2<int> sceneBottomRight;
 
+	CollisionManager<float> cm;
 	std::vector<std::unique_ptr<Actor>> actorPtrs;
 	std::vector<std::unique_ptr<Wall>> wallPtrs;
 };

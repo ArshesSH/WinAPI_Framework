@@ -4,6 +4,7 @@
 #include "Surface.h"
 #include "Image.h"
 #include "UtilSH.h"
+#include "FileManager.h"
 
 template <typename T>
 class Animation
@@ -42,7 +43,14 @@ public:
 		:
 		spriteType(spriteType),
 		frames(frames)
+	{}
+	Animation( SpriteType spriteType, const std::wstring& fileName )
 	{
+		FileManager fm( name, FileManager::Mode::Read );
+		if ( fm.CanLoad() )
+		{
+			fm.LoadVector( frames );
+		}
 	}
 
 	void SetTransform( const Mat3<float>& transform )
@@ -62,6 +70,12 @@ public:
 	{
 		return curIdx;
 	}
+
+	bool IsEnd() const
+	{
+		return curIdx == frames.size() - 1;
+	}
+
 	std::vector<Frame> GetFrames() const
 	{
 		return frames;

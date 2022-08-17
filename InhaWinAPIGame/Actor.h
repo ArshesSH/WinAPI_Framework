@@ -11,9 +11,8 @@
 class Actor
 {
 public:
-	Actor( CollisionManager<float>& cm, ActorTag tag, const Vec2<float>& startPos, std::unique_ptr<Collider<float>> pCollider )
+	Actor( ActorTag tag, const Vec2<float>& startPos, std::unique_ptr<Collider<float>> pCollider )
 		:
-		cm( cm ),
 		tag( tag ),
 		pos( startPos ),
 		pCollider( std::move( pCollider ) )
@@ -31,7 +30,7 @@ public:
 	{
 		pCollider->Draw( gfx, { 144,255,255,255 } );
 	}
-	bool IsCollideWith( const Collider<float>& otherCollider ) const
+	bool IsCollideWith( const CollisionManager<float>& cm, const Collider<float>& otherCollider ) const
 	{
 		return cm.IsOverlapWithAABB( *pCollider, otherCollider );
 	}
@@ -61,7 +60,6 @@ protected:
 
 protected:
 	// Actor State
-	CollisionManager<float>& cm;
 	ActorTag tag;
 	bool shouldDestroy = false;
 	bool isStatic = false;
