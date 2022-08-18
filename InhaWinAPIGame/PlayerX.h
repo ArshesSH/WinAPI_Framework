@@ -89,7 +89,11 @@ public:
 		return isFlipped;
 	}
 
-	void ChangeBehvior( State state_in );
+	void Jump( float dt )
+	{
+		
+	}
+
 
 
 private:
@@ -100,6 +104,8 @@ private:
 	static constexpr float colliderHalfHeight = 40.0f;
 	static constexpr float defaultSpeed = 200.0f;
 	static constexpr COLORREF chroma = RGB( 84, 165, 75 );
+	static constexpr float minJumpTime = 0.2f;
+	static constexpr float maxJumpTime = 1.0f;
 
 	State state = State::Idle;
 	Animation<int> curAnimation;

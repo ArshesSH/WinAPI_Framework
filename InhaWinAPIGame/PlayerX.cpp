@@ -74,5 +74,10 @@ void PlayerX::KbdInput( float dt, Scene& scene )
 		Move( dt, scene );
 		SetFlip();
 	}
+
+	if ( GetAsyncKeyState( 'X' ) & 0x8001 )
+	{
+		Jump( dt );
+	}
 }
 
