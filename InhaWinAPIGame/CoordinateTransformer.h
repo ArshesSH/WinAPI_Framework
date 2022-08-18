@@ -18,7 +18,7 @@ public:
 	template <typename F>
 	void Draw( HDC hdc, const Mat3<float>& transform, const Vec2<float>& originPos, F drawFunc)
 	{
-		auto coordTrans =  (Mat3<float>::Translation( originPos ) * scale) * transform;
+		coordTrans =  (Mat3<float>::Translation( originPos ) * scale) * transform;
 		drawFunc( hdc, coordTrans );
 	}
 
@@ -27,7 +27,13 @@ public:
 		return yFactor;
 	}
 
+	Mat3<float> GetTransform() const
+	{
+		return coordTrans;
+	}
+
 private:
 	Mat3<float> scale = Mat3<float>::ScaleIndependent( 1.0f, -1.0f );
+	Mat3<float> coordTrans = Mat3<float>::Identity();
 	float yFactor = -1;
 };

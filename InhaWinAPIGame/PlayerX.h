@@ -2,6 +2,7 @@
 
 #include "Character.h"
 #include "Image.h"
+#include "PivotGizmo.h"
 
 class PlayerX : public Character
 {
@@ -15,10 +16,11 @@ public:
 	};
 
 public:
-	PlayerX( const Vec2<float>& startPos, const Vec2<float>& imgHalfSize )
+	PlayerX( const Vec2<float>& pivotPos, const Vec2<float>& colliderRelativePos = {0.0f, 40.0f} )
 		:
-		Character( ActorTag::Player, RectF::FromCenter( startPos, colliderHalfWidth, colliderHalfHeight ), defaultSpeed,
-			L"Images/RockmanX5/X/ForthArmorSprite.bmp", imgHalfSize)
+		Character( ActorTag::Player, pivotPos, RectF::FromCenter( colliderRelativePos, colliderHalfWidth, colliderHalfHeight ), defaultSpeed,
+			L"Images/RockmanX5/X/ForthArmorSprite.bmp"),
+		pivotGizmo(Vec2<int>(pivotPos))
 	{
 		animationMap[(int)State::Idle] = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/Idle.anim" );
 		animationMap[(int)State::IdleBlink] = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/IdleBlink.anim" );
@@ -73,11 +75,16 @@ private:
 	}
 
 private:
-	static constexpr float colliderHalfWidth = 25.0f;
-	static constexpr float colliderHalfHeight = 25.0f;
+	static constexpr float colliderHalfWidth = 20.0f;
+	static constexpr float colliderHalfHeight = 40.0f;
 	static constexpr float defaultSpeed = 100.0f;
 	static constexpr COLORREF chroma = RGB( 84, 165, 75 );
 
 	State state = State::Idle;
 	Animation<int> curAnimation;
+
+	// Debug
+	PivotGizmo pivotGizmo;
+	std::wstring imgPosStr;
+	std::wstring colliderPosStr;
 };

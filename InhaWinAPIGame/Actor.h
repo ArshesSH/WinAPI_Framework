@@ -61,12 +61,13 @@ protected:
 	}
 	Vec2<float> GetColliderPos()
 	{
-		return pCollider->GetPos();
+		return pCollider->GetCenter();
 	}
 	void SetPos(const Vec2<float>& pos_in)
 	{
+		const Vec2<float> relativePos = pCollider->GetCenter() - pos;
 		pos = pos_in;
-		pCollider-> ( pos_in );
+		pCollider->SetPosByCenter( pos_in + relativePos );
 	}
 
 protected:

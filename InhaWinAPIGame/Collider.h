@@ -54,6 +54,11 @@ public:
 		const Vec2<T> delta = pos_in - rect.GetTopLeft();
 		rect += delta;
 	}
+	virtual void SetPosByCenter( const Vec2<T>& pos_in )
+	{
+		const Vec2<T> delta = pos_in - rect.GetCenter();
+		rect += delta;
+	}
 	virtual void MoveBy( const Vec2<T>& offset )
 	{
 		rect += offset;
@@ -119,6 +124,15 @@ public:
 			v += moved;
 		}
 	}
+	void SetPosByCenter( const Vec2<T>& pos ) override
+	{
+		const Vec2<T> moved = pos - Collider<T>::rect.GetCenter();
+		Collider<T>::SetPosByCenter( pos );
+		for ( auto& v : vertices )
+		{
+			v += moved;
+		}
+	}
 	void MoveBy( const Vec2<T>& offset ) override
 	{
 		Collider<T>::MoveBy( offset );
@@ -157,6 +171,13 @@ public:
 		Collider<T>::SetPos( pos );
 		circle.SetCenter( pos + Vec2<T>{circle.GetRadius(), circle.GetRadius()} );
 	}
+	void SetPosByCenter( const Vec2<T>& pos ) override
+	{
+		const Vec2<T> moved = pos - Collider<T>::rect.GetCenter();
+		Collider<T>::SetPosByCenter( pos );
+		circle.SetCenter( pos + Vec2<T>{circle.GetRadius(), circle.GetRadius()} );
+	}
+
 	void Draw( Gdiplus::Graphics& gfx, const Gdiplus::Color& color ) override
 	{
 		this->surf.DrawFillCirclePlus( gfx, circle.GetTopLeft(), circle.GetRadius(), color );
@@ -191,6 +212,12 @@ public:
 	{
 		const Vec2<T> moved = pos - Collider<T>::rect.GetTopLeft();
 		Collider<T>::SetPos( pos );
+		line += moved;
+	}
+	void SetPosByCenter( const Vec2<T>& pos) override
+	{
+		const Vec2<T> moved = pos - Collider<T>::rect.GetCenter();
+		Collider<T>::SetPosByCenter( pos );
 		line += moved;
 	}
 	void Draw( Gdiplus::Graphics& gfx, const Gdiplus::Color& color ) override

@@ -54,10 +54,15 @@ public:
 		scale *= scale_in;
 	}
 
+	Mat3<float> GetTransform() const
+	{
+		return ct.GetTransform();
+	}
+	
 	template <typename F>
 	void Draw( HDC hdc, const Vec2<float>& originPos, F drawFunc )
 	{
-		auto transform = (Mat3<float>::Scale( scale ) * Mat3<float>::Translation( pos * ct.GetFactorY() ) * Mat3<float>::Rotation( angle ) );
+		transform = (Mat3<float>::Scale( scale ) * Mat3<float>::Translation( pos * ct.GetFactorY() ) * Mat3<float>::Rotation( angle ) );
 		ct.Draw( hdc, transform, originPos, std::move(drawFunc) );
 	}
 	const RectF& GetScreenRect(int screenWidth, int screenHeight) const
@@ -73,8 +78,8 @@ public:
 
 private:
 	CoordinateTransformer& ct;
-	Surface<float> surf;
 	Vec2<float> pos = { 0.0f, 0.0f };
 	float scale = 1.0f;
 	float angle = 0.0f;
+	Mat3<float> transform = Mat3<float>::Identity();
 };
