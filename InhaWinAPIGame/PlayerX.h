@@ -9,27 +9,45 @@ class PlayerX : public Character
 public:
 	enum class State
 	{
+		Intro,
 		Idle,
 		IdleBlink,
+		IdleLowHP,
+		Shoot,
+		ShootCharged,
 		WalkStart,
 		WalkLoop,
+		ShootWalkStart,
+		ShootWalkLoop,
+		DashStart,
+		DashLoop,
+		DashEnd,
+		ShootDashStart,
+		ShootDashLoop,
+		ShootDashEnd,
+		Jump,
+		Land,
+		ShootJump,
+		ShootLand,
+		WallCling,
+		WallKick,
+		ShootWallCling,
+		ShootWallKick,
+		LadderClimb,
+		LadderTop,
+		LadderShoot,
+		AirDashStart,
+		Hover,
+		HoverShoot,
+		HurtA,
+		HurtB,
+		HurtC,
+		Victory,
+		Exit
 	};
 
 public:
-	PlayerX( const Vec2<float>& pivotPos, const Vec2<float>& colliderRelativePos = {0.0f, 40.0f} )
-		:
-		Character( ActorTag::Player, pivotPos, RectF::FromCenter( colliderRelativePos, colliderHalfWidth, colliderHalfHeight ), defaultSpeed,
-			L"Images/RockmanX5/X/ForthArmorSprite.bmp"),
-		pivotGizmo(Vec2<int>(pivotPos))
-	{
-		animationMap[(int)State::Idle] = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/Idle.anim" );
-		animationMap[(int)State::IdleBlink] = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/IdleBlink.anim" );
-		animationMap[(int)State::WalkStart] = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/WalkStart.anim" );
-		animationMap[(int)State::WalkLoop] = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/walkLoop.anim" );
-
-
-		curAnimation = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/Idle.anim" );
-	}
+	PlayerX( const Vec2<float>& pivotPos, const Vec2<float>& colliderRelativePos = { 0.0f, 40.0f } );
 
 	void Update( float dt, class Scene& scene ) override;
 	void Draw( HDC hdc ) override;
@@ -38,36 +56,8 @@ public:
 		curAnimation.SetTransform( transform );
 	}
 private:
-	void KbdInput(float dt, class Scene& scene)
-	{
-		state = State::Idle;
-		dir = { 0.0f, 0.0f };
-		if ( GetAsyncKeyState( VK_LEFT ) & 0x8001 )
-		{
-			dir = dirLeft;
-			Move( dt, scene );
-		}
-		if ( GetAsyncKeyState( VK_RIGHT ) & 0x8001 )
-		{
-			dir = dirRight;
-			Move( dt, scene );
-		}
-	}
+	void KbdInput( float dt, class Scene& scene );
 
-	void StateChangeToWalk()
-	{
-		switch ( state )
-		{
-		case PlayerX::State::Idle:
-			break;
-		case PlayerX::State::IdleBlink:
-			break;
-		case PlayerX::State::WalkStart:
-			break;
-		case PlayerX::State::WalkLoop:
-			break;
-		}
-	}
 
 	Animation<int> GetCurAnimation() const
 	{

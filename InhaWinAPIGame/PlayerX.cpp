@@ -3,6 +3,20 @@
 #include "Scene.h"
 
 
+PlayerX::PlayerX( const Vec2<float>& pivotPos, const Vec2<float>& colliderRelativePos )
+	:
+	Character( ActorTag::Player, pivotPos, RectF::FromCenter( colliderRelativePos, colliderHalfWidth, colliderHalfHeight ), defaultSpeed,
+		L"Images/RockmanX5/X/ForthArmorSprite.bmp" ),
+	pivotGizmo( Vec2<int>( pivotPos ) )
+{
+	animationMap[(int)State::Idle] = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/Idle.anim" );
+	animationMap[(int)State::IdleBlink] = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/IdleBlink.anim" );
+	animationMap[(int)State::WalkStart] = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/WalkStart.anim" );
+	animationMap[(int)State::WalkLoop] = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/walkLoop.anim" );
+
+	curAnimation = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/Idle.anim" );
+}
+
 void PlayerX::Update( float dt, Scene& scene )
 {
 	KbdInput(dt, scene);
@@ -30,6 +44,22 @@ void PlayerX::Draw( HDC hdc )
 	surf.DrawStringGDI( hdc, { 0,20 }, colliderPosStr );
 	
 	pivotGizmo.Draw( hdc );
+}
+
+void PlayerX::KbdInput( float dt, Scene& scene )
+{
+	state = State::Idle;
+	dir = { 0.0f, 0.0f };
+	if ( GetAsyncKeyState( VK_LEFT ) & 0x8001 )
+	{
+		dir = dirLeft;
+		Move( dt, scene );
+	}
+	if ( GetAsyncKeyState( VK_RIGHT ) & 0x8001 )
+	{
+		dir = dirRight;
+		Move( dt, scene );
+	}
 }
 
 
