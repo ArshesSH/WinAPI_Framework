@@ -24,7 +24,7 @@ PlayerX::PlayerX( const Vec2<float>& pivotPos, const Vec2<float>& colliderRelati
 void PlayerX::Update( float dt, Scene& scene )
 {
 	KbdInput(dt, scene);
-	//pBehavior->Do( dt, scene );
+	pBehavior->Do( dt, scene );
 	curAnimation.Update( dt, animSpeed );
 	
 	// Debug
@@ -52,7 +52,7 @@ void PlayerX::Draw( HDC hdc )
 	}
 	else
 	{
-		curAnimation.PlayByCamGDI( hdc, spriteFlipped, Vec2<int>( GetPos() ), 2, chroma );
+		curAnimation.PlayByCamGDI( hdc, spriteFlipped, Vec2<int>( GetPos() ), 2, chroma, true );
 	}
 
 
@@ -68,25 +68,18 @@ void PlayerX::Draw( HDC hdc )
 void PlayerX::KbdInput( float dt, Scene& scene )
 {
 	state = State::Idle;
-	animSpeed = 0.3f;
 	dir = { 0.0f, 0.0f };
 	if ( GetAsyncKeyState( VK_LEFT ) & 0x8001 )
 	{
 		dir = dirLeft;
 		Move( dt, scene );
-		state = State::WalkLoop;
-		animSpeed = 0.05f;
-		isFlipped = false;
-		curAnimation.Flip( isFlipped );
+		SetFlip( false );
 	}
 	if ( GetAsyncKeyState( VK_RIGHT ) & 0x8001 )
 	{
 		dir = dirRight;
 		Move( dt, scene );
-		state = State::WalkLoop;
-		animSpeed = 0.05f;
-		isFlipped = true;
-		curAnimation.Flip( isFlipped );
+		SetFlip();
 	}
 }
 

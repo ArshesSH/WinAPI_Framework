@@ -84,6 +84,15 @@ public:
 	{
 		animSpeed = speed;
 	}
+	void SetFlip( bool flip = true)
+	{
+		isFlipped = flip;
+	}
+	bool IsFlipped() const
+	{
+		return isFlipped;
+	}
+
 
 private:
 	void KbdInput( float dt, class Scene& scene );

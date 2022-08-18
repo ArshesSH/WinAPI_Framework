@@ -57,10 +57,6 @@ public:
 	{
 		surf.SetTransformation( transform );
 	}
-	void Flip( bool flip = true)
-	{
-		isFlip = flip;
-	}
 
 	void Update( float dt, float playSpeed )
 	{
@@ -95,14 +91,14 @@ public:
 		const Vec2<T>& size = { curSprite.GetWidth(), curSprite.GetHeight() };
 		surf.DrawImageChromaGDI( hdc, image.GetHBitmap(), curTopLeft, ( size * (T)power ), curSprite.GetTopLeft(), size, chroma );
 	}
-	void PlayByCamGDI( HDC hdc, const Image::ImageGDI<T>& image, const Vec2<T>& topLeft, float power, COLORREF chroma )
+	void PlayByCamGDI( HDC hdc, const Image::ImageGDI<T>& image, const Vec2<T>& topLeft, float power, COLORREF chroma, bool isFlipped = false )
 	{
 		_Rect<T> curSprite = frames[curIdx].sprite;
 		auto curPivot = (Vec2<T>{ frames[curIdx].pivot.x, curSprite.GetHeight() - frames[curIdx].pivot.y })* (T)power;
 
 		const Vec2<T> curTopLeft = (topLeft - curPivot);
 
-		if ( isFlip )
+		if ( isFlipped )
 		{
 			const auto transform = Mat3<T>::Translation( { (T)(image.GetImageSize().x), (T)0 } ) * Mat3<T>::ScaleIndependent( -1, 1 );
 			const auto tl = curSprite.GetTopLeft();
@@ -132,5 +128,4 @@ private:
 	std::vector<Frame> frames;
 	float playTime = 0.0f;
 	int curIdx = 0;
-	bool isFlip = false;
 };

@@ -41,7 +41,7 @@ private:
 
 private:
 	static constexpr float idleSpeed = 0.3f;
-	static constexpr float idleBlinkSpeed = 0.12f;
+	static constexpr float idleBlinkSpeed = 0.11f;
 	static constexpr int idleMaxCount = 3;
 
 	int idlePlayCnt = 0;
