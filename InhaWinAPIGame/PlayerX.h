@@ -66,10 +66,6 @@ public:
 	{
 		curAnimation.SetTransform( transform );
 	}
-	Animation<int> GetCurAnimationFromMap() const
-	{
-		return animationMap.at( (int)state );
-	}
 	const Animation<int>& GetAnimation() const
 	{
 		return curAnimation;
@@ -93,6 +89,8 @@ public:
 		return isFlipped;
 	}
 
+	void ChangeBehvior( State state_in );
+
 
 private:
 	void KbdInput( float dt, class Scene& scene );
@@ -104,7 +102,6 @@ private:
 	static constexpr COLORREF chroma = RGB( 84, 165, 75 );
 
 	State state = State::Idle;
-	State prevState = State::Idle;
 	Animation<int> curAnimation;
 	float animSpeed = 0.3f;
 	bool isFlipped = false;

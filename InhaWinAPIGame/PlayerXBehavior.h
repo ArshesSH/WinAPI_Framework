@@ -6,22 +6,16 @@
 class PlayerXBehavior
 {
 public:
-	PlayerXBehavior( class PlayerX& playerX, PlayerX::State state )
+	PlayerXBehavior( PlayerX& playerX )
 		:
-		playerX( playerX ),
-		behaviorState( state )
+		playerX( playerX )
 	{}
 	virtual ~PlayerXBehavior() = default;
 
-	virtual void Do(float dt, class Scene& scene ) = 0;
-
-	bool IsStateSameWith( PlayerX::State state ) const
-	{
-		return behaviorState == state;
-	}
+	virtual void Do(float dt, Scene& scene ) = 0;
+	virtual void TransferFrom( PlayerX::State state_in ) = 0;
 
 protected:
 	PlayerX& playerX;
-	PlayerX::State behaviorState;
 };
 

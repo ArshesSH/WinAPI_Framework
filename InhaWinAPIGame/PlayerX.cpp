@@ -36,12 +36,6 @@ void PlayerX::Update( float dt, Scene& scene )
 	pivotGizmo.SetPos( Vec2<int>( pos ) );
 	pivotGizmo.SetTransform( scene.AccessCamera().GetTransform() );
 
-	if ( state != prevState )
-	{
-		SetAnimation( state, animSpeed );
-		prevState = state;
-	}
-
 }
 
 void PlayerX::Draw( HDC hdc )
@@ -67,7 +61,6 @@ void PlayerX::Draw( HDC hdc )
 
 void PlayerX::KbdInput( float dt, Scene& scene )
 {
-	state = State::Idle;
 	dir = { 0.0f, 0.0f };
 	if ( GetAsyncKeyState( VK_LEFT ) & 0x8001 )
 	{
