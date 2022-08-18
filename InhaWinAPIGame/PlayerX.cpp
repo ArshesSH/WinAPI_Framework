@@ -1,12 +1,15 @@
 #include "PlayerX.h"
 
 #include "Scene.h"
+#include "PlayerXBehavior.h"
+#include "PlayerXIdle.h"
+#include "PlayerXWalk.h"
 
 
 PlayerX::PlayerX( const Vec2<float>& pivotPos, const Vec2<float>& colliderRelativePos )
 	:
 	Character( ActorTag::Player, pivotPos, RectF::FromCenter( colliderRelativePos, colliderHalfWidth, colliderHalfHeight ), defaultSpeed,
-		L"Images/RockmanX5/X/ForthArmorSprite.bmp" ),
+		L"Images/RockmanX5/X/ForthArmorSprite.bmp", L"Images/RockmanX5/X/ForthArmorSpriteFlip.bmp" ),
 	pivotGizmo( Vec2<int>( pivotPos ) )
 {
 	animationMap[(int)State::Idle] = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/Idle.anim" );
@@ -15,12 +18,14 @@ PlayerX::PlayerX( const Vec2<float>& pivotPos, const Vec2<float>& colliderRelati
 	animationMap[(int)State::WalkLoop] = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/walkLoop.anim" );
 
 	curAnimation = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/Idle.anim" );
+	pBehavior = std::make_unique<PlayerXIdle>( *this );
 }
 
 void PlayerX::Update( float dt, Scene& scene )
 {
 	KbdInput(dt, scene);
-	curAnimation.Update( dt, 0.3f );
+	//pBehavior->Do( dt, scene );
+	curAnimation.Update( dt, animSpeed );
 	
 	// Debug
 	const auto pos = GetPos();
@@ -30,11 +35,25 @@ void PlayerX::Update( float dt, Scene& scene )
 
 	pivotGizmo.SetPos( Vec2<int>( pos ) );
 	pivotGizmo.SetTransform( scene.AccessCamera().GetTransform() );
+
+	if ( state != prevState )
+	{
+		SetAnimation( state, animSpeed );
+		prevState = state;
+	}
+
 }
 
 void PlayerX::Draw( HDC hdc )
 {
-	curAnimation.PlayByCamGDI( hdc, sprite, Vec2<int>( GetPos() ), 2, chroma );
+	if ( !isFlipped )
+	{
+		curAnimation.PlayByCamGDI( hdc, sprite, Vec2<int>( GetPos() ), 2, chroma );
+	}
+	else
+	{
+		curAnimation.PlayByCamGDI( hdc, spriteFlipped, Vec2<int>( GetPos() ), 2, chroma );
+	}
 
 
 	// Debug
@@ -49,17 +68,25 @@ void PlayerX::Draw( HDC hdc )
 void PlayerX::KbdInput( float dt, Scene& scene )
 {
 	state = State::Idle;
+	animSpeed = 0.3f;
 	dir = { 0.0f, 0.0f };
 	if ( GetAsyncKeyState( VK_LEFT ) & 0x8001 )
 	{
 		dir = dirLeft;
 		Move( dt, scene );
+		state = State::WalkLoop;
+		animSpeed = 0.05f;
+		isFlipped = false;
+		curAnimation.Flip( isFlipped );
 	}
 	if ( GetAsyncKeyState( VK_RIGHT ) & 0x8001 )
 	{
 		dir = dirRight;
 		Move( dt, scene );
+		state = State::WalkLoop;
+		animSpeed = 0.05f;
+		isFlipped = true;
+		curAnimation.Flip( isFlipped );
 	}
 }
-
 

@@ -9,12 +9,13 @@
 class Character : public Actor
 {
 public:
-	Character( ActorTag tag, const Vec2<float>& pos, RectF colliderRect, float moveSpeed, const std::wstring& fileName )
+	Character( ActorTag tag, const Vec2<float>& pos, RectF colliderRect, float moveSpeed, const std::wstring& fileName, const std::wstring& flipFile )
 		:
 		colliderHalfWidth( colliderRect.GetWidth() / 2.0f ),
 		colliderHalfHeight( colliderRect.GetHeight() / 2.0f ),
 		moveSpeed( moveSpeed ),
 		sprite( fileName ),
+		spriteFlipped(flipFile),
 		Actor( tag, pos, std::make_unique<ConvexCollider<float>>( colliderRect + pos ) )
 	{}
 	virtual ~Character() {}
@@ -29,6 +30,7 @@ protected:
 
 	std::unordered_map<int, Animation<int>> animationMap;
 	Image::ImageGDI<int> sprite;
+	Image::ImageGDI<int> spriteFlipped;
 
 	Vec2<float> dir = { 0.0f, 0.0f };
 	float moveSpeed = 0.0f;

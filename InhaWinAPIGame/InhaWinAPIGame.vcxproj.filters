@@ -88,6 +88,12 @@
     <Filter Include="소스 파일\GameObjects\Scene">
       <UniqueIdentifier>{928bb001-9a17-4d2f-ba20-e76146f001b1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="헤더 파일\GameObjects\Actor\DynamicActor\PlayerX">
+      <UniqueIdentifier>{cacb8d47-d20a-47f5-ac50-5f5f9135339e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\GameObjects\Actor\DynamicActor\PlayerX\Behavior">
+      <UniqueIdentifier>{0b2a5d83-5774-406c-9957-dca655568e3c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -219,9 +225,6 @@
     <ClInclude Include="FileManager.h">
       <Filter>헤더 파일\Engine\Utilities</Filter>
     </ClInclude>
-    <ClInclude Include="PlayerX.h">
-      <Filter>헤더 파일\GameObjects\Actor\DynamicActor</Filter>
-    </ClInclude>
     <ClInclude Include="ActorTag.h">
       <Filter>헤더 파일\Engine\Actor</Filter>
     </ClInclude>
@@ -236,6 +239,21 @@
     </ClInclude>
     <ClInclude Include="PlayerController.h">
       <Filter>헤더 파일\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerX.h">
+      <Filter>헤더 파일\GameObjects\Actor\DynamicActor\PlayerX</Filter>
+    </ClInclude>
+    <ClInclude Include="CharacterBehavior.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerXBehavior.h">
+      <Filter>헤더 파일\GameObjects\Actor\DynamicActor\PlayerX</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerXIdle.h">
+      <Filter>헤더 파일\GameObjects\Actor\DynamicActor\PlayerX\Behavior</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerXWalk.h">
+      <Filter>헤더 파일\GameObjects\Actor\DynamicActor\PlayerX\Behavior</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -280,6 +298,12 @@
     </ClCompile>
     <ClCompile Include="Character.cpp">
       <Filter>소스 파일\Engine\Actor</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerXBehavior.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="CharacterBehavior.cpp">
+      <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

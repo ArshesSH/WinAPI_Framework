@@ -71,7 +71,11 @@ public:
 	{
 		return *this = *this - rhs;
 	}
-
+	template <typename T2>
+	inline _Rect<T> MoveBy( const Vec2<T2>& rhs )
+	{
+		return { top + (T)rhs.y, bottom + (T)rhs.y, left + (T)rhs.x, right + (T)rhs.x };
+	}
 
 	inline	void ClipTo( const _Rect& rect )
 	{

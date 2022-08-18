@@ -57,6 +57,11 @@ public:
 	{
 		surf.SetTransformation( transform );
 	}
+	void Flip( bool flip = true)
+	{
+		isFlip = flip;
+	}
+
 	void Update( float dt, float playSpeed )
 	{
 		playTime += dt;
@@ -66,6 +71,7 @@ public:
 			playTime = 0.0f;
 		}
 	}
+
 	int GetFrameIndex() const
 	{
 		return curIdx;
@@ -91,12 +97,32 @@ public:
 	}
 	void PlayByCamGDI( HDC hdc, const Image::ImageGDI<T>& image, const Vec2<T>& topLeft, float power, COLORREF chroma )
 	{
-		const auto curSprite = frames[curIdx].sprite;
-		const auto curPivot = (Vec2<T>{ frames[curIdx].pivot.x, curSprite.GetHeight() - frames[curIdx].pivot.y })* (T)power;
+		_Rect<T> curSprite = frames[curIdx].sprite;
+		auto curPivot = (Vec2<T>{ frames[curIdx].pivot.x, curSprite.GetHeight() - frames[curIdx].pivot.y })* (T)power;
 
 		const Vec2<T> curTopLeft = (topLeft - curPivot);
 
+		if ( isFlip )
+		{
+			const auto transform = Mat3<T>::Translation( { (T)(image.GetImageSize().x), (T)0 } ) * Mat3<T>::ScaleIndependent( -1, 1 );
+			const auto tl = curSprite.GetTopLeft();
+			curSprite = _Rect<T>{ transform * curSprite.GetTopLeft(), transform * curSprite.GetBottomRight() };
+			curPivot = transform * curPivot;
+		}
+
 		const Vec2<T>& size = { curSprite.GetWidth(), curSprite.GetHeight() };
+
+		surf.DrawImageChromaGDI( hdc, image.GetHBitmap(), curTopLeft, (size * (T)power), curSprite.GetTopLeft(), size, chroma );
+
+	}
+	void PlayByCamGDIFlip( HDC hdc, const Image::ImageGDI<T>& image, const Vec2<T>& topLeft, float power, COLORREF chroma )
+	{
+		const auto curSprite = frames[curIdx].sprite;
+		const auto curPivot = (Vec2<T>{ frames[curIdx].pivot.x, curSprite.GetHeight() - frames[curIdx].pivot.y })* (T)power;
+		const Vec2<T> curTopLeft = Mat3<T>::ScaleIndependent( -1, 1 ) *
+			Mat3<T>::Translation( { (T)(image.GetImageSize().x / 2), (T)0 } ) * (topLeft - curPivot);
+		const Vec2<T>& size = { curSprite.GetWidth(), curSprite.GetHeight() };
+
 		surf.DrawImageChromaGDI( hdc, image.GetHBitmap(), curTopLeft, (size * (T)power), curSprite.GetTopLeft(), size, chroma );
 	}
 
@@ -106,4 +132,5 @@ private:
 	std::vector<Frame> frames;
 	float playTime = 0.0f;
 	int curIdx = 0;
+	bool isFlip = false;
 };
