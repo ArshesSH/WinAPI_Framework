@@ -11,6 +11,35 @@
 
 class Actor
 {
+	template <class T>
+	class Behavior
+	{
+	public:
+		virtual ~Behavior() {}
+		virtual Behavior* Update( T& Actor, class Scene& scene, float dt ) = 0;
+		virtual void Activate( T& Actor, class Scene& scene ) {}
+		void SetSuccessorStates( std::vector<Behavior*> successors )
+		{
+			statePtrStack = std::move( successors );
+		}
+		void PushSucessorState( Behavior* successor )
+		{
+			statePtrStack.push_back( successor );
+		}
+		void PushSucessorStates( std::vector<Behavior*> successors )
+		{
+			std::copy(
+				successors.begin(), successors.end(), std::back_inserter( statePtrStack )
+			);
+		}
+		bool HasSucessors() const
+		{
+			return !statePtrStack.empty();
+		}
+	private:
+		std::vector<Behavior*> statePtrStack;
+	};
+
 public:
 	Actor( ActorTag tag, const Vec2<float>& startPos, std::unique_ptr<Collider<float>> pCollider )
 		:

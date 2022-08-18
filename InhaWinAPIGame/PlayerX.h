@@ -80,13 +80,13 @@ public:
 	{
 		animSpeed = speed;
 	}
-	void SetFlip( bool flip = true)
+	void SetFacingRight( bool faceRight = true)
 	{
-		isFlipped = flip;
+		isFacingRight = faceRight;
 	}
-	bool IsFlipped() const
+	bool IsFacingRight() const
 	{
-		return isFlipped;
+		return isFacingRight;
 	}
 
 	void Jump( float dt )
@@ -110,7 +110,7 @@ private:
 	State state = State::Idle;
 	Animation<int> curAnimation;
 	float animSpeed = 0.3f;
-	bool isFlipped = false;
+	bool isFacingRight = false;
 
 	std::unique_ptr<class PlayerXBehavior> pBehavior;
 
