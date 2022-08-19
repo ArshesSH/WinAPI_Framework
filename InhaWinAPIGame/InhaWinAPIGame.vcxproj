@@ -157,6 +157,7 @@
     <ClInclude Include="CollisionManager.h" />
     <ClInclude Include="CollisionPatternMatching.h" />
     <ClInclude Include="CoordinateTransformer.h" />
+    <ClInclude Include="BvPlayerXDash.h" />
     <ClInclude Include="EditorFrame.h" />
     <ClInclude Include="FileManager.h" />
     <ClInclude Include="Ground.h" />
@@ -201,6 +202,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ActorTestScene.cpp" />
+    <ClCompile Include="BvPlayerXDash.cpp" />
     <ClCompile Include="BvPlayerXIdle.cpp" />
     <ClCompile Include="BvPlayerXWalk.cpp" />
     <ClCompile Include="Character.cpp" />

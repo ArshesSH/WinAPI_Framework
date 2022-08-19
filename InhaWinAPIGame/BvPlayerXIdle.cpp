@@ -13,7 +13,6 @@ PlayerX::Behavior* PlayerX::Idle::Update( PlayerX& playerX, Scene& scene, float 
 	{
 		return PassTorch();
 	}
-
 	SetRandomAnimation( playerX );
 	return nullptr;
 }

@@ -18,4 +18,5 @@ public:
 	Behavior* Update( PlayerX& playerX, class Scene& scene, float dt ) override;
 private:
 	static constexpr float walkLoopSpeed = 0.05f;
+	static constexpr float walkMoveSpeed = 200.0f;
 };

@@ -32,7 +32,7 @@ protected:
 	Image::ImageGDI<int> sprite;
 	Image::ImageGDI<int> spriteFlipped;
 
-	Vec2<float> dir = { 0.0f, 0.0f };
+	Vec2<float> vel = { 0.0f, 0.0f };
 	float moveSpeed = 0.0f;
 
 	float colliderHalfWidth;

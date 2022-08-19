@@ -51,6 +51,7 @@ public:
 	{
 		Idle,
 		Walk,
+		Dash,
 	};
 
 public:
@@ -58,10 +59,10 @@ public:
 	class Idle;
 	class WalkStart;
 	class WalkLoop;
+	class Dash;
 
 public:
 	PlayerX( const Vec2<float>& pivotPos, const Vec2<float>& colliderRelativePos = { 0.0f, 40.0f } );
-	//~PlayerX();
 
 	void Update( float dt, class Scene& scene ) override;
 	void Draw( HDC hdc ) override;
@@ -107,10 +108,166 @@ public:
 		return isFacingRight;
 	}
 
+	Vec2<float> GetVel() const
+	{
+		return vel;
+	}
+	void SetVel( const Vec2<float>& vel_in )
+	{
+		vel = vel_in;
+	}
+	void SetMoveSpeed(float speed)
+	{
+		moveSpeed = speed;
+	}
+
+	bool IsDash() const
+	{
+		return isDash;
+	}
+	void StopDash();
+
 	void UpdateState();
 	void ChangeBehaviorByState( State state );
 
 	void Walk( float dt, Scene& scene );
+
+#ifndef NDEBUG
+	void DrawStateString(Surface<int>& surf, HDC hdc)
+	{
+		switch ( curState )
+		{
+		case PlayerX::State::Idle:
+			stateStr = L"Idle";
+			break;
+		case PlayerX::State::Walk:
+			stateStr = L"Walk";
+			break;
+		case PlayerX::State::Dash:
+			stateStr = L"Dash";
+			break;
+		default:
+			break;
+		}
+
+		surf.DrawStringGDI( hdc, { 0, 40 }, stateStr );
+	}
+
+	void DrawAnimationStateString( Surface<int>& surf, HDC hdc)
+	{
+		switch ( curAnimState )
+		{
+		case PlayerX::AnimationState::Intro:
+			animStateStr = L"Intro";
+			break;
+		case PlayerX::AnimationState::Idle:
+			animStateStr = L"Idle";
+			break;
+		case PlayerX::AnimationState::IdleBlink:
+			animStateStr = L"IdleBlink";
+			break;
+		case PlayerX::AnimationState::IdleLowHP:
+			animStateStr = L"IdleLowHP";
+			break;
+		case PlayerX::AnimationState::Shoot:
+			animStateStr = L"Shoot";
+			break;
+		case PlayerX::AnimationState::ShootCharged:
+			animStateStr = L"ShootCharged";
+			break;
+		case PlayerX::AnimationState::WalkStart:
+			animStateStr = L"WalkStart";
+			break;
+		case PlayerX::AnimationState::WalkLoop:
+			animStateStr = L"WalkLoop";
+			break;
+		case PlayerX::AnimationState::ShootWalkStart:
+			animStateStr = L"ShootWalkStart";
+			break;
+		case PlayerX::AnimationState::ShootWalkLoop:
+			animStateStr = L"ShootWalkLoop";
+			break;
+		case PlayerX::AnimationState::DashStart:
+			animStateStr = L"DashStart";
+			break;
+		case PlayerX::AnimationState::DashLoop:
+			animStateStr = L"DashLoop";
+			break;
+		case PlayerX::AnimationState::DashEnd:
+			animStateStr = L"DashEnd";
+			break;
+		case PlayerX::AnimationState::ShootDashStart:
+			animStateStr = L"ShootDashStart";
+			break;
+		case PlayerX::AnimationState::ShootDashLoop:
+			animStateStr = L"ShootDashLoop";
+			break;
+		case PlayerX::AnimationState::ShootDashEnd:
+			animStateStr = L"ShootDashEnd";
+			break;
+		case PlayerX::AnimationState::Jump:
+			animStateStr = L"Jump";
+			break;
+		case PlayerX::AnimationState::Land:
+			animStateStr = L"Land";
+			break;
+		case PlayerX::AnimationState::ShootJump:
+			animStateStr = L"ShootJump";
+			break;
+		case PlayerX::AnimationState::ShootLand:
+			animStateStr = L"ShootLand";
+			break;
+		case PlayerX::AnimationState::WallCling:
+			animStateStr = L"WallCling";
+			break;
+		case PlayerX::AnimationState::WallKick:
+			animStateStr = L"WallKick";
+			break;
+		case PlayerX::AnimationState::ShootWallCling:
+			animStateStr = L"ShootWallCling";
+			break;
+		case PlayerX::AnimationState::ShootWallKick:
+			animStateStr = L"ShootWallKick";
+			break;
+		case PlayerX::AnimationState::LadderClimb:
+			animStateStr = L"LadderClimb";
+			break;
+		case PlayerX::AnimationState::LadderTop:
+			animStateStr = L"LadderTop";
+			break;
+		case PlayerX::AnimationState::LadderShoot:
+			animStateStr = L"LadderShoot";
+			break;
+		case PlayerX::AnimationState::AirDashStart:
+			animStateStr = L"AirDashStart";
+			break;
+		case PlayerX::AnimationState::Hover:
+			animStateStr = L"Hover";
+			break;
+		case PlayerX::AnimationState::HoverShoot:
+			animStateStr = L"HoverShoot";
+			break;
+		case PlayerX::AnimationState::HurtA:
+			animStateStr = L"HurtA";
+			break;
+		case PlayerX::AnimationState::HurtB:
+			animStateStr = L"HurtB";
+			break;
+		case PlayerX::AnimationState::HurtC:
+			animStateStr = L"HurtC";
+			break;
+		case PlayerX::AnimationState::Victory:
+			animStateStr = L"Victory";
+			break;
+		case PlayerX::AnimationState::Exit:
+			animStateStr = L"Exit";
+			break;
+		default:
+			break;
+		}
+		surf.DrawStringGDI( hdc, { 0, 60 }, animStateStr );
+	}
+#endif // !NDEBUG
 
 
 private:
@@ -133,6 +290,7 @@ private:
 	bool isOnGround = true;
 	bool isRightKeyDown = false;
 	bool isLeftKeyDown = false;
+	bool isDash = false;
 
 	//std::unique_ptr<class PlayerXBehavior> pBehavior;
 
@@ -145,5 +303,7 @@ private:
 	std::wstring colliderPosStr;
 	std::wstring isRightKeyStr;
 	std::wstring isLeftKeyStr;
+	std::wstring stateStr;
+	std::wstring animStateStr;
 #endif
 };

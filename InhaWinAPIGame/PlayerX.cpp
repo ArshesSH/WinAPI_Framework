@@ -4,6 +4,7 @@
 
 #include "BvPlayerXIdle.h"
 #include "BvPlayerXWalk.h"
+#include "BvPlayerXDash.h"
 
 
 
@@ -17,7 +18,9 @@ PlayerX::PlayerX( const Vec2<float>& pivotPos, const Vec2<float>& colliderRelati
 	animationMap[(int)AnimationState::Idle] = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/Idle.anim" );
 	animationMap[(int)AnimationState::IdleBlink] = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/IdleBlink.anim" );
 	animationMap[(int)AnimationState::WalkStart] = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/WalkStart.anim" );
-	animationMap[(int)AnimationState::WalkLoop] = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/walkLoop.anim" );
+	animationMap[(int)AnimationState::WalkLoop] = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/WalkLoop.anim" );
+	animationMap[(int)AnimationState::DashStart] = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/DashStart.anim" );
+	animationMap[(int)AnimationState::DashLoop] = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/DashLoop.anim" );
 
 	curAnimation = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/Idle.anim" );
 }
@@ -29,8 +32,6 @@ void PlayerX::Update( float dt, Scene& scene )
 	UpdateState();
 	
 	curAnimation.Update( dt, animSpeed );
-	
-
 
 	while ( auto pNewState = pBehavior->Update(*this, scene, dt) )
 	{
@@ -74,15 +75,29 @@ void PlayerX::Draw( HDC hdc )
 	surf.DrawStringGDI( hdc, { 0,20 }, colliderPosStr );
 	surf.DrawStringGDI( hdc, { 0,100 }, isRightKeyStr );
 	surf.DrawStringGDI( hdc, { 0,120 }, isLeftKeyStr );
+	DrawStateString( surf, hdc );
+	DrawAnimationStateString( surf, hdc );
 	pivotGizmo.Draw( hdc );
 #endif // NDEBUG
+}
+
+void PlayerX::StopDash()
+{
+	isDash = false;
+	pBehavior->PushSucessorState( new Idle );
 }
 
 void PlayerX::UpdateState()
 {
 	if ( isOnGround )
 	{
-		if ( isRightKeyDown || isLeftKeyDown )
+		if ( isDash )
+		{
+			ChangeBehaviorByState( State::Dash );
+			SetState( State::Dash );
+		}
+
+		else if ( (isRightKeyDown || isLeftKeyDown) && std::abs(vel.x) >= moveSpeed )
 		{
 			ChangeBehaviorByState( State::Walk );
 			SetState( State::Walk );
@@ -110,10 +125,11 @@ void PlayerX::ChangeBehaviorByState(State state)
 		case PlayerX::State::Walk:
 			pBehavior->PushSucessorStates( { new WalkLoop,  new WalkStart } );
 			break;
+		case PlayerX::State::Dash:
+			pBehavior->PushSucessorState( new Dash );
+			break;
 		}
 	}
-
-
 }
 
 void PlayerX::Walk(float dt, Scene& scene )
@@ -121,30 +137,47 @@ void PlayerX::Walk(float dt, Scene& scene )
 	Move( dt, scene );
 }
 
+
 void PlayerX::KbdInput( float dt, Scene& scene )
 {
-	dir = { 0.0f, 0.0f };
+	vel = { 0.0f, 0.0f };
 
 	if ( GetAsyncKeyState( VK_LEFT ) & 0x8001 )
 	{
-		dir = dirLeft;
-		isFacingRight = false;
-		isRightKeyDown = true;
+		vel += dirLeft * moveSpeed;
+
+		if ( !isRightKeyDown )
+		{
+			isFacingRight = false;
+		}
+		isLeftKeyDown = true;
 	}
 	else
 	{
-		isRightKeyDown = false;
+		isLeftKeyDown = false;
 	}
 
 	if ( GetAsyncKeyState( VK_RIGHT ) & 0x8001 )
 	{
-		dir = dirRight;
-		isFacingRight = true;
-		isLeftKeyDown = true;
+		vel += dirRight * moveSpeed;
+		if ( !isLeftKeyDown )
+		{
+			isFacingRight = true;
+		}
+		isRightKeyDown = true;
 	}
 	else 
 	{
-		isLeftKeyDown = false;
+		isRightKeyDown = false;
+	}
+
+	if ( GetAsyncKeyState( 'Z' ) & 0x8001 )
+	{
+		isDash = true;
+	}
+	else
+	{
+		isDash = false;
 	}
 
 	if ( GetAsyncKeyState( 'X' ) & 0x8001 )

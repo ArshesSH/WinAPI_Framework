@@ -267,6 +267,9 @@
     <ClInclude Include="Ground.h">
       <Filter>헤더 파일\GameObjects\Actor\StaticActor</Filter>
     </ClInclude>
+    <ClInclude Include="BvPlayerXDash.h">
+      <Filter>헤더 파일\GameObjects\Actor\DynamicActor\PlayerX\Behavior</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="InhaWinAPIGame.cpp">
@@ -322,6 +325,9 @@
     </ClCompile>
     <ClCompile Include="Ground.cpp">
       <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="BvPlayerXDash.cpp">
+      <Filter>소스 파일\GameObjects\DynamicActor\PlayerX\Behavior</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

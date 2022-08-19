@@ -27,6 +27,9 @@ PlayerX::Behavior* PlayerX::WalkLoop::Update( PlayerX& playerX, Scene& scene, fl
     {
         return PassTorch();
     }
-    playerX.Walk( dt, scene );
+
+    playerX.Move( dt, scene );
+
+    //playerX.Walk( dt, scene );
     return nullptr;
 }

@@ -17,7 +17,7 @@ bool Character::IsCollideWithWall( const Vec2<float>& nextPos, const Scene& scen
 
 void Character::Move( float dt, const Scene& scene )
 {
-	const Vec2<float> nextPos = GetPos() + dir * moveSpeed * dt;
+	const Vec2<float> nextPos = GetPos() + vel * dt;
 
 	if ( !IsCollideWithWall( nextPos, scene ) )
 	{
