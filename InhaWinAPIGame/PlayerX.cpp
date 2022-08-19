@@ -5,28 +5,49 @@
 #include "PlayerXIdle.h"
 #include "PlayerXWalk.h"
 
+#include "BvPlayerXIdle.h"
+#include "BvPlayerXWalk.h"
+
 
 PlayerX::PlayerX( const Vec2<float>& pivotPos, const Vec2<float>& colliderRelativePos )
 	:
 	Character( ActorTag::Player, pivotPos, RectF::FromCenter( colliderRelativePos, colliderHalfWidth, colliderHalfHeight ), defaultSpeed,
 		L"Images/RockmanX5/X/ForthArmorSprite.bmp", L"Images/RockmanX5/X/ForthArmorSpriteFlip.bmp" ),
-	pivotGizmo( Vec2<int>( pivotPos ) )
+	pivotGizmo( Vec2<int>( pivotPos ) ),
+	pBehavior(std::make_unique<Idle>())
 {
-	animationMap[(int)State::Idle] = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/Idle.anim" );
-	animationMap[(int)State::IdleBlink] = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/IdleBlink.anim" );
-	animationMap[(int)State::WalkStart] = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/WalkStart.anim" );
-	animationMap[(int)State::WalkLoop] = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/walkLoop.anim" );
+	animationMap[(int)AnimationState::Idle] = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/Idle.anim" );
+	animationMap[(int)AnimationState::IdleBlink] = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/IdleBlink.anim" );
+	animationMap[(int)AnimationState::WalkStart] = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/WalkStart.anim" );
+	animationMap[(int)AnimationState::WalkLoop] = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/walkLoop.anim" );
 
 	curAnimation = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/Idle.anim" );
-	pBehavior = std::make_unique<PlayerXIdle>( *this );
+	//pBehavior = std::make_unique<PlayerXIdle>( *this );
 }
+
+//PlayerX::~PlayerX()
+//{
+//	//if ( pBehavior )
+//	//{
+//	//	delete pBehavior;
+//	//}
+//}
 
 void PlayerX::Update( float dt, Scene& scene )
 {
 	KbdInput(dt, scene);
-	pBehavior->Do( dt, scene );
+	//pBehavior->Do( dt, scene );
+
+	while ( auto pNewState = pBehavior->Update(*this, scene, dt) )
+	{
+		//delete pBehavior;
+		pBehavior.reset( pNewState );
+		pBehavior->Activate( *this, scene );
+	}
+
 	curAnimation.Update( dt, animSpeed );
 	
+
 	// Debug
 	const auto pos = GetPos();
 	const auto colliderPos = GetColliderPos();
@@ -40,7 +61,7 @@ void PlayerX::Update( float dt, Scene& scene )
 
 void PlayerX::Draw( HDC hdc )
 {
-	if ( !isFlipped )
+	if ( !isFacingRight )
 	{
 		curAnimation.PlayByCamGDI( hdc, sprite, Vec2<int>( GetPos() ), 2, chroma );
 	}
@@ -59,25 +80,40 @@ void PlayerX::Draw( HDC hdc )
 	pivotGizmo.Draw( hdc );
 }
 
+void PlayerX::Walk(float dt, Scene& scene )
+{
+	if ( curState != State::Walk )
+	{
+		curState = State::Walk;
+	}
+
+	Move( dt, scene );
+	SetFacingRight( false );
+	pBehavior->SetSuccessorStates( { new WalkStart, new WalkLoop } );
+}
+
 void PlayerX::KbdInput( float dt, Scene& scene )
 {
 	dir = { 0.0f, 0.0f };
+	curState = State::Idle;
+
 	if ( GetAsyncKeyState( VK_LEFT ) & 0x8001 )
 	{
 		dir = dirLeft;
-		Move( dt, scene );
-		SetFlip( false );
+		Walk( dt, scene );
 	}
 	if ( GetAsyncKeyState( VK_RIGHT ) & 0x8001 )
 	{
 		dir = dirRight;
-		Move( dt, scene );
-		SetFlip();
+		isFacingRight = true;
+		Walk( dt, scene );
 	}
 
 	if ( GetAsyncKeyState( 'X' ) & 0x8001 )
 	{
-		Jump( dt );
+
 	}
+
+
 }
 

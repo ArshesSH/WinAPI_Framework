@@ -13,7 +13,7 @@ public:
 	virtual ~PlayerXBehavior() = default;
 
 	virtual void Do(float dt, Scene& scene ) = 0;
-	virtual void TransferFrom( PlayerX::State state_in ) = 0;
+	//virtual void TransferFrom( PlayerX::State state_in ) = 0;
 
 protected:
 	PlayerX& playerX;

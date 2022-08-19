@@ -7,7 +7,7 @@
 class PlayerX : public Character
 {
 public:
-	enum class State
+	enum class AnimationState
 	{
 		Intro,
 		Idle,
@@ -47,19 +47,32 @@ public:
 	};
 
 public:
+	enum class State
+	{
+		Idle,
+		Walk,
+	};
+
+public:
+	using Behavior = Actor::Behavior<PlayerX>;
+	class Idle;
+	class WalkStart;
+	class WalkLoop;
+
+public:
 	PlayerX( const Vec2<float>& pivotPos, const Vec2<float>& colliderRelativePos = { 0.0f, 40.0f } );
+	//~PlayerX();
 
 	void Update( float dt, class Scene& scene ) override;
 	void Draw( HDC hdc ) override;
 
-
 	State GetState() const
 	{
-		return state;
+		return curState;
 	}
-	void SetState(State state_in)
+	void SetState( State state)
 	{
-		state = state_in;
+		curState = state;
 	}
 
 	void SetTransform( const Mat3<float>& transform ) override
@@ -70,8 +83,13 @@ public:
 	{
 		return curAnimation;
 	}
-	void SetAnimation( State state, float animSpeed_in )
+	AnimationState GetAnimationState() const
 	{
+		return curAnimState;
+	}
+	void SetAnimation( AnimationState state, float animSpeed_in )
+	{
+		curAnimState = state;
 		curAnimation = animationMap[(int)state];
 		animSpeed = animSpeed_in;
 	}
@@ -89,11 +107,7 @@ public:
 		return isFacingRight;
 	}
 
-	void Jump( float dt )
-	{
-		
-	}
-
+	void Walk( float dt, Scene& scene );
 
 
 private:
@@ -107,12 +121,15 @@ private:
 	static constexpr float minJumpTime = 0.2f;
 	static constexpr float maxJumpTime = 1.0f;
 
-	State state = State::Idle;
+	State curState;
+	AnimationState curAnimState;
 	Animation<int> curAnimation;
 	float animSpeed = 0.3f;
 	bool isFacingRight = false;
 
-	std::unique_ptr<class PlayerXBehavior> pBehavior;
+	//std::unique_ptr<class PlayerXBehavior> pBehavior;
+
+	std::unique_ptr<Behavior> pBehavior;
 
 	// Debug
 	PivotGizmo pivotGizmo;

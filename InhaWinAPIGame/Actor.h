@@ -8,9 +8,12 @@
 #include "Collider.h"
 #include "CollisionManager.h"
 #include "Mat3.h"
+#include <algorithm>
+#include <iterator>
 
 class Actor
 {
+protected:
 	template <class T>
 	class Behavior
 	{
@@ -35,6 +38,13 @@ class Actor
 		bool HasSucessors() const
 		{
 			return !statePtrStack.empty();
+		}
+		Behavior* PassTorch()
+		{
+			auto ps = statePtrStack.back();
+			statePtrStack.pop_back();
+			ps->SetSuccessorStates( std::move( statePtrStack ) );
+			return ps;
 		}
 	private:
 		std::vector<Behavior*> statePtrStack;

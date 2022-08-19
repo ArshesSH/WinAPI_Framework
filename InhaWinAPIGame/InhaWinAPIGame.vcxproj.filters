@@ -255,6 +255,12 @@
     <ClInclude Include="PlayerXWalk.h">
       <Filter>헤더 파일\GameObjects\Actor\DynamicActor\PlayerX\Behavior</Filter>
     </ClInclude>
+    <ClInclude Include="BvPlayerXIdle.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="BvPlayerXWalk.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="InhaWinAPIGame.cpp">
@@ -303,6 +309,12 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="CharacterBehavior.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="BvPlayerXIdle.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="BvPlayerXWalk.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
