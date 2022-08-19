@@ -23,6 +23,10 @@ void PlayerX::WalkLoop::Activate( PlayerX& playerX, Scene& scene )
 
 PlayerX::Behavior* PlayerX::WalkLoop::Update( PlayerX& playerX, Scene& scene, float dt )
 {
-
+    if ( HasSucessors() )
+    {
+        return PassTorch();
+    }
+    playerX.Walk( dt, scene );
     return nullptr;
 }

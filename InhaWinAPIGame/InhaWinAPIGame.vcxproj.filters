@@ -94,6 +94,12 @@
     <Filter Include="헤더 파일\GameObjects\Actor\DynamicActor\PlayerX\Behavior">
       <UniqueIdentifier>{0b2a5d83-5774-406c-9957-dca655568e3c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\GameObjects\DynamicActor\PlayerX">
+      <UniqueIdentifier>{ab9576cd-0d14-4606-b57a-52483cf1226d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\GameObjects\DynamicActor\PlayerX\Behavior">
+      <UniqueIdentifier>{11fb8af2-ccaa-47a1-8d3f-df8c4fa37031}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -243,9 +249,6 @@
     <ClInclude Include="PlayerX.h">
       <Filter>헤더 파일\GameObjects\Actor\DynamicActor\PlayerX</Filter>
     </ClInclude>
-    <ClInclude Include="CharacterBehavior.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="PlayerXBehavior.h">
       <Filter>헤더 파일\GameObjects\Actor\DynamicActor\PlayerX</Filter>
     </ClInclude>
@@ -255,11 +258,14 @@
     <ClInclude Include="PlayerXWalk.h">
       <Filter>헤더 파일\GameObjects\Actor\DynamicActor\PlayerX\Behavior</Filter>
     </ClInclude>
-    <ClInclude Include="BvPlayerXIdle.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="BvPlayerXWalk.h">
-      <Filter>헤더 파일</Filter>
+      <Filter>헤더 파일\GameObjects\Actor\DynamicActor\PlayerX\Behavior</Filter>
+    </ClInclude>
+    <ClInclude Include="BvPlayerXIdle.h">
+      <Filter>헤더 파일\GameObjects\Actor\DynamicActor\PlayerX\Behavior</Filter>
+    </ClInclude>
+    <ClInclude Include="Ground.h">
+      <Filter>헤더 파일\GameObjects\Actor\StaticActor</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -296,25 +302,25 @@
     <ClCompile Include="ActorTestScene.cpp">
       <Filter>소스 파일\GameObjects\Scene</Filter>
     </ClCompile>
-    <ClCompile Include="PlayerX.cpp">
-      <Filter>소스 파일\GameObjects\DynamicActor</Filter>
-    </ClCompile>
     <ClCompile Include="Wall.cpp">
       <Filter>소스 파일\GameObjects\StaticActor</Filter>
     </ClCompile>
     <ClCompile Include="Character.cpp">
       <Filter>소스 파일\Engine\Actor</Filter>
     </ClCompile>
+    <ClCompile Include="PlayerX.cpp">
+      <Filter>소스 파일\GameObjects\DynamicActor\PlayerX</Filter>
+    </ClCompile>
     <ClCompile Include="PlayerXBehavior.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="CharacterBehavior.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="BvPlayerXIdle.cpp">
-      <Filter>소스 파일</Filter>
+      <Filter>소스 파일\GameObjects\DynamicActor\PlayerX\Behavior</Filter>
     </ClCompile>
     <ClCompile Include="BvPlayerXWalk.cpp">
+      <Filter>소스 파일\GameObjects\DynamicActor\PlayerX\Behavior</Filter>
+    </ClCompile>
+    <ClCompile Include="BvPlayerXIdle.cpp">
+      <Filter>소스 파일\GameObjects\DynamicActor\PlayerX\Behavior</Filter>
+    </ClCompile>
+    <ClCompile Include="Ground.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>

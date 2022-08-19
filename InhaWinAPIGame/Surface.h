@@ -420,13 +420,13 @@ public:
 		TransparentBlt( hdc, (int)tl.x, (int)tl.y, (int)sizeT.x, (int)sizeT.y, hMemDC,
 			(int)imageStart.x, (int)imageStart.y, (int)imageSize.x, (int)imageSize.y, chroma );
 
-		Surface<T> tmpSurf;
-		const std::wstring testStr = L"curTopLeft : (" + std::to_wstring( tl.x ) + L"," + std::to_wstring( tl.y ) + L")";
-		tmpSurf.DrawStringGDI( hdc, { 0, 40 }, testStr );
-		const std::wstring testStr2 = L"curBr : (" + std::to_wstring( br.x ) + L"," + std::to_wstring( br.y ) + L")";
-		tmpSurf.DrawStringGDI( hdc, { 0, 60 }, testStr2 );
-		const std::wstring testStrSize = L"cursizeT : (" + std::to_wstring( sizeT.x ) + L"," + std::to_wstring( sizeT.y ) + L")";
-		tmpSurf.DrawStringGDI( hdc, { 0, 80 }, testStrSize );
+		//Surface<T> tmpSurf;
+		//const std::wstring testStr = L"curTopLeft : (" + std::to_wstring( tl.x ) + L"," + std::to_wstring( tl.y ) + L")";
+		//tmpSurf.DrawStringGDI( hdc, { 0, 40 }, testStr );
+		//const std::wstring testStr2 = L"curBr : (" + std::to_wstring( br.x ) + L"," + std::to_wstring( br.y ) + L")";
+		//tmpSurf.DrawStringGDI( hdc, { 0, 60 }, testStr2 );
+		//const std::wstring testStrSize = L"cursizeT : (" + std::to_wstring( sizeT.x ) + L"," + std::to_wstring( sizeT.y ) + L")";
+		//tmpSurf.DrawStringGDI( hdc, { 0, 80 }, testStrSize );
 
 		SelectObject( hMemDC, hOldBitmap );
 		DeleteObject( hMemDC );

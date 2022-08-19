@@ -107,6 +107,9 @@ public:
 		return isFacingRight;
 	}
 
+	void UpdateState();
+	void ChangeBehaviorByState( State state );
+
 	void Walk( float dt, Scene& scene );
 
 
@@ -127,12 +130,20 @@ private:
 	float animSpeed = 0.3f;
 	bool isFacingRight = false;
 
+	bool isOnGround = true;
+	bool isRightKeyDown = false;
+	bool isLeftKeyDown = false;
+
 	//std::unique_ptr<class PlayerXBehavior> pBehavior;
 
 	std::unique_ptr<Behavior> pBehavior;
 
+#ifndef NDEBUG
 	// Debug
 	PivotGizmo pivotGizmo;
 	std::wstring imgPosStr;
 	std::wstring colliderPosStr;
+	std::wstring isRightKeyStr;
+	std::wstring isLeftKeyStr;
+#endif
 };
