@@ -5,6 +5,7 @@
 #include "BvPlayerXIdle.h"
 #include "BvPlayerXWalk.h"
 #include "BvPlayerXDash.h"
+#include "BvPlayerXAirbone.h"
 
 
 
@@ -13,7 +14,8 @@ PlayerX::PlayerX( const Vec2<float>& pivotPos, const Vec2<float>& colliderRelati
 	Character( ActorTag::Player, pivotPos, RectF::FromCenter( colliderRelativePos, colliderHalfWidth, colliderHalfHeight ), 200.0f,
 		L"Images/RockmanX5/X/ForthArmorSprite.bmp", L"Images/RockmanX5/X/ForthArmorSpriteFlip.bmp" ),
 	pivotGizmo( Vec2<int>( pivotPos ) ),
-	pBehavior(std::make_unique<Idle>())
+	pBehavior( std::make_unique<Idle>() ),
+	gravity( 9.8f )
 {
 	animationMap[(int)AnimationState::Idle] = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/Idle.anim" );
 	animationMap[(int)AnimationState::IdleBlink] = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/IdleBlink.anim" );
@@ -22,6 +24,7 @@ PlayerX::PlayerX( const Vec2<float>& pivotPos, const Vec2<float>& colliderRelati
 	animationMap[(int)AnimationState::DashStart] = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/DashStart.anim" );
 	animationMap[(int)AnimationState::DashLoop] = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/DashLoop.anim" );
 	animationMap[(int)AnimationState::DashEnd] = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/DashEnd.anim" );
+	animationMap[(int)AnimationState::Airbone] = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/Airbone.anim" );
 
 	curAnimation = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/Idle.anim" );
 }
@@ -32,6 +35,7 @@ void PlayerX::Update( float dt, Scene& scene )
 	curAnimation.Update( dt, animPlaySpeed );
 	UpdatePlayerState();
 	UpdatePlayerBehavior();
+	isOnGround = IsCollideWithWall( this->GetNextPos( dt ), scene );
 
 	// Update Behavior
 	while ( auto pNewState = pBehavior->Update(*this, scene, dt) )
@@ -121,7 +125,7 @@ void PlayerX::UpdatePlayerState()
 	}
 	else
 	{
-
+		moveState = MoveState::Airbone;
 	}
 }
 
@@ -156,6 +160,10 @@ void PlayerX::UpdatePlayerBehavior()
 				case PlayerX::MoveState::Jump:
 					break;
 				case PlayerX::MoveState::Airbone:
+					{
+						oldMoveState = moveState;
+						pBehavior->PushSucessorState( new Airbone );
+					}
 					break;
 				case PlayerX::MoveState::Hover:
 					break;

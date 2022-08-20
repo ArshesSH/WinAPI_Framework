@@ -147,6 +147,7 @@
     <ClInclude Include="ActorTag.h" />
     <ClInclude Include="ActorTestScene.h" />
     <ClInclude Include="Animation.h" />
+    <ClInclude Include="BvPlayerXAirbone.h" />
     <ClInclude Include="BvPlayerXIdle.h" />
     <ClInclude Include="BvPlayerXJump.h" />
     <ClInclude Include="BvPlayerXWalk.h" />
@@ -203,6 +204,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ActorTestScene.cpp" />
+    <ClCompile Include="BvPlayerXAirbone.cpp" />
     <ClCompile Include="BvPlayerXDash.cpp" />
     <ClCompile Include="BvPlayerXIdle.cpp" />
     <ClCompile Include="BvPlayerXWalk.cpp" />

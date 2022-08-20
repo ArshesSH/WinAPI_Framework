@@ -25,3 +25,8 @@ void Character::Move( float dt, const Scene& scene )
 	}
 }
 
+Vec2<float> Character::GetNextPos( float dt ) const
+{
+	return GetPos() + vel * dt;
+}
+

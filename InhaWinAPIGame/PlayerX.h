@@ -3,6 +3,7 @@
 #include "Character.h"
 #include "Image.h"
 #include "PivotGizmo.h"
+#include "Gravity.h"
 
 #ifndef NDBUG
 #include <iostream>
@@ -32,6 +33,7 @@ public:
 		ShootDashLoop,
 		ShootDashEnd,
 		Jump,
+		Airbone,
 		Land,
 		ShootJump,
 		ShootLand,
@@ -79,6 +81,7 @@ public:
 	class Walk;
 	class Dash;
 	class Jump;
+	class Airbone;
 
 public:
 	PlayerX( const Vec2<float>& pivotPos, const Vec2<float>& colliderRelativePos = { 0.0f, 40.0f } );
@@ -333,6 +336,7 @@ private:
 	AnimationState curAnimState;
 	Animation<int> curAnimation;
 	float animPlaySpeed;
+	Gravity gravity;
 
 	// Character Statement
 	AttackState attackState = AttackState::NoAttack;
@@ -343,7 +347,7 @@ private:
 	bool isMoveStateChanged = false;
 
 	bool isFacingRight = false;
-	bool isOnGround = true;
+	bool isOnGround = false;
 	bool isDashEnd = false;
 
 	// Key Statement

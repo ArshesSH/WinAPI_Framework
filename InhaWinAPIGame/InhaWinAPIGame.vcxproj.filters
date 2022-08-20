@@ -273,6 +273,9 @@
     <ClInclude Include="BvPlayerXJump.h">
       <Filter>헤더 파일\GameObjects\Actor\DynamicActor\PlayerX\Behavior</Filter>
     </ClInclude>
+    <ClInclude Include="BvPlayerXAirbone.h">
+      <Filter>헤더 파일\GameObjects\Actor\DynamicActor\PlayerX\Behavior</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="InhaWinAPIGame.cpp">
@@ -331,6 +334,9 @@
     </ClCompile>
     <ClCompile Include="BvPlayerXDash.cpp">
       <Filter>소스 파일\GameObjects\DynamicActor\PlayerX\Behavior</Filter>
+    </ClCompile>
+    <ClCompile Include="BvPlayerXAirbone.cpp">
+      <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
