@@ -291,6 +291,7 @@ private:
 	bool isRightKeyDown = false;
 	bool isLeftKeyDown = false;
 	bool isDash = false;
+	bool isDashEnd = false;
 
 	//std::unique_ptr<class PlayerXBehavior> pBehavior;
 

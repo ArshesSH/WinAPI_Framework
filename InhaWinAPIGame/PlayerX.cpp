@@ -84,7 +84,9 @@ void PlayerX::Draw( HDC hdc )
 void PlayerX::StopDash()
 {
 	isDash = false;
-	pBehavior->PushSucessorState( new Idle );
+	isDashEnd = true;
+	pBehavior = std::make_unique<Idle>();
+	SetState( State::Idle );
 }
 
 void PlayerX::UpdateState()
@@ -173,11 +175,15 @@ void PlayerX::KbdInput( float dt, Scene& scene )
 
 	if ( GetAsyncKeyState( 'Z' ) & 0x8001 )
 	{
-		isDash = true;
+		if ( isDashEnd == false )
+		{
+			isDash = true;
+		}
 	}
 	else
 	{
 		isDash = false;
+		isDashEnd = false;
 	}
 
 	if ( GetAsyncKeyState( 'X' ) & 0x8001 )
