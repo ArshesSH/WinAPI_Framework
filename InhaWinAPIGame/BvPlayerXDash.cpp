@@ -9,6 +9,7 @@
 void PlayerX::Dash::Activate( PlayerX& playerX, Scene& scene )
 {
 	playerX.SetAnimation( PlayerX::AnimationState::DashStart, dashStartSpeed );
+	isLastDirRight = playerX.isFacingRight;
 }
 
 PlayerX::Behavior* PlayerX::Dash::Update( PlayerX& playerX, Scene& scene, float dt )
@@ -28,17 +29,17 @@ PlayerX::Behavior* PlayerX::Dash::Update( PlayerX& playerX, Scene& scene, float 
 		playerX.SetMoveSpeed( dashMoveSpeed );
 	}
 	
+	if ( isLastDirRight != playerX.isFacingRight )
+	{
+		playerX.StopDash();
+	}
+
 
 	dashTime += dt;
 	if ( dashTime <= dashMaxTime && playerX.IsDash() )
 	{
 		if ( playerX.IsFacingRight() )
 		{
-			if ( playerX.isLeftKeyDown )
-			{
-				playerX.StopDash();
-			}
-
 			Vec2<float> vel = { playerX.GetVel().x + dashMoveSpeed, 0 };
 			if ( !playerX.isRightKeyDown )
 			{
@@ -48,11 +49,6 @@ PlayerX::Behavior* PlayerX::Dash::Update( PlayerX& playerX, Scene& scene, float 
 		}
 		else
 		{
-			if ( playerX.isRightKeyDown )
-			{
-				playerX.StopDash();
-			}
-
 			Vec2<float> vel = { playerX.GetVel().x - dashMoveSpeed, 0 };
 			if ( !playerX.isLeftKeyDown )
 			{
@@ -60,7 +56,7 @@ PlayerX::Behavior* PlayerX::Dash::Update( PlayerX& playerX, Scene& scene, float 
 			}
 			playerX.SetVel( vel );
 		}
-		
+
 		playerX.Move( dt, scene );
 	}
 	else
@@ -69,7 +65,8 @@ PlayerX::Behavior* PlayerX::Dash::Update( PlayerX& playerX, Scene& scene, float 
 	}
 	
 #ifndef NDBUG
-	std::cout << "DashTime = " << dashTime << std::endl;
+	//std::cout << "DashTime = " << dashTime << std::endl;
+	//std::cout << std::boolalpha << playerX.isLeftKeyDown << std::endl;
 #endif // !NDBUG
 
 

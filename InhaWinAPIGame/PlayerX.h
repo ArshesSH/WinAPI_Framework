@@ -293,9 +293,9 @@ private:
 	bool isDash = false;
 	bool isDashEnd = false;
 
-	//std::unique_ptr<class PlayerXBehavior> pBehavior;
-
 	std::unique_ptr<Behavior> pBehavior;
+	
+
 
 #ifndef NDEBUG
 	// Debug

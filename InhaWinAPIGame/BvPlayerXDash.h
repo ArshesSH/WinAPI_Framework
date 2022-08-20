@@ -14,5 +14,6 @@ private:
 
 	float dashTime = 0.0f;
 	bool isDashRight = false;
+	bool isLastDirRight = false;
 };
 
