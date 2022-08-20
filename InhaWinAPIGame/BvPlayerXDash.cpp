@@ -50,5 +50,5 @@ void PlayerX::Dash::DoDash( PlayerX& playerX, Scene& scene, float dt )
 
 void PlayerX::Dash::StopDash( PlayerX& playerX, float dt )
 {
-	//playerX.pBehavior->PushSucessorState( new Idle );
+	playerX.isDashEnd = true;
 }

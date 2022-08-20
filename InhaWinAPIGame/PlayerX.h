@@ -338,6 +338,7 @@ private:
 
 	bool isFacingRight = false;
 	bool isOnGround = true;
+	bool isDashEnd = false;
 
 	// Key Statement
 	bool isRightKeyDown = false;

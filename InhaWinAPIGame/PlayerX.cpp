@@ -101,7 +101,7 @@ void PlayerX::UpdatePlayerState()
 		}
 		else if ( isRightKeyDown ^ isLeftKeyDown )
 		{
-			if ( isZKeyDown )
+			if ( isZKeyDown && !isDashEnd )
 			{
 				moveState = MoveState::Dash;
 			}
@@ -110,7 +110,7 @@ void PlayerX::UpdatePlayerState()
 				moveState = MoveState::Walk;
 			}
 		}
-		else if ( isZKeyDown )
+		else if ( isZKeyDown && !isDashEnd )
 		{
 			moveState = MoveState::Dash;
 		}
@@ -208,6 +208,7 @@ void PlayerX::KbdInput()
 	}
 	else
 	{
+		isDashEnd = false;
 		isZKeyDown = false;
 	}
 
