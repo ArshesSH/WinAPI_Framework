@@ -7,8 +7,6 @@
 #include "BvPlayerXDash.h"
 #include "BvPlayerXAirbone.h"
 
-
-
 PlayerX::PlayerX( const Vec2<float>& pivotPos, const Vec2<float>& colliderRelativePos )
 	:
 	Character( ActorTag::Player, pivotPos, RectF::FromCenter( colliderRelativePos, colliderHalfWidth, colliderHalfHeight ), 200.0f,
@@ -38,7 +36,7 @@ void PlayerX::Update( float dt, Scene& scene )
 	UpdatePlayerState();
 	UpdatePlayerBehavior();
 	isOnGround = IsCollideWithWall( GetColliderPos() - Vec2<float>{0, 1.0f}, scene );
-	std::cout << "isOnGround : " << std::boolalpha << isOnGround << std::endl;
+	//std::cout << "isOnGround : " << std::boolalpha << isOnGround << std::endl;
 
 	// Update Behavior
 	while ( auto pNewState = pBehavior->Update(*this, scene, dt) )

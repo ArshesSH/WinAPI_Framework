@@ -9,10 +9,20 @@ PlayerX::Behavior* PlayerX::Airbone::Update( PlayerX& playerX, Scene& scene, flo
 {
 	if ( HasSucessors() )
 	{
+		playerX.vel.y = 0.0f;
 		return PassTorch();
 	}
 
 	playerX.vel.y = playerX.gravity.GetGravityVel( playerX.vel, dt );
+	if ( playerX.isRightKeyDown )
+	{
+		playerX.vel.x = moveSpeed;
+	}
+	if ( playerX.isLeftKeyDown )
+	{
+		playerX.vel.x = -moveSpeed;
+	}
+
 	playerX.Move( dt, scene );
 
 	return nullptr;
