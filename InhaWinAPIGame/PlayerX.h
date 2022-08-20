@@ -348,6 +348,7 @@ private:
 
 	bool isFacingRight = false;
 	bool isOnGround = false;
+	bool isJumpNow = false;
 	bool isDashEnd = false;
 
 	// Key Statement
@@ -360,8 +361,6 @@ private:
 	bool isEnterkeyDown = false;
 
 	std::unique_ptr<Behavior> pBehavior;
-	
-
 
 #ifndef NDEBUG
 	// Debug

@@ -6,6 +6,7 @@
 #include "BvPlayerXWalk.h"
 #include "BvPlayerXDash.h"
 #include "BvPlayerXAirbone.h"
+#include "BvPlayerXJump.h"
 
 PlayerX::PlayerX( const Vec2<float>& pivotPos, const Vec2<float>& colliderRelativePos )
 	:
@@ -13,7 +14,7 @@ PlayerX::PlayerX( const Vec2<float>& pivotPos, const Vec2<float>& colliderRelati
 		L"Images/RockmanX5/X/ForthArmorSprite.bmp", L"Images/RockmanX5/X/ForthArmorSpriteFlip.bmp" ),
 	pivotGizmo( Vec2<int>( pivotPos ) ),
 	pBehavior( std::make_unique<Idle>() ),
-	gravity( 9.8f )
+	gravity( 20.0f )
 {
 	animationMap[(int)AnimationState::Idle] = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/Idle.anim" );
 	animationMap[(int)AnimationState::IdleBlink] = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/IdleBlink.anim" );
@@ -23,6 +24,7 @@ PlayerX::PlayerX( const Vec2<float>& pivotPos, const Vec2<float>& colliderRelati
 	animationMap[(int)AnimationState::DashLoop] = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/DashLoop.anim" );
 	animationMap[(int)AnimationState::DashEnd] = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/DashEnd.anim" );
 	animationMap[(int)AnimationState::Airbone] = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/Airbone.anim" );
+	animationMap[(int)AnimationState::Jump] = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/Jump.anim" );
 
 	curAnimation = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/Idle.anim" );
 }
@@ -89,11 +91,11 @@ void PlayerX::Draw( HDC hdc )
 
 void PlayerX::UpdatePlayerState()
 {
-	if ( this->vel.x > 0.0f )
+	if ( vel.x > 0.0f )
 	{
 		isFacingRight = true;
 	}
-	else
+	else if ( vel.x < 0.0f )
 	{
 		isFacingRight = false;
 	}
@@ -126,7 +128,10 @@ void PlayerX::UpdatePlayerState()
 	}
 	else
 	{
-		moveState = MoveState::Airbone;
+		if ( !isJumpNow )
+		{
+			moveState = MoveState::Airbone;
+		}
 	}
 }
 
@@ -159,6 +164,10 @@ void PlayerX::UpdatePlayerBehavior()
 					}
 					break;
 				case PlayerX::MoveState::Jump:
+					{
+						oldMoveState = moveState;
+						pBehavior->PushSucessorState( new Jump );
+					}
 					break;
 				case PlayerX::MoveState::Airbone:
 					{

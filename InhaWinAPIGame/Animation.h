@@ -60,11 +60,14 @@ public:
 
 	void Update( float dt, float playSpeed )
 	{
-		playTime += dt;
-		if ( playTime >= playSpeed )
+		if ( !isStop )
 		{
-			curIdx = UtilSH::GetSafeIndex( frames, curIdx + 1 );
-			playTime = 0.0f;
+			playTime += dt;
+			if ( playTime >= playSpeed )
+			{
+				curIdx = UtilSH::GetSafeIndex( frames, curIdx + 1 );
+				playTime = 0.0f;
+			}
 		}
 	}
 
@@ -77,6 +80,17 @@ public:
 	{
 		return curIdx == frames.size() - 1;
 	}
+
+	bool IsStopped() const
+	{
+		return isStop;
+	}
+
+	void SetStop(bool stop = true)
+	{
+		isStop = stop;
+	}
+
 
 	std::vector<Frame> GetFrames() const
 	{
@@ -128,4 +142,5 @@ private:
 	std::vector<Frame> frames;
 	float playTime = 0.0f;
 	int curIdx = 0;
+	bool isStop = false;
 };
