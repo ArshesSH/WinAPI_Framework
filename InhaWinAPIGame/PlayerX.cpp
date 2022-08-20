@@ -124,15 +124,36 @@ void PlayerX::UpdatePlayerBehavior()
 		{
 		case PlayerX::AttackState::NoAttack:
 			{
-				if ( moveState == MoveState::Idle )
+				switch ( moveState )
 				{
-					oldMoveState = moveState;
-					pBehavior->PushSucessorState( new Idle );
-				}
-				else if ( moveState == MoveState::Walk )
-				{
-					oldMoveState = moveState;
-					pBehavior->PushSucessorState( new Walk );
+				case PlayerX::MoveState::Idle:
+					{
+						oldMoveState = moveState;
+						pBehavior->PushSucessorState( new Idle );
+					}
+					break;
+				case PlayerX::MoveState::Walk:
+					{
+						oldMoveState = moveState;
+						pBehavior->PushSucessorState( new Walk );
+					}
+					break;
+				case PlayerX::MoveState::Dash:
+					break;
+				case PlayerX::MoveState::Jump:
+					break;
+				case PlayerX::MoveState::Airbone:
+					break;
+				case PlayerX::MoveState::Hover:
+					break;
+				case PlayerX::MoveState::Land:
+					break;
+				case PlayerX::MoveState::Ladder:
+					break;
+				case PlayerX::MoveState::Wall:
+					break;
+				default:
+					break;
 				}
 			}
 			break;

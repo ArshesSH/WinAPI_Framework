@@ -76,8 +76,6 @@ public:
 public:
 	using Behavior = Actor::Behavior<PlayerX>;
 	class Idle;
-	class WalkStart;
-	class WalkLoop;
 	class Walk;
 	class Dash;
 
