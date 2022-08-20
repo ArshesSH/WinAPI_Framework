@@ -20,12 +20,3 @@ private:
 	bool isDashRight = false;
 	bool isLastDirRight = false;
 };
-
-class PlayerX::DashEnd : public PlayerX::Behavior
-{
-public:
-	void Activate( PlayerX& playerX, class Scene& scene ) override;
-	Behavior* Update( PlayerX& playerX, class Scene& scene, float dt ) override;
-private:
-	static constexpr float dashEndSpeed = 0.5f;
-};

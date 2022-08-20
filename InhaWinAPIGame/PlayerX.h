@@ -4,6 +4,12 @@
 #include "Image.h"
 #include "PivotGizmo.h"
 
+#ifndef NDBUG
+#include <iostream>
+#endif // !NDBUG
+
+
+
 class PlayerX : public Character
 {
 public:
@@ -47,11 +53,24 @@ public:
 	};
 
 public:
-	enum class State
+	enum class AttackState
+	{
+		NoAttack,
+		Charge,
+		Shoot,
+		Hurt
+	};
+	enum class MoveState
 	{
 		Idle,
 		Walk,
 		Dash,
+		Jump,
+		Airbone,
+		Hover,
+		Land,
+		Ladder,
+		Wall
 	};
 
 public:
@@ -59,23 +78,14 @@ public:
 	class Idle;
 	class WalkStart;
 	class WalkLoop;
+	class Walk;
 	class Dash;
-	class DashEnd;
 
 public:
 	PlayerX( const Vec2<float>& pivotPos, const Vec2<float>& colliderRelativePos = { 0.0f, 40.0f } );
 
 	void Update( float dt, class Scene& scene ) override;
 	void Draw( HDC hdc ) override;
-
-	State GetState() const
-	{
-		return curState;
-	}
-	void SetState( State state)
-	{
-		curState = state;
-	}
 
 	void SetTransform( const Mat3<float>& transform ) override
 	{
@@ -93,13 +103,13 @@ public:
 	{
 		curAnimState = state;
 		curAnimation = animationMap[(int)state];
-		animSpeed = animSpeed_in;
+		animPlaySpeed = animSpeed_in;
 	}
-
 	void SetAnimationPlaySpeed( float speed )
 	{
-		animSpeed = speed;
+		animPlaySpeed = speed;
 	}
+
 	void SetFacingRight( bool faceRight = true)
 	{
 		isFacingRight = faceRight;
@@ -122,35 +132,73 @@ public:
 		moveSpeed = speed;
 	}
 
-	bool IsDash() const
+	bool CheckMoveStateChange() const 
 	{
-		return isDash;
+		return (moveState != oldMoveState);
+	}
+	bool CheckAttackStateChange() const
+	{
+		return  (attackState != oldAttackState);
 	}
 
-	void UpdateState();
-	void ChangeBehaviorByState( State state );
-
-	void Walk( float dt, Scene& scene );
+	void UpdatePlayerState();
+	void UpdatePlayerBehavior();
 
 #ifndef NDEBUG
 	void DrawStateString(Surface<int>& surf, HDC hdc)
 	{
-		switch ( curState )
+		switch ( moveState )
 		{
-		case PlayerX::State::Idle:
-			stateStr = L"Idle";
+		case PlayerX::MoveState::Idle:
+			moveStateStr = L"MoveState = Idle";
 			break;
-		case PlayerX::State::Walk:
-			stateStr = L"Walk";
+		case PlayerX::MoveState::Walk:
+			moveStateStr = L"MoveState = Walk";
 			break;
-		case PlayerX::State::Dash:
-			stateStr = L"Dash";
+		case PlayerX::MoveState::Dash:
+			moveStateStr = L"MoveState = Dash";
+			break;
+		case PlayerX::MoveState::Jump:
+			moveStateStr = L"MoveState = Jump";
+			break;
+		case PlayerX::MoveState::Airbone:
+			moveStateStr = L"MoveState = Airbone";
+			break;
+		case PlayerX::MoveState::Hover:
+			moveStateStr = L"MoveState = Hover";
+			break;
+		case PlayerX::MoveState::Land:
+			moveStateStr = L"MoveState = Land";
+			break;
+		case PlayerX::MoveState::Ladder:
+			moveStateStr = L"MoveState = Ladder";
+			break;
+		case PlayerX::MoveState::Wall:
+			moveStateStr = L"MoveState = Wall";
+			break;
+		default:
+			break;
+		}
+		switch ( attackState )
+		{
+		case PlayerX::AttackState::NoAttack:
+			attackStateStr = L"AttackState = NoAttack";
+			break;
+		case PlayerX::AttackState::Charge:
+			attackStateStr = L"AttackState = Charge";
+			break;
+		case PlayerX::AttackState::Shoot:
+			attackStateStr = L"AttackState = Shoot";
+			break;
+		case PlayerX::AttackState::Hurt:
+			attackStateStr = L"AttackState = Hurt";
 			break;
 		default:
 			break;
 		}
 
-		surf.DrawStringGDI( hdc, { 0, 40 }, stateStr );
+		surf.DrawStringGDI( hdc, { 0, 40 }, moveStateStr );
+		surf.DrawStringGDI( hdc, { 0, 60 }, attackStateStr );
 	}
 
 	void DrawAnimationStateString( Surface<int>& surf, HDC hdc)
@@ -265,13 +313,13 @@ public:
 		default:
 			break;
 		}
-		surf.DrawStringGDI( hdc, { 0, 60 }, animStateStr );
+		surf.DrawStringGDI( hdc, { 0, 80 }, animStateStr );
 	}
 #endif // !NDEBUG
 
 
 private:
-	void KbdInput( float dt, class Scene& scene );
+	void KbdInput( );
 
 private:
 	static constexpr float colliderHalfWidth = 20.0f;
@@ -281,17 +329,29 @@ private:
 	static constexpr float minJumpTime = 0.2f;
 	static constexpr float maxJumpTime = 1.0f;
 
-	State curState;
 	AnimationState curAnimState;
 	Animation<int> curAnimation;
-	float animSpeed = 0.3f;
-	bool isFacingRight = false;
+	float animPlaySpeed;
 
+	// Character Statement
+	AttackState attackState = AttackState::NoAttack;
+	AttackState oldAttackState = attackState;
+	MoveState moveState = MoveState::Idle;
+	MoveState oldMoveState = moveState;
+	bool isAttackStateChanged = false;
+	bool isMoveStateChanged = false;
+
+	bool isFacingRight = false;
 	bool isOnGround = true;
+
+	// Key Statement
 	bool isRightKeyDown = false;
 	bool isLeftKeyDown = false;
-	bool isDash = false;
-	bool isDashEnd = false;
+	bool isZKeyDown = false;
+	bool isXKeyDown = false;
+	bool isCKeyDown = false;
+	bool isESCKeyDown = false;
+	bool isEnterkeyDown = false;
 
 	std::unique_ptr<Behavior> pBehavior;
 	
@@ -304,7 +364,8 @@ private:
 	std::wstring colliderPosStr;
 	std::wstring isRightKeyStr;
 	std::wstring isLeftKeyStr;
-	std::wstring stateStr;
+	std::wstring moveStateStr;
+	std::wstring attackStateStr;
 	std::wstring animStateStr;
 #endif
 };

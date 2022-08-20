@@ -9,13 +9,11 @@ void PlayerX::Idle::Activate( PlayerX& playerX, Scene& scene )
 
 PlayerX::Behavior* PlayerX::Idle::Update( PlayerX& playerX, Scene& scene, float dt )
 {
-	if ( playerX.GetState() != State::Idle )
+	if ( HasSucessors() )
 	{
-		if ( HasSucessors() )
-		{
-			return PassTorch();
-		}
+		return PassTorch();
 	}
+
 	SetRandomAnimation( playerX );
 	return nullptr;
 }

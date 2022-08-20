@@ -28,12 +28,12 @@ PlayerX::PlayerX( const Vec2<float>& pivotPos, const Vec2<float>& colliderRelati
 
 void PlayerX::Update( float dt, Scene& scene )
 {
-	KbdInput(dt, scene);
-	
-	UpdateState();
-	
-	curAnimation.Update( dt, animSpeed );
+	KbdInput();
+	curAnimation.Update( dt, animPlaySpeed );
+	UpdatePlayerState();
+	UpdatePlayerBehavior();
 
+	// Update Behavior
 	while ( auto pNewState = pBehavior->Update(*this, scene, dt) )
 	{
 		pBehavior.reset( pNewState );
@@ -82,68 +82,78 @@ void PlayerX::Draw( HDC hdc )
 #endif // NDEBUG
 }
 
-void PlayerX::UpdateState()
+void PlayerX::UpdatePlayerState()
 {
 	if ( isOnGround )
 	{
-		if ( isDash )
+		if ( isXKeyDown )
 		{
-			ChangeBehaviorByState( State::Dash );
-			SetState( State::Dash );
+			moveState = MoveState::Jump;
 		}
-
-		else if ( (isRightKeyDown || isLeftKeyDown) && std::abs(vel.x) >= moveSpeed )
+		else if ( isRightKeyDown ^ isLeftKeyDown )
 		{
-			ChangeBehaviorByState( State::Walk );
-			SetState( State::Walk );
+			if ( isZKeyDown )
+			{
+				moveState = MoveState::Dash;
+			}
+			else
+			{
+				moveState = MoveState::Walk;
+			}
+		}
+		else if ( isZKeyDown )
+		{
+			moveState = MoveState::Dash;
 		}
 		else
 		{
-			ChangeBehaviorByState( State::Idle );
-			SetState( State::Idle );
+			moveState = MoveState::Idle;
 		}
 	}
-}
-
-void PlayerX::ChangeBehaviorByState(State state)
-{
-	if ( curState != state )
+	else
 	{
-		curState = state;
 
-		switch ( curState )
+	}
+}
+
+void PlayerX::UpdatePlayerBehavior()
+{
+	if ( CheckMoveStateChange() || CheckAttackStateChange() )
+	{
+		switch ( attackState )
 		{
-		case PlayerX::State::Idle:
-			pBehavior->PushSucessorState( new Idle );
+		case PlayerX::AttackState::NoAttack:
+			{
+				if ( moveState == MoveState::Idle )
+				{
+					oldMoveState = moveState;
+					pBehavior->PushSucessorState( new Idle );
+				}
+				else if ( moveState == MoveState::Walk )
+				{
+					oldMoveState = moveState;
+					pBehavior->PushSucessorState( new Walk );
+				}
+			}
 			break;
-		case PlayerX::State::Walk:
-			pBehavior->PushSucessorStates( { new WalkLoop,  new WalkStart } );
+		case PlayerX::AttackState::Charge:
 			break;
-		case PlayerX::State::Dash:
-			pBehavior->PushSucessorState( new Dash );
+		case PlayerX::AttackState::Shoot:
+			break;
+		case PlayerX::AttackState::Hurt:
+			break;
+		default:
 			break;
 		}
 	}
 }
 
-void PlayerX::Walk(float dt, Scene& scene )
+
+
+void PlayerX::KbdInput()
 {
-	Move( dt, scene );
-}
-
-
-void PlayerX::KbdInput( float dt, Scene& scene )
-{
-	vel = { 0.0f, 0.0f };
-
 	if ( GetAsyncKeyState( VK_LEFT ) & 0x8001 )
 	{
-		vel += dirLeft * moveSpeed;
-
-		if ( !isRightKeyDown )
-		{
-			isFacingRight = false;
-		}
 		isLeftKeyDown = true;
 	}
 	else
@@ -153,11 +163,6 @@ void PlayerX::KbdInput( float dt, Scene& scene )
 
 	if ( GetAsyncKeyState( VK_RIGHT ) & 0x8001 )
 	{
-		vel += dirRight * moveSpeed;
-		if ( !isLeftKeyDown )
-		{
-			isFacingRight = true;
-		}
 		isRightKeyDown = true;
 	}
 	else 
@@ -167,20 +172,20 @@ void PlayerX::KbdInput( float dt, Scene& scene )
 
 	if ( GetAsyncKeyState( 'Z' ) & 0x8001 )
 	{
-		if ( isDashEnd == false )
-		{
-			isDash = true;
-		}
+		isZKeyDown = true;
 	}
 	else
 	{
-		isDash = false;
-		isDashEnd = false;
+		isZKeyDown = false;
 	}
 
 	if ( GetAsyncKeyState( 'X' ) & 0x8001 )
 	{
-
+		isXKeyDown = true;
+	}
+	else
+	{
+		isXKeyDown = false;
 	}
 
 
