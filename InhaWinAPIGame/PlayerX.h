@@ -45,7 +45,8 @@ public:
 		LadderTop,
 		LadderShoot,
 		AirDashStart,
-		Hover,
+		HoverFront,
+		HoverBack,
 		HoverShoot,
 		HurtA,
 		HurtB,
@@ -82,6 +83,7 @@ public:
 	class Dash;
 	class Jump;
 	class Airbone;
+	class Hover;
 
 public:
 	PlayerX( const Vec2<float>& pivotPos, const Vec2<float>& colliderRelativePos = { 0.0f, 40.0f } );
@@ -296,8 +298,11 @@ public:
 		case PlayerX::AnimationState::AirDashStart:
 			animStateStr = L"AirDashStart";
 			break;
-		case PlayerX::AnimationState::Hover:
-			animStateStr = L"Hover";
+		case PlayerX::AnimationState::HoverFront:
+			animStateStr = L"HoverFront";
+			break;
+		case PlayerX::AnimationState::HoverBack:
+			animStateStr = L"HoverBack";
 			break;
 		case PlayerX::AnimationState::HoverShoot:
 			animStateStr = L"HoverShoot";
@@ -350,6 +355,7 @@ private:
 	bool isOnGround = false;
 	bool isJumpNow = false;
 	bool isDashEnd = false;
+	bool isJumpEnd = false;
 
 	// Key Statement
 	bool isRightKeyDown = false;
