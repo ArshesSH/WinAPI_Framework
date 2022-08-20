@@ -14,5 +14,4 @@ private:
 private:
 	static constexpr float animStartSpeed = 0.05f;
 	static constexpr float animLoopSpeed = 0.05f;
-	static constexpr float moveSpeed = 250.0f;
 };

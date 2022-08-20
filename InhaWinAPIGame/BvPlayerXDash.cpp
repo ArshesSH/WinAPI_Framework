@@ -10,6 +10,7 @@ PlayerX::Behavior* PlayerX::Dash::Update( PlayerX& playerX, Scene& scene, float 
 {
 	if ( HasSucessors() )
 	{
+		playerX.SetDashEnd();
 		return PassTorch();
 	}
 	if ( playerX.curAnimState == AnimationState::DashStart && playerX.curAnimation.IsEnd() )
@@ -30,11 +31,11 @@ void PlayerX::Dash::DoDash( PlayerX& playerX, Scene& scene, float dt )
 	{
 		if ( playerX.isFacingRight )
 		{
-			playerX.vel.x = moveSpeed;
+			playerX.vel.x = playerX.dashSpeed;
 		}
 		else
 		{
-			playerX.vel.x = -moveSpeed;
+			playerX.vel.x = -playerX.dashSpeed;
 		}
 		playerX.Move( dt, scene );
 	}

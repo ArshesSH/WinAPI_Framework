@@ -45,6 +45,7 @@ public:
 		LadderTop,
 		LadderShoot,
 		AirDashStart,
+		Hover,
 		HoverFront,
 		HoverBack,
 		HoverShoot,
@@ -69,6 +70,7 @@ public:
 		Walk,
 		Dash,
 		Jump,
+		DashJump,
 		Airbone,
 		Hover,
 		Land,
@@ -82,6 +84,7 @@ public:
 	class Walk;
 	class Dash;
 	class Jump;
+	class DashJump;
 	class Airbone;
 	class Hover;
 
@@ -152,6 +155,7 @@ public:
 
 	void UpdatePlayerState();
 	void UpdatePlayerBehavior();
+	
 
 #ifndef NDEBUG
 	void DrawStateString(Surface<int>& surf, HDC hdc)
@@ -169,6 +173,9 @@ public:
 			break;
 		case PlayerX::MoveState::Jump:
 			moveStateStr = L"MoveState = Jump";
+			break;
+		case PlayerX::MoveState::DashJump:
+			moveStateStr = L"MoveState = DashJump";
 			break;
 		case PlayerX::MoveState::Airbone:
 			moveStateStr = L"MoveState = Airbone";
@@ -333,15 +340,18 @@ public:
 private:
 	void KbdInput( );
 	void TestKbd(float dt, Scene& scene);
+	bool IsKbdInputOnce(int vKey, bool flag);
 private:
 	static constexpr float colliderHalfWidth = 20.0f;
 	static constexpr float colliderHalfHeight = 40.0f;
 	static constexpr COLORREF chroma = RGB( 84, 165, 75 );
+	static constexpr float defaultMoveSpeed = 250.0f;
+	static constexpr float dashSpeed = 450.0f;
+	static constexpr float jumpSpeed = 350.0f;
 
 	AnimationState curAnimState;
 	Animation<int> curAnimation;
 	float animPlaySpeed;
-	Gravity gravity;
 
 	// Character Statement
 	AttackState attackState = AttackState::NoAttack;
@@ -365,8 +375,13 @@ private:
 	bool isCKeyDown = false;
 	bool isESCKeyDown = false;
 	bool isEnterkeyDown = false;
+	bool isXKeyInputOnce = false;
+	bool isRightKeyInputOnce = false;
+	bool isLeftKeyInputOnce = false;
+	int hoverCount = 0;
 
 	std::unique_ptr<Behavior> pBehavior;
+	Gravity gravity;
 
 #ifndef NDEBUG
 	// Debug

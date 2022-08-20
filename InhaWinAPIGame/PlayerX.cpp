@@ -7,6 +7,7 @@
 #include "BvPlayerXDash.h"
 #include "BvPlayerXAirbone.h"
 #include "BvPlayerXJump.h"
+#include "BvPlayerXHover.h"
 
 PlayerX::PlayerX( const Vec2<float>& pivotPos, const Vec2<float>& colliderRelativePos )
 	:
@@ -25,6 +26,7 @@ PlayerX::PlayerX( const Vec2<float>& pivotPos, const Vec2<float>& colliderRelati
 	animationMap[(int)AnimationState::DashEnd] = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/DashEnd.anim" );
 	animationMap[(int)AnimationState::Airbone] = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/Airbone.anim" );
 	animationMap[(int)AnimationState::Jump] = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/Jump.anim" );
+	animationMap[(int)AnimationState::Hover] = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/Hover.anim" );
 	animationMap[(int)AnimationState::HoverFront] = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/HoverFront.anim" );
 	animationMap[(int)AnimationState::HoverBack] = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/HoverBack.anim" );
 
@@ -104,9 +106,17 @@ void PlayerX::UpdatePlayerState()
 
 	if ( isOnGround )
 	{
-		if ( isXKeyDown )
+		hoverCount = 0;
+		if ( isXKeyDown  && !isJumpEnd )
 		{
-			moveState = MoveState::Jump;
+			if ( isZKeyDown )
+			{
+				moveState = MoveState::DashJump;
+			}
+			else
+			{
+				moveState = MoveState::Jump;
+			}
 		}
 		else if ( isRightKeyDown ^ isLeftKeyDown )
 		{
@@ -133,6 +143,10 @@ void PlayerX::UpdatePlayerState()
 		if ( !isJumpNow )
 		{
 			moveState = MoveState::Airbone;
+		}
+		if ( hoverCount == 1 )
+		{
+			moveState = MoveState::Hover;
 		}
 	}
 }
@@ -171,6 +185,12 @@ void PlayerX::UpdatePlayerBehavior()
 						pBehavior->PushSucessorState( new Jump );
 					}
 					break;
+				case PlayerX::MoveState::DashJump:
+					{
+						oldMoveState = moveState;
+						pBehavior->PushSucessorState( new DashJump );
+					}
+					break;
 				case PlayerX::MoveState::Airbone:
 					{
 						oldMoveState = moveState;
@@ -178,6 +198,10 @@ void PlayerX::UpdatePlayerBehavior()
 					}
 					break;
 				case PlayerX::MoveState::Hover:
+					{
+						oldMoveState = moveState;
+						pBehavior->PushSucessorState( new Hover );
+					}
 					break;
 				case PlayerX::MoveState::Land:
 					break;
@@ -204,6 +228,15 @@ void PlayerX::UpdatePlayerBehavior()
 
 void PlayerX::KbdInput()
 {
+	if ( (GetAsyncKeyState( VK_LEFT ) & 0x8000) && (!isLeftKeyInputOnce) )
+	{
+		isLeftKeyInputOnce = true;
+	}
+	else if ( (GetAsyncKeyState( VK_LEFT ) == 0) )
+	{
+		isLeftKeyInputOnce = false;
+	}
+
 	if ( GetAsyncKeyState( VK_LEFT ) & 0x8001 )
 	{
 		isLeftKeyDown = true;
@@ -211,6 +244,15 @@ void PlayerX::KbdInput()
 	else
 	{
 		isLeftKeyDown = false;
+	}
+
+	if ( (GetAsyncKeyState( VK_RIGHT ) & 0x8000) && (!isRightKeyInputOnce) )
+	{
+		isRightKeyInputOnce = true;
+	}
+	else if ( (GetAsyncKeyState( VK_RIGHT ) == 0) )
+	{
+		isRightKeyInputOnce = false;
 	}
 
 	if ( GetAsyncKeyState( VK_RIGHT ) & 0x8001 )
@@ -232,15 +274,27 @@ void PlayerX::KbdInput()
 		isZKeyDown = false;
 	}
 
+	if ( (GetAsyncKeyState( 'X' ) & 0x8000) && (!isXKeyInputOnce))
+	{
+		isXKeyInputOnce = true;
+		hoverCount++;
+	}
+	else if( (GetAsyncKeyState( 'X' ) == 0 ))
+	{
+		isXKeyInputOnce = false;
+	}
+	std::cout << "hoverCount : " << hoverCount << std::endl;
+
 	if ( GetAsyncKeyState( 'X' ) & 0x8001 )
 	{
 		isXKeyDown = true;
 	}
 	else
 	{
+		isJumpEnd = false;
 		isXKeyDown = false;
+		isJumpNow = false;
 	}
-
 
 }
 
@@ -266,3 +320,14 @@ void PlayerX::TestKbd( float dt, Scene& scene )
 	Move( dt, scene );
 }
 
+bool PlayerX::IsKbdInputOnce(int vKey, bool flag)
+{
+	if ( (GetAsyncKeyState( vKey ) & 0x8000) && (!flag) )
+	{
+		return true;
+	}
+	else if ( (GetAsyncKeyState( vKey ) == 0) )
+	{
+		return false;
+	}
+}

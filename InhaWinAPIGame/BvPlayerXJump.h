@@ -8,12 +8,19 @@ public:
 	void Activate( PlayerX& playerX, class Scene& scene ) override;
 	Behavior* Update( PlayerX& playerX, class Scene& scene, float dt ) override;
 
+protected:
+	void DoJump( PlayerX& playerX, class Scene& scene, float dt, float speed );
+	const float animSpeed = 0.06f;
 private:
-	static constexpr float animSpeed = 0.1f;
-	static constexpr float jumpMinTime = 0.1f;
 	static constexpr float jumpMaxTime = 0.3f;
-	static constexpr float jumpSpeed = 300.0f;
-	static constexpr float moveSpeed = 200.0f;
+	float jumpTime = 0.0f;
+};
 
-	float jumpTime;
+class PlayerX::DashJump : public PlayerX::Jump
+{
+public:
+	void Activate( PlayerX& playerX, class Scene& scene ) override;
+	Behavior* Update( PlayerX& playerX, class Scene& scene, float dt ) override;
+
+private:
 };

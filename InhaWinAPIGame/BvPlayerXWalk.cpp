@@ -26,11 +26,11 @@ void PlayerX::Walk::DoWalk( PlayerX& playerX, Scene& scene, float dt )
 {
     if ( playerX.isRightKeyDown )
     {
-        playerX.vel.x = moveSpeed;
+        playerX.vel.x = playerX.defaultMoveSpeed;
     }
     if ( playerX.isLeftKeyDown )
     {
-        playerX.vel.x = -moveSpeed;
+        playerX.vel.x = -playerX.defaultMoveSpeed;
     }
     playerX.Move( dt, scene );
     

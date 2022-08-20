@@ -14,14 +14,30 @@ PlayerX::Behavior* PlayerX::Airbone::Update( PlayerX& playerX, Scene& scene, flo
 	}
 
 	playerX.vel.y = playerX.gravity.GetGravityVel( playerX.vel, dt );
-	if ( playerX.isRightKeyDown )
+	if ( playerX.isZKeyDown )
 	{
-		playerX.vel.x = moveSpeed;
+		if ( playerX.isRightKeyDown )
+		{
+			playerX.vel.x = playerX.dashSpeed;
+		}
+		if ( playerX.isLeftKeyDown )
+		{
+			playerX.vel.x = -playerX.dashSpeed;
+		}
 	}
-	if ( playerX.isLeftKeyDown )
+	else
 	{
-		playerX.vel.x = -moveSpeed;
+		if ( playerX.isRightKeyDown )
+		{
+			playerX.vel.x = playerX.defaultMoveSpeed;
+		}
+		if ( playerX.isLeftKeyDown )
+		{
+			playerX.vel.x = -playerX.defaultMoveSpeed;
+		}
 	}
+
+
 
 	playerX.Move( dt, scene );
 

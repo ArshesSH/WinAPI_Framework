@@ -13,8 +13,6 @@ private:
 private:
 	static constexpr float animStartSpeed = 0.05f;
 	static constexpr float animLoopSpeed = 0.05f;
-
-	static constexpr float moveSpeed = 500.0f;
 	static constexpr float dashMaxTime = 0.5f;
 
 	float dashTime = 0.0f;
