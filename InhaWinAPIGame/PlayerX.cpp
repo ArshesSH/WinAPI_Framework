@@ -148,8 +148,6 @@ void PlayerX::UpdatePlayerBehavior()
 	}
 }
 
-
-
 void PlayerX::KbdInput()
 {
 	if ( GetAsyncKeyState( VK_LEFT ) & 0x8001 )

@@ -28,7 +28,7 @@ public:
 	Behavior* Update( PlayerX& playerX, class Scene& scene, float dt ) override;
 
 private:
-	void Move( PlayerX& playerX, float dt );
+	void Move( PlayerX& playerX, Scene& scene, float dt );
 
 private:
 	static constexpr float animStartSpeed = 0.05f;
