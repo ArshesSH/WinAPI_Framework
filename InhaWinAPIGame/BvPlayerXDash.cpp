@@ -16,10 +16,6 @@ PlayerX::Behavior* PlayerX::Dash::Update( PlayerX& playerX, Scene& scene, float 
 	{
 		playerX.SetAnimation( AnimationState::DashLoop, animLoopSpeed );
 	}
-	if ( isDashEnd )
-	{
-		StopDash(playerX, dt);
-	}
 
 	DoDash( playerX, scene, dt );
 
@@ -32,11 +28,11 @@ void PlayerX::Dash::DoDash( PlayerX& playerX, Scene& scene, float dt )
 
 	if ( dashTime <= dashMaxTime )
 	{
-		if ( playerX.isRightKeyDown )
+		if ( playerX.isFacingRight )
 		{
 			playerX.vel.x = moveSpeed;
 		}
-		if ( playerX.isLeftKeyDown )
+		else
 		{
 			playerX.vel.x = -moveSpeed;
 		}
@@ -44,11 +40,21 @@ void PlayerX::Dash::DoDash( PlayerX& playerX, Scene& scene, float dt )
 	}
 	else
 	{
-		StopDash(playerX, dt);
+		playerX.SetDashEnd();
+		//playerX.pBehavior->PushSucessorState( new DashEnd );
 	}
 }
 
-void PlayerX::Dash::StopDash( PlayerX& playerX, float dt )
+void DashEnd::Activate( PlayerX& playerX, Scene& scene )
 {
-	playerX.isDashEnd = true;
+	playerX.SetAnimation( PlayerX::AnimationState::DashEnd, animEndSpeed );
+}
+
+PlayerX::Behavior* DashEnd::Update( PlayerX& playerX, Scene& scene, float dt )
+{
+	if ( playerX.GetAnimation().IsEnd() )
+	{
+		playerX.SetDashEnd();
+	}
+	return nullptr;
 }

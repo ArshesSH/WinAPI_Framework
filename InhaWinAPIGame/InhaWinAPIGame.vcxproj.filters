@@ -270,6 +270,9 @@
     <ClInclude Include="BvPlayerXDash.h">
       <Filter>헤더 파일\GameObjects\Actor\DynamicActor\PlayerX\Behavior</Filter>
     </ClInclude>
+    <ClInclude Include="BvPlayerXJump.h">
+      <Filter>헤더 파일\GameObjects\Actor\DynamicActor\PlayerX\Behavior</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="InhaWinAPIGame.cpp">

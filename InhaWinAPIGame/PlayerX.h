@@ -78,6 +78,7 @@ public:
 	class Idle;
 	class Walk;
 	class Dash;
+	class Jump;
 
 public:
 	PlayerX( const Vec2<float>& pivotPos, const Vec2<float>& colliderRelativePos = { 0.0f, 40.0f } );
@@ -128,6 +129,11 @@ public:
 	void SetMoveSpeed(float speed)
 	{
 		moveSpeed = speed;
+	}
+
+	void SetDashEnd()
+	{
+		isDashEnd = true;
 	}
 
 	bool CheckMoveStateChange() const 
