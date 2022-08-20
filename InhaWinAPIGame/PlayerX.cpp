@@ -31,15 +31,14 @@ PlayerX::PlayerX( const Vec2<float>& pivotPos, const Vec2<float>& colliderRelati
 
 void PlayerX::Update( float dt, Scene& scene )
 {
-	//KbdInput();
+	KbdInput();
+	//TestKbd( dt, scene );
 	curAnimation.Update( dt, animPlaySpeed );
 
-	TestKbd( dt, scene );
-	
-	//UpdatePlayerState();
-	//UpdatePlayerBehavior();
-	//isOnGround = IsCollideWithWall( this->GetNextPos( dt ), scene );
-	//std::cout << "isOnGround : " << std::boolalpha << isOnGround << std::endl;
+	UpdatePlayerState();
+	UpdatePlayerBehavior();
+	isOnGround = IsCollideWithWall( GetColliderPos() - Vec2<float>{0, 1.0f}, scene );
+	std::cout << "isOnGround : " << std::boolalpha << isOnGround << std::endl;
 
 	// Update Behavior
 	while ( auto pNewState = pBehavior->Update(*this, scene, dt) )

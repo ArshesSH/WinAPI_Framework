@@ -23,6 +23,7 @@ protected:
 	bool IsCollideWithWall( const Vec2<float>& nextPos, const class Scene& scene ) const;
 	void Move( float dt, const class Scene& scene );
 	Vec2<float> GetNextPos(float dt) const;
+	Vec2<float> GetNextColliderPos( float dt ) const;
 protected:
 	const Vec2<float> dirLeft = { -1.0f, 0.0f };
 	const Vec2<float> dirUp = { 0.0f, 1.0f };

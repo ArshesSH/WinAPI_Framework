@@ -12,7 +12,7 @@ PlayerX::Behavior* PlayerX::Airbone::Update( PlayerX& playerX, Scene& scene, flo
 		return PassTorch();
 	}
 
-	playerX.vel.y -= 10.0f * dt;
+	playerX.vel.y = playerX.gravity.GetGravityVel( playerX.vel, dt );
 	playerX.Move( dt, scene );
 
 	return nullptr;

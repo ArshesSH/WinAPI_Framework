@@ -32,3 +32,8 @@ Vec2<float> Character::GetNextPos( float dt ) const
 	return GetPos() + vel * dt;
 }
 
+Vec2<float> Character::GetNextColliderPos( float dt ) const
+{
+	return  GetColliderPos() + vel * dt;
+}
+

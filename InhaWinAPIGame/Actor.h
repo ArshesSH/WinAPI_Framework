@@ -98,7 +98,7 @@ protected:
 	{
 		return pos;
 	}
-	Vec2<float> GetColliderPos()
+	Vec2<float> GetColliderPos() const
 	{
 		return pCollider->GetCenter();
 	}
