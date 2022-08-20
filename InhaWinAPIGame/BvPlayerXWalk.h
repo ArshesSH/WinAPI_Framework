@@ -9,10 +9,10 @@ public:
 	Behavior* Update( PlayerX& playerX, class Scene& scene, float dt ) override;
 
 private:
-	void Move( PlayerX& playerX, Scene& scene, float dt );
+	void DoWalk( PlayerX& playerX, Scene& scene, float dt );
 
 private:
 	static constexpr float animStartSpeed = 0.05f;
 	static constexpr float animLoopSpeed = 0.05f;
-	static constexpr float moveSpeed = 200.0f;
+	static constexpr float moveSpeed = 250.0f;
 };

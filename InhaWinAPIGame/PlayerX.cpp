@@ -10,7 +10,7 @@
 
 PlayerX::PlayerX( const Vec2<float>& pivotPos, const Vec2<float>& colliderRelativePos )
 	:
-	Character( ActorTag::Player, pivotPos, RectF::FromCenter( colliderRelativePos, colliderHalfWidth, colliderHalfHeight ), defaultSpeed,
+	Character( ActorTag::Player, pivotPos, RectF::FromCenter( colliderRelativePos, colliderHalfWidth, colliderHalfHeight ), 200.0f,
 		L"Images/RockmanX5/X/ForthArmorSprite.bmp", L"Images/RockmanX5/X/ForthArmorSpriteFlip.bmp" ),
 	pivotGizmo( Vec2<int>( pivotPos ) ),
 	pBehavior(std::make_unique<Idle>())
@@ -84,6 +84,15 @@ void PlayerX::Draw( HDC hdc )
 
 void PlayerX::UpdatePlayerState()
 {
+	if ( this->vel.x > 0.0f )
+	{
+		isFacingRight = true;
+	}
+	else
+	{
+		isFacingRight = false;
+	}
+
 	if ( isOnGround )
 	{
 		if ( isXKeyDown )
@@ -139,6 +148,10 @@ void PlayerX::UpdatePlayerBehavior()
 					}
 					break;
 				case PlayerX::MoveState::Dash:
+					{
+						oldMoveState = moveState;
+						pBehavior->PushSucessorState( new Dash );
+					}
 					break;
 				case PlayerX::MoveState::Jump:
 					break;

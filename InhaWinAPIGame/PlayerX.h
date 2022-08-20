@@ -322,10 +322,7 @@ private:
 private:
 	static constexpr float colliderHalfWidth = 20.0f;
 	static constexpr float colliderHalfHeight = 40.0f;
-	static constexpr float defaultSpeed = 200.0f;
 	static constexpr COLORREF chroma = RGB( 84, 165, 75 );
-	static constexpr float minJumpTime = 0.2f;
-	static constexpr float maxJumpTime = 1.0f;
 
 	AnimationState curAnimState;
 	Animation<int> curAnimation;
