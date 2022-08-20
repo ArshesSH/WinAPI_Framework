@@ -52,4 +52,5 @@ private:
     const Vec2<float> dirRight = { 1.0f, 0.0f };
     const Vec2<float> dirDown = { 0.0f, -1.0f };
 
+    ConvexCollider<float> collider1;
 };

@@ -15,11 +15,13 @@ bool Character::IsCollideWithWall( const Vec2<float>& nextPos, const Scene& scen
 	return false;
 }
 
+
+
 void Character::Move( float dt, const Scene& scene )
 {
 	const Vec2<float> nextPos = GetPos() + vel * dt;
-
-	if ( !IsCollideWithWall( nextPos, scene ) )
+	const Vec2<float> nextColliderPos = GetColliderPos() + vel * dt;
+	if ( !IsCollideWithWall( nextColliderPos, scene ) )
 	{
 		SetPos( nextPos );
 	}

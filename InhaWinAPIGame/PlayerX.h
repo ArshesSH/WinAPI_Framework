@@ -327,7 +327,7 @@ public:
 
 private:
 	void KbdInput( );
-
+	void TestKbd(float dt, Scene& scene);
 private:
 	static constexpr float colliderHalfWidth = 20.0f;
 	static constexpr float colliderHalfHeight = 40.0f;

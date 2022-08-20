@@ -5,7 +5,8 @@
 
 ActorTestScene::ActorTestScene( int sceneWidth, int sceneHeight, CoordinateTransformer& ct )
 	:
-	Scene( sceneWidth, sceneHeight, ct )
+	Scene( sceneWidth, sceneHeight, ct ),
+	collider1( RectF::FromCenter( { -100,-100 }, 500, 50 ) )
 {
 	actorPtrs.emplace_back( std::make_unique<PlayerX>( Vec2<float>{ 0.0f, 0.0f } ) );
 	wallPtrs.emplace_back( std::make_unique<Wall>( Vec2<float>{-100.0f, -100.0f}, 500.0f, 50.0f ) );
@@ -41,6 +42,8 @@ void ActorTestScene::Draw( HDC hdc )
 			pCollider->UpdateMatrix( camTransform );
 			pCollider->Draw( gfx, { 144,255,0,255 } );
 		}
+		collider1.UpdateMatrix( camTransform );
+		collider1.Draw( gfx, { 144,255,0,0 } );
 	};
 
 	const float screenX = (sceneBottomRight.x - sceneTopLeft.x) / 2.0f;
