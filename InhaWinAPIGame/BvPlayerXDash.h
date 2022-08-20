@@ -6,6 +6,10 @@ class PlayerX::Dash : public PlayerX::Behavior
 public:
 	void Activate( PlayerX& playerX, class Scene& scene ) override;
 	Behavior* Update( PlayerX& playerX, class Scene& scene, float dt ) override;
+
+private:
+	void StopDash( PlayerX& playerX, float dt );
+
 private:
 	static constexpr float dashStartSpeed = 0.05f;
 	static constexpr float dashLoopSpeed = 0.05f;
@@ -17,3 +21,11 @@ private:
 	bool isLastDirRight = false;
 };
 
+class PlayerX::DashEnd : public PlayerX::Behavior
+{
+public:
+	void Activate( PlayerX& playerX, class Scene& scene ) override;
+	Behavior* Update( PlayerX& playerX, class Scene& scene, float dt ) override;
+private:
+	static constexpr float dashEndSpeed = 0.5f;
+};

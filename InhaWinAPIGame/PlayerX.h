@@ -60,6 +60,7 @@ public:
 	class WalkStart;
 	class WalkLoop;
 	class Dash;
+	class DashEnd;
 
 public:
 	PlayerX( const Vec2<float>& pivotPos, const Vec2<float>& colliderRelativePos = { 0.0f, 40.0f } );
@@ -125,7 +126,6 @@ public:
 	{
 		return isDash;
 	}
-	void StopDash();
 
 	void UpdateState();
 	void ChangeBehaviorByState( State state );

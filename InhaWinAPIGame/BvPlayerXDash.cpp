@@ -24,6 +24,7 @@ PlayerX::Behavior* PlayerX::Dash::Update( PlayerX& playerX, Scene& scene, float 
 		playerX.SetAnimation( AnimationState::DashLoop, dashLoopSpeed );
 	}
 
+
 	if ( playerX.GetState() != State::Walk )
 	{
 		playerX.SetMoveSpeed( dashMoveSpeed );
@@ -31,7 +32,7 @@ PlayerX::Behavior* PlayerX::Dash::Update( PlayerX& playerX, Scene& scene, float 
 	
 	if ( isLastDirRight != playerX.isFacingRight )
 	{
-		playerX.StopDash();
+		StopDash(playerX, dt);
 	}
 
 
@@ -61,7 +62,7 @@ PlayerX::Behavior* PlayerX::Dash::Update( PlayerX& playerX, Scene& scene, float 
 	}
 	else
 	{
-		playerX.StopDash();
+		StopDash(playerX, dt);
 	}
 	
 #ifndef NDBUG
@@ -70,5 +71,29 @@ PlayerX::Behavior* PlayerX::Dash::Update( PlayerX& playerX, Scene& scene, float 
 #endif // !NDBUG
 
 
+	return nullptr;
+}
+
+void PlayerX::Dash::StopDash( PlayerX& playerX, float dt )
+{
+	playerX.isDash = false;
+	playerX.isDashEnd = true;
+	this->SetSuccessorStates( { new Idle, new DashEnd } );
+	
+	//playerX.pBehavior = std::make_unique<Idle>();
+	playerX.SetState( State::Idle );
+}
+
+void PlayerX::DashEnd::Activate( PlayerX& playerX, Scene& scene )
+{
+	playerX.SetAnimation( PlayerX::AnimationState::DashEnd, dashEndSpeed );
+}
+
+PlayerX::Behavior* PlayerX::DashEnd::Update( PlayerX& playerX, Scene& scene, float dt )
+{
+	if ( playerX.curAnimation.IsEnd() )
+	{
+		return PassTorch();
+	}
 	return nullptr;
 }

@@ -21,6 +21,7 @@ PlayerX::PlayerX( const Vec2<float>& pivotPos, const Vec2<float>& colliderRelati
 	animationMap[(int)AnimationState::WalkLoop] = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/WalkLoop.anim" );
 	animationMap[(int)AnimationState::DashStart] = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/DashStart.anim" );
 	animationMap[(int)AnimationState::DashLoop] = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/DashLoop.anim" );
+	animationMap[(int)AnimationState::DashEnd] = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/DashEnd.anim" );
 
 	curAnimation = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/Idle.anim" );
 }
@@ -81,14 +82,6 @@ void PlayerX::Draw( HDC hdc )
 #endif // NDEBUG
 }
 
-void PlayerX::StopDash()
-{
-	isDash = false;
-	isDashEnd = true;
-	pBehavior = std::make_unique<Idle>();
-	SetState( State::Idle );
-}
-
 void PlayerX::UpdateState()
 {
 	if ( isOnGround )
@@ -110,7 +103,6 @@ void PlayerX::UpdateState()
 			SetState( State::Idle );
 		}
 	}
-
 }
 
 void PlayerX::ChangeBehaviorByState(State state)
