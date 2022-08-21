@@ -447,8 +447,9 @@ void PlayerX::KbdInput(float dt)
 		fireMiddleBuster = false;
 		fireMaxBuster = false;
 		fireNormalBuster = false;
+		chargeTime = 0.0f;
 	}
-
+	std::cout << "chargeTime : " << chargeTime << std::endl;
 }
 
 void PlayerX::TestKbd( float dt, Scene& scene )

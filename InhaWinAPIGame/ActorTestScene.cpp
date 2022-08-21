@@ -5,11 +5,15 @@
 
 ActorTestScene::ActorTestScene( int sceneWidth, int sceneHeight, CoordinateTransformer& ct )
 	:
-	Scene( sceneWidth, sceneHeight, ct )
+	Scene( sceneWidth, sceneHeight, ct ),
+	stageImage( L"Images/RockmanX5/OpeningStage.bmp" ),
+	stageSize( stageImage.GetImageSize() * 2 )
 {
-	actorPtrs.emplace_back( std::make_unique<PlayerX>( Vec2<float>{ 0.0f, 100.0f } ) );
-	wallPtrs.emplace_back( std::make_unique<Wall>( Vec2<float>{-100.0f, -100.0f}, 500.0f, 50.0f ) );
-	wallPtrs.emplace_back( std::make_unique<Wall>( Vec2<float>{250.0f, 150.0f}, 50.0f, 200.0f ) );
+	cam.SetPos( { 200.0f,240.0f } );
+	cam.SetScale( 2.0f );
+	actorPtrs.emplace_back( std::make_unique<PlayerX>( Vec2<float>{ 300.0f, 500.0f } ) );
+	wallPtrs.emplace_back( std::make_unique<Wall>( Vec2<float>{500.0f, 0.0f}, 1000.0f, 50.0f ) );
+	//wallPtrs.emplace_back( std::make_unique<Wall>( Vec2<float>{250.0f, 150.0f}, 50.0f, 200.0f ) );
 }
 
 void ActorTestScene::Update( float dt, Game& game )
@@ -25,6 +29,8 @@ void ActorTestScene::Update( float dt, Game& game )
 		pBullet->Update( dt, *this );
 	}
 
+	stageSurf.SetTransformation( cam.GetTransform() );
+
 	CollectingObjects();
 }
 
@@ -33,6 +39,8 @@ void ActorTestScene::Draw( HDC hdc )
 	Gdiplus::Graphics gfx( hdc );
 	auto drawFuncs = [&]( HDC hdc, const Mat3<float>& camTransform )
 	{
+		stageSurf.DrawImageNonChromaGDI( hdc, stageImage, { 0,0 }, stageSize, { 0,0 }, stageImage.GetImageSize() );
+
 		for ( const auto& pActor : actorPtrs )
 		{
 			pActor->SetTransform( camTransform );

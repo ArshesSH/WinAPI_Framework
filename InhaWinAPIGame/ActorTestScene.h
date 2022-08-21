@@ -46,8 +46,11 @@ private:
         }
 
         const auto& pPlayer = FindPlayerPtr();
-        
-        cam.SetPos( { pPlayer->GetPos().x, cam.GetPos().y } );
+        if ( cam.GetScreenRect(sceneWidth, sceneHeight).left >= 0.0f )
+        {
+            cam.SetPos( { pPlayer->GetPos().x, cam.GetPos().y } );
+        }
+
 	}
 
 private:
@@ -55,4 +58,8 @@ private:
     const Vec2<float> dirUp = { 0.0f, 1.0f };
     const Vec2<float> dirRight = { 1.0f, 0.0f };
     const Vec2<float> dirDown = { 0.0f, -1.0f };
+
+    Image::ImageGDI<int> stageImage;
+    Surface<int> stageSurf;
+    Vec2<int> stageSize;
 };

@@ -394,6 +394,7 @@ private:
 	static constexpr float bullet1Height = 10.0f;
 	static constexpr float bulletChargeMiddle = 0.5f;
 	static constexpr float bulletChargeMax = 1.0f;
+	static constexpr float busterMinDelay = 0.3f;
 
 	AnimationState curAnimState;
 	Animation<int> curAnimation;
