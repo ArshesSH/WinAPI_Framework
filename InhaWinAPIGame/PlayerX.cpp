@@ -171,11 +171,11 @@ void PlayerX::UpdatePlayerState()
 		}
 		else
 		{
-			if ( attackState == AttackState::NoAttack )
+			if ( attackState == AttackState::NoAttack || chargeState == ChargeState::NoCharge )
 			{
 				moveState = MoveState::Idle;
 			}
-			if ( fireNormalBuster )
+			if ( chargeState == ChargeState::FireNormal )
 			{
 				attackState = AttackState::Shoot;
 			}
@@ -428,25 +428,22 @@ void PlayerX::KbdInput(float dt)
 		{
 			if ( chargeTime >= bulletChargeMax )
 			{
-				fireMiddleBuster = false;
-				fireMaxBuster = true;
+				chargeState = ChargeState::FireMax;
 			}
 			else
 			{
-				fireMiddleBuster = true;
+				chargeState = ChargeState::FireMiddle;
 			}
 		}
 		else
 		{
-			fireNormalBuster = true;
+			chargeState = ChargeState::FireNormal;
 		}
 	}
 	else
 	{
+		chargeState = ChargeState::NoCharge;
 		isCKeyDown = false;
-		fireMiddleBuster = false;
-		fireMaxBuster = false;
-		fireNormalBuster = false;
 		chargeTime = 0.0f;
 	}
 	std::cout << "chargeTime : " << chargeTime << std::endl;

@@ -82,6 +82,13 @@ public:
 		WallKick,
 		Crouch
 	};
+	enum class ChargeState
+	{
+		NoCharge,
+		FireNormal,
+		FireMiddle,
+		FireMax
+	};
 
 public:
 	using Behavior = Actor::Behavior<PlayerX>;
@@ -420,9 +427,7 @@ private:
 	bool isJumpEnd = false;
 	bool isOnWallSide = false;
 	bool canAirDash = false;
-	bool fireNormalBuster = false;
-	bool fireMiddleBuster = false;
-	bool fireMaxBuster = false;
+	ChargeState chargeState = ChargeState::NoCharge;
 
 	// Key Statement
 	bool isRightKeyDown = false;
