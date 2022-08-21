@@ -14,9 +14,9 @@ private:
 	void ChangeAnimation( PlayerX& playerX );
 private:
 	static constexpr float animSpeed = 0.05f;
-	static constexpr float hoverEffectMaxSpeed = 50.0f;
-	static constexpr float hoverEffectMaxTime = 0.3f;
-	static constexpr float hoverMaxTime = 1.5f;
+	static constexpr float hoverEffectMaxSpeed = 60.0f;
+	static constexpr float hoverEffectMaxTime = 0.15f;
+	static constexpr float hoverMaxTime = 3.0f;
 
 	float hoverTime = 0.0f;
 	float hoverEffectTime = 0.0f;

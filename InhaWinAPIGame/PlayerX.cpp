@@ -8,6 +8,7 @@
 #include "BvPlayerXAirbone.h"
 #include "BvPlayerXJump.h"
 #include "BvPlayerXHover.h"
+#include "BvPlayerXWallSlide.h"
 
 PlayerX::PlayerX( const Vec2<float>& pivotPos, const Vec2<float>& colliderRelativePos )
 	:
@@ -15,7 +16,8 @@ PlayerX::PlayerX( const Vec2<float>& pivotPos, const Vec2<float>& colliderRelati
 		L"Images/RockmanX5/X/ForthArmorSprite.bmp", L"Images/RockmanX5/X/ForthArmorSpriteFlip.bmp" ),
 	pivotGizmo( Vec2<int>( pivotPos ) ),
 	pBehavior( std::make_unique<Idle>() ),
-	gravity( 20.0f )
+	gravity( 20.0f ),
+	wallSearcher( pivotPos + Vec2<float>{-wallsearcherLength, 0.0f}, pivotPos + Vec2<float>{wallsearcherLength, 0.0f} )
 {
 	animationMap[(int)AnimationState::Idle] = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/Idle.anim" );
 	animationMap[(int)AnimationState::IdleBlink] = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/IdleBlink.anim" );
@@ -29,6 +31,9 @@ PlayerX::PlayerX( const Vec2<float>& pivotPos, const Vec2<float>& colliderRelati
 	animationMap[(int)AnimationState::Hover] = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/Hover.anim" );
 	animationMap[(int)AnimationState::HoverFront] = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/HoverFront.anim" );
 	animationMap[(int)AnimationState::HoverBack] = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/HoverBack.anim" );
+	animationMap[(int)AnimationState::WallSlide] = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/WallSlide.anim" );
+	animationMap[(int)AnimationState::WallCling] = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/WallCling.anim" );
+	animationMap[(int)AnimationState::AirDashStart] = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/AirDashStart.anim" );
 
 	curAnimation = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/Idle.anim" );
 }
@@ -41,10 +46,13 @@ void PlayerX::Update( float dt, Scene& scene )
 
 	UpdatePlayerState();
 	UpdatePlayerBehavior();
+	UpdateWallSearcher(dt);
+	isOnWallSide = IsWallSearcherCollide( scene );
 	isOnGround = IsCollideWithWall( GetColliderPos() - Vec2<float>{0, 1.0f}, scene );
 	//std::cout << "isOnGround : " << std::boolalpha << isOnGround << std::endl;
-	std::cout << "Vel:{" << vel.x << ", " << vel.y << std::endl;
-
+	//std::cout << "Vel:{" << vel.x << ", " << vel.y << std::endl;
+	//std::cout << "isOnWallSide : " << std::boolalpha << isOnWallSide << std::endl;
+	
 	// Update Behavior
 	while ( auto pNewState = pBehavior->Update(*this, scene, dt) )
 	{
@@ -66,6 +74,7 @@ void PlayerX::Update( float dt, Scene& scene )
 	isLeftKeyStr = L"Left " + leftStr;
 	pivotGizmo.SetPos( Vec2<int>( pos ) );
 	pivotGizmo.SetTransform( scene.AccessCamera().GetTransform() );
+	wallSearcher.UpdateMatrix( scene.AccessCamera().GetTransform() );
 #endif // NDEBUG
 
 }
@@ -84,6 +93,7 @@ void PlayerX::Draw( HDC hdc )
 #ifndef NDEBUG
 	// Debug
 	Surface<int> surf;
+	Gdiplus::Graphics gfx( hdc );
 	surf.DrawStringGDI( hdc, { 0,0 }, imgPosStr );
 	surf.DrawStringGDI( hdc, { 0,20 }, colliderPosStr );
 	surf.DrawStringGDI( hdc, { 0,100 }, isRightKeyStr );
@@ -91,6 +101,7 @@ void PlayerX::Draw( HDC hdc )
 	DrawStateString( surf, hdc );
 	DrawAnimationStateString( surf, hdc );
 	pivotGizmo.Draw( hdc );
+	wallSearcher.Draw( gfx, { 255,0,255,0 } );
 #endif // NDEBUG
 }
 
@@ -145,7 +156,11 @@ void PlayerX::UpdatePlayerState()
 	}
 	else
 	{
-		if ( !isJumpNow )
+		if ( !isJumpNow && isOnWallSide )
+		{
+			moveState = MoveState::WallSlide;
+		}
+		if ( !isJumpNow && !isOnWallSide )
 		{
 			moveState = MoveState::Airbone;
 		}
@@ -212,7 +227,11 @@ void PlayerX::UpdatePlayerBehavior()
 					break;
 				case PlayerX::MoveState::Ladder:
 					break;
-				case PlayerX::MoveState::Wall:
+				case PlayerX::MoveState::WallSlide:
+					{
+						oldMoveState = moveState;
+						pBehavior->PushSucessorState( new WallSlide );
+					}
 					break;
 				default:
 					break;
@@ -334,4 +353,21 @@ bool PlayerX::IsKbdInputOnce(int vKey, bool flag)
 	{
 		return false;
 	}
+}
+
+void PlayerX::UpdateWallSearcher(float dt)
+{
+	wallSearcher.SetPosByCenter( GetPos() + wallSearcherOffset );
+}
+
+bool PlayerX::IsWallSearcherCollide( Scene& scene )
+{
+	for ( const auto& pWall : scene.GetWallPtrs() )
+	{
+		if ( pWall->IsCollideWith( scene.GetCollisionManager(), wallSearcher ) )
+		{
+			return true;
+		}
+	}
+	return false;
 }

@@ -20,47 +20,28 @@ PlayerX::Behavior* PlayerX::Hover::Update( PlayerX& playerX, Scene& scene, float
 	hoverTime += dt;
 	if ( hoverTime <= hoverMaxTime )
 	{
+		if ( !(GetAsyncKeyState( VK_RIGHT ) & 0x8001) && !(GetAsyncKeyState( VK_LEFT ) & 0x8001) )
 		{
-			if ( !(GetAsyncKeyState( VK_RIGHT ) & 0x8001) && !(GetAsyncKeyState( VK_LEFT ) & 0x8001) )
-			{
-				checkReinput = true;
-			}
-
-			if ( checkReinput )
-			{
-				playerX.vel.x = 0.0f;
-				if ( playerX.isRightKeyDown )
-				{
-					playerX.vel.x = playerX.defaultMoveSpeed;
-				}
-				if ( playerX.isLeftKeyDown )
-				{
-					playerX.vel.x = -playerX.defaultMoveSpeed;
-				}
-			}
-
+			checkReinput = true;
 		}
 
+		if ( checkReinput )
+		{
+			playerX.vel.x = 0.0f;
+			if ( playerX.isRightKeyDown )
+			{
+				playerX.vel.x = playerX.defaultMoveSpeed;
+				hoverTime += 4*dt;
+			}
+			if ( playerX.isLeftKeyDown )
+			{
+				playerX.vel.x = -playerX.defaultMoveSpeed;
+				hoverTime += 4*dt;
+			}
+		}
 		ChangeAnimation( playerX );
 		HoverEffect( playerX, scene, dt );
 		playerX.Move( dt, scene );
-
-
-
-
-
-
-		{
-			//if ( !(GetAsyncKeyState( VK_RIGHT ) & 0x8001) && !(GetAsyncKeyState( VK_LEFT ) & 0x8001) )
-			//{
-			//	checkReinput = true;
-			//}
-
-			//if ( checkReinput && IsOtherKeyInputed( playerX ) )
-			//{
-			//	playerX.hoverCount++;
-			//}
-		}
 
 	}
 	else

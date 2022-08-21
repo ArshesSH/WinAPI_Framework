@@ -152,6 +152,7 @@
     <ClInclude Include="BvPlayerXIdle.h" />
     <ClInclude Include="BvPlayerXJump.h" />
     <ClInclude Include="BvPlayerXWalk.h" />
+    <ClInclude Include="BvPlayerXWallSlide.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Circle.h" />
     <ClInclude Include="Codex.h" />
@@ -208,6 +209,7 @@
     <ClCompile Include="BvPlayerXIdle.cpp" />
     <ClCompile Include="BvPlayerXJump.cpp" />
     <ClCompile Include="BvPlayerXWalk.cpp" />
+    <ClCompile Include="BvPlayerXWallSlide.cpp" />
     <ClCompile Include="Character.cpp" />
     <ClCompile Include="ColliderTypeTrait.cpp" />
     <ClCompile Include="CoordinateTransformer.cpp" />

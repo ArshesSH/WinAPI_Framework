@@ -37,6 +37,7 @@ public:
 		Land,
 		ShootJump,
 		ShootLand,
+		WallSlide,
 		WallCling,
 		WallKick,
 		ShootWallCling,
@@ -69,13 +70,14 @@ public:
 		Idle,
 		Walk,
 		Dash,
+		AirDash,
 		Jump,
 		DashJump,
 		Airbone,
 		Hover,
 		Land,
 		Ladder,
-		Wall
+		WallSlide
 	};
 
 public:
@@ -83,10 +85,12 @@ public:
 	class Idle;
 	class Walk;
 	class Dash;
+	class AirDash;
 	class Jump;
 	class DashJump;
 	class Airbone;
 	class Hover;
+	class WallSlide;
 
 public:
 	PlayerX( const Vec2<float>& pivotPos, const Vec2<float>& colliderRelativePos = { 0.0f, 40.0f } );
@@ -175,6 +179,9 @@ public:
 		case PlayerX::MoveState::Dash:
 			moveStateStr = L"MoveState = Dash";
 			break;
+		case PlayerX::MoveState::AirDash:
+			moveStateStr = L"MoveState = AirDash";
+			break;
 		case PlayerX::MoveState::Jump:
 			moveStateStr = L"MoveState = Jump";
 			break;
@@ -193,8 +200,8 @@ public:
 		case PlayerX::MoveState::Ladder:
 			moveStateStr = L"MoveState = Ladder";
 			break;
-		case PlayerX::MoveState::Wall:
-			moveStateStr = L"MoveState = Wall";
+		case PlayerX::MoveState::WallSlide:
+			moveStateStr = L"MoveState = WallSlide";
 			break;
 		default:
 			break;
@@ -285,6 +292,9 @@ public:
 		case PlayerX::AnimationState::ShootLand:
 			animStateStr = L"ShootLand";
 			break;
+		case PlayerX::AnimationState::WallSlide:
+			animStateStr = L"WallSlide";
+			break;
 		case PlayerX::AnimationState::WallCling:
 			animStateStr = L"WallCling";
 			break;
@@ -345,6 +355,8 @@ private:
 	void KbdInput( );
 	void TestKbd(float dt, Scene& scene);
 	bool IsKbdInputOnce(int vKey, bool flag);
+	void UpdateWallSearcher(float dt);
+	bool IsWallSearcherCollide( Scene& scene );
 private:
 	static constexpr float colliderHalfWidth = 20.0f;
 	static constexpr float colliderHalfHeight = 40.0f;
@@ -352,10 +364,15 @@ private:
 	static constexpr float defaultMoveSpeed = 250.0f;
 	static constexpr float dashSpeed = 450.0f;
 	static constexpr float jumpSpeed = 350.0f;
+	static constexpr float wallsearcherLength = 25.0f;
 
 	AnimationState curAnimState;
 	Animation<int> curAnimation;
 	float animPlaySpeed;
+
+	LineCollider<float> wallSearcher;
+	const Vec2<float> wallSearcherOffset = { 0.0f,1.0f };
+
 
 	// Character Statement
 	AttackState attackState = AttackState::NoAttack;
@@ -371,6 +388,7 @@ private:
 	bool isJumpNow = false;
 	bool isDashEnd = false;
 	bool isJumpEnd = false;
+	bool isOnWallSide = false;
 
 	// Key Statement
 	bool isRightKeyDown = false;

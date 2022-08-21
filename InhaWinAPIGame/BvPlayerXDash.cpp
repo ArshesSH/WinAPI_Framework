@@ -42,7 +42,6 @@ void PlayerX::Dash::DoDash( PlayerX& playerX, Scene& scene, float dt )
 	else
 	{
 		playerX.SetDashEnd();
-		//playerX.pBehavior->PushSucessorState( new DashEnd );
 	}
 }
 
@@ -57,5 +56,29 @@ PlayerX::Behavior* DashEnd::Update( PlayerX& playerX, Scene& scene, float dt )
 	{
 		playerX.SetDashEnd();
 	}
+	return nullptr;
+}
+
+void PlayerX::AirDash::Activate( PlayerX& playerX, Scene& scene )
+{
+	playerX.SetAnimation( PlayerX::AnimationState::AirDashStart, animStartSpeed );
+	
+}
+
+PlayerX::AirDash::Behavior* PlayerX::AirDash::Update( PlayerX& playerX, Scene& scene, float dt )
+{
+	if ( HasSucessors() )
+	{
+		return PassTorch();
+	}
+
+	if ( playerX.curAnimation.IsEnd() )
+	{
+		playerX.SetAnimation( PlayerX::AnimationState::DashStart, animStartSpeed );
+	}
+
+	playerX.vel.y = 0.0f;
+	DoDash( playerX, scene, dt );
+
 	return nullptr;
 }

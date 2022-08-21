@@ -19,11 +19,18 @@ bool Character::IsCollideWithWall( const Vec2<float>& nextPos, const Scene& scen
 
 void Character::Move( float dt, const Scene& scene )
 {
-	const Vec2<float> nextPos = GetPos() + vel * dt;
+	const auto moveAmount = vel * dt;
+	const Vec2<float> nextPos = GetPos() + moveAmount;
 	const Vec2<float> nextColliderPos = GetColliderPos() + vel * dt;
-	if ( !IsCollideWithWall( nextColliderPos, scene ) )
+
+	//if ( !IsCollideWithWall( nextColliderPos, scene ) )
 	{
 		SetPos( nextPos );
+	}
+
+	if ( IsCollideWithWall( nextColliderPos, scene ) )
+	{
+		SetPos( nextPos - moveAmount );
 	}
 }
 
