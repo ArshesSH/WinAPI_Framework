@@ -44,6 +44,10 @@ private:
         {
             cam.SetScale( cam.GetScale() + (2.0f * dt) );
         }
+
+        const auto& pPlayer = FindPlayerPtr();
+        
+        cam.SetPos( { pPlayer->GetPos().x, cam.GetPos().y } );
 	}
 
 private:

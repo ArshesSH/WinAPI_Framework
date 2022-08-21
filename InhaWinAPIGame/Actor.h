@@ -93,7 +93,6 @@ public:
 		return pCollider;
 	}
 
-protected:
 	Vec2<float> GetPos() const
 	{
 		return pos;
@@ -102,6 +101,8 @@ protected:
 	{
 		return pCollider->GetCenter();
 	}
+
+protected:
 	void SetPos(const Vec2<float>& pos_in)
 	{
 		const Vec2<float> relativePos = pCollider->GetCenter() - pos;

@@ -49,7 +49,7 @@ public:
 		return wallPtrs;
 	}
 
-	std::vector<Actor*> FindByTag(ActorTag tag)
+	std::vector<Actor*> FindActorByTag(ActorTag tag)
 	{
 		std::vector<Actor*> targets;
 		for ( const auto& pActor : actorPtrs )
@@ -61,6 +61,19 @@ public:
 		}
 		return targets;
 	}
+
+	const std::unique_ptr<Actor>& FindPlayerPtr()
+	{
+		for ( const auto& pActor : actorPtrs )
+		{
+			if ( pActor->IsTagSameWith( ActorTag::Player ) )
+			{
+				return pActor;
+			}
+		}
+		return nullptr;
+	}
+
 	CollisionManager<float> GetCollisionManager() const 
 	{
 		return cm;
