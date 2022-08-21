@@ -4,32 +4,62 @@
 void PlayerX::Hover::Activate( PlayerX& playerX, Scene& scene )
 {
 	playerX.SetAnimation( PlayerX::AnimationState::Hover, 0.0f );
-	playerX.vel = { 0.0f,0.0f };
+	playerX.vel = { 0.0f,hoverEffectMaxSpeed };
+	playerX.SetStopFacingTrack();
 }
 
 PlayerX::Behavior* PlayerX::Hover::Update( PlayerX& playerX, Scene& scene, float dt )
 {
 	if ( HasSucessors() )
 	{
+		playerX.vel.y = 0.0f;
+		playerX.SetStopFacingTrack(false);
 		return PassTorch();
 	}
 
 	hoverTime += dt;
 	if ( hoverTime <= hoverMaxTime )
 	{
-		HoverEffect( playerX, scene, dt );
-
-
 		{
 			if ( !(GetAsyncKeyState( VK_RIGHT ) & 0x8001) && !(GetAsyncKeyState( VK_LEFT ) & 0x8001) )
 			{
 				checkReinput = true;
 			}
 
-			if ( checkReinput && IsOtherKeyInputed( playerX ) )
+			if ( checkReinput )
 			{
-				playerX.hoverCount++;
+				playerX.vel.x = 0.0f;
+				if ( playerX.isRightKeyDown )
+				{
+					playerX.vel.x = playerX.defaultMoveSpeed;
+				}
+				if ( playerX.isLeftKeyDown )
+				{
+					playerX.vel.x = -playerX.defaultMoveSpeed;
+				}
 			}
+
+		}
+
+		ChangeAnimation( playerX );
+		HoverEffect( playerX, scene, dt );
+		playerX.Move( dt, scene );
+
+
+
+
+
+
+		{
+			//if ( !(GetAsyncKeyState( VK_RIGHT ) & 0x8001) && !(GetAsyncKeyState( VK_LEFT ) & 0x8001) )
+			//{
+			//	checkReinput = true;
+			//}
+
+			//if ( checkReinput && IsOtherKeyInputed( playerX ) )
+			//{
+			//	playerX.hoverCount++;
+			//}
 		}
 
 	}
@@ -54,14 +84,69 @@ void PlayerX::Hover::HoverEffect( PlayerX& playerX, Scene& scene, float dt )
 	{
 		if ( hoverEffectCount % 2 == 0 )
 		{
-			playerX.vel.y = hoverEffectMaxSpeed;
+			playerX.vel.y = -hoverEffectMaxSpeed;
 		}
 		else
 		{
-			playerX.vel.y = -hoverEffectMaxSpeed;
+			playerX.vel.y = hoverEffectMaxSpeed;
 		}
-		playerX.Move( dt, scene );
 		hoverEffectCount++;
 		hoverEffectTime = 0.0f;
 	}
+}
+
+void PlayerX::Hover::ChangeAnimation( PlayerX& playerX )
+{
+	if ( playerX.isFacingRight && playerX.vel.x > 0.0f )
+	{
+		if ( playerX.curAnimState != AnimationState::HoverFront )
+		{
+			playerX.SetAnimation( PlayerX::AnimationState::HoverFront, animSpeed );
+		}
+		else if( playerX.curAnimation.IsEnd() )
+		{
+			playerX.curAnimation.SetStop();
+		}
+	}
+	else if ( playerX.isFacingRight && playerX.vel.x < 0.0f )
+	{
+		if ( playerX.curAnimState != AnimationState::HoverBack )
+		{
+			playerX.SetAnimation( PlayerX::AnimationState::HoverBack, animSpeed );
+		}
+		else if ( playerX.curAnimation.IsEnd() )
+		{
+			playerX.curAnimation.SetStop();
+		}
+	}
+	else if ( !playerX.isFacingRight && playerX.vel.x > 0.0f )
+	{
+		if ( playerX.curAnimState != AnimationState::HoverBack )
+		{
+			playerX.SetAnimation( PlayerX::AnimationState::HoverBack, animSpeed );
+		}
+		else if ( playerX.curAnimation.IsEnd() )
+		{
+			playerX.curAnimation.SetStop();
+		}
+	}
+	else if ( !playerX.isFacingRight && playerX.vel.x < 0.0f )
+	{
+		if ( playerX.curAnimState != AnimationState::HoverFront )
+		{
+			playerX.SetAnimation( PlayerX::AnimationState::HoverFront, animSpeed );
+		}
+		else if ( playerX.curAnimation.IsEnd() )
+		{
+			playerX.curAnimation.SetStop();
+		}
+	}
+	else
+	{
+		if ( playerX.curAnimState != AnimationState::Hover )
+		{
+			playerX.SetAnimation( PlayerX::AnimationState::Hover, 0.0f );
+		}
+	}
+
 }

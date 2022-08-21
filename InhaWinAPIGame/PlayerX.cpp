@@ -43,6 +43,7 @@ void PlayerX::Update( float dt, Scene& scene )
 	UpdatePlayerBehavior();
 	isOnGround = IsCollideWithWall( GetColliderPos() - Vec2<float>{0, 1.0f}, scene );
 	//std::cout << "isOnGround : " << std::boolalpha << isOnGround << std::endl;
+	std::cout << "Vel:{" << vel.x << ", " << vel.y << std::endl;
 
 	// Update Behavior
 	while ( auto pNewState = pBehavior->Update(*this, scene, dt) )
@@ -95,14 +96,18 @@ void PlayerX::Draw( HDC hdc )
 
 void PlayerX::UpdatePlayerState()
 {
-	if ( vel.x > 0.0f )
+	if ( !isStopFacingTrack )
 	{
-		isFacingRight = true;
+		if ( vel.x > 0.0f )
+		{
+			isFacingRight = true;
+		}
+		else if ( vel.x < 0.0f )
+		{
+			isFacingRight = false;
+		}
 	}
-	else if ( vel.x < 0.0f )
-	{
-		isFacingRight = false;
-	}
+
 
 	if ( isOnGround )
 	{
@@ -283,7 +288,6 @@ void PlayerX::KbdInput()
 	{
 		isXKeyInputOnce = false;
 	}
-	std::cout << "hoverCount : " << hoverCount << std::endl;
 
 	if ( GetAsyncKeyState( 'X' ) & 0x8001 )
 	{

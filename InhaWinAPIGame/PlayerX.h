@@ -138,6 +138,10 @@ public:
 	{
 		moveSpeed = speed;
 	}
+	void SetStopFacingTrack( bool notFacing = true )
+	{
+		isStopFacingTrack = notFacing;
+	}
 
 	void SetDashEnd()
 	{
@@ -361,6 +365,7 @@ private:
 	bool isAttackStateChanged = false;
 	bool isMoveStateChanged = false;
 
+	bool isStopFacingTrack = false;
 	bool isFacingRight = false;
 	bool isOnGround = false;
 	bool isJumpNow = false;
