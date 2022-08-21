@@ -20,7 +20,7 @@ private:
 
 	float hoverTime = 0.0f;
 	float hoverEffectTime = 0.0f;
-	int hoverEffectCount;
+	int hoverEffectCount = 0;
 
 	bool checkReinput = false;
 };

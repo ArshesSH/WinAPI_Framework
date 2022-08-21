@@ -123,6 +123,7 @@ void PlayerX::UpdatePlayerState()
 	if ( isOnGround )
 	{
 		hoverCount = 0;
+		canAirDash = true;
 		if ( isXKeyDown  && !isJumpEnd )
 		{
 			if ( isZKeyDown )
@@ -156,10 +157,6 @@ void PlayerX::UpdatePlayerState()
 	}
 	else
 	{
-		if ( !isJumpNow && isOnWallSide )
-		{
-			moveState = MoveState::WallSlide;
-		}
 		if ( !isJumpNow && !isOnWallSide )
 		{
 			moveState = MoveState::Airbone;
@@ -168,6 +165,17 @@ void PlayerX::UpdatePlayerState()
 		{
 			moveState = MoveState::Hover;
 		}
+		if ( isZKeyDown && !isDashEnd && canAirDash )
+		{
+			moveState = MoveState::AirDash;
+		}
+		if ( !isJumpNow && isOnWallSide )
+		{
+			moveState = MoveState::WallSlide;
+		}
+
+
+
 	}
 }
 
@@ -197,6 +205,12 @@ void PlayerX::UpdatePlayerBehavior()
 					{
 						oldMoveState = moveState;
 						pBehavior->PushSucessorState( new Dash );
+					}
+					break;
+				case PlayerX::MoveState::AirDash:
+					{
+						oldMoveState = moveState;
+						pBehavior->PushSucessorState( new AirDash );
 					}
 					break;
 				case PlayerX::MoveState::Jump:
@@ -341,18 +355,6 @@ void PlayerX::TestKbd( float dt, Scene& scene )
 		vel.y = -300.0f;
 	}
 	Move( dt, scene );
-}
-
-bool PlayerX::IsKbdInputOnce(int vKey, bool flag)
-{
-	if ( (GetAsyncKeyState( vKey ) & 0x8000) && (!flag) )
-	{
-		return true;
-	}
-	else if ( (GetAsyncKeyState( vKey ) == 0) )
-	{
-		return false;
-	}
 }
 
 void PlayerX::UpdateWallSearcher(float dt)

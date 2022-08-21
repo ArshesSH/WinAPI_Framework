@@ -69,12 +69,14 @@ PlayerX::AirDash::Behavior* PlayerX::AirDash::Update( PlayerX& playerX, Scene& s
 {
 	if ( HasSucessors() )
 	{
+		playerX.vel.x = 0.0f;
+		playerX.canAirDash = false;
 		return PassTorch();
 	}
 
 	if ( playerX.curAnimation.IsEnd() )
 	{
-		playerX.SetAnimation( PlayerX::AnimationState::DashStart, animStartSpeed );
+		playerX.SetAnimation( PlayerX::AnimationState::DashLoop, animStartSpeed );
 	}
 
 	playerX.vel.y = 0.0f;

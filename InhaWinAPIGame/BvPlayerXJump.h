@@ -5,6 +5,7 @@
 class PlayerX::Jump : public PlayerX::Behavior
 {
 public:
+	virtual ~Jump() = default;
 	void Activate( PlayerX& playerX, class Scene& scene ) override;
 	Behavior* Update( PlayerX& playerX, class Scene& scene, float dt ) override;
 

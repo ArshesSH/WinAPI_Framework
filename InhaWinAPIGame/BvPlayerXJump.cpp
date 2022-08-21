@@ -63,6 +63,7 @@ PlayerX::Behavior* PlayerX::DashJump::Update( PlayerX& playerX, Scene& scene, fl
 	}
 
 	DoJump( playerX, scene, dt, dashSpeed );
+	playerX.canAirDash = false;
 
 	return nullptr;
 }

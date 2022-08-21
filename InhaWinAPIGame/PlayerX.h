@@ -354,7 +354,6 @@ public:
 private:
 	void KbdInput( );
 	void TestKbd(float dt, Scene& scene);
-	bool IsKbdInputOnce(int vKey, bool flag);
 	void UpdateWallSearcher(float dt);
 	bool IsWallSearcherCollide( Scene& scene );
 private:
@@ -389,6 +388,7 @@ private:
 	bool isDashEnd = false;
 	bool isJumpEnd = false;
 	bool isOnWallSide = false;
+	bool canAirDash = false;
 
 	// Key Statement
 	bool isRightKeyDown = false;
@@ -402,6 +402,7 @@ private:
 	bool isRightKeyInputOnce = false;
 	bool isLeftKeyInputOnce = false;
 	int hoverCount = 0;
+
 
 	std::unique_ptr<Behavior> pBehavior;
 	Gravity gravity;

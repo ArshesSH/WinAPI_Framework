@@ -12,6 +12,7 @@ PlayerX::Behavior* PlayerX::Hover::Update( PlayerX& playerX, Scene& scene, float
 {
 	if ( HasSucessors() )
 	{
+		playerX.hoverCount++;
 		playerX.vel.y = 0.0f;
 		playerX.SetStopFacingTrack(false);
 		return PassTorch();
