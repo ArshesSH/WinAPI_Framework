@@ -8,6 +8,6 @@ public:
 	Behavior* Update( PlayerX& playerX, class Scene& scene, float dt ) override;
 
 private:
-	static constexpr float wallSlideSpeed = -50.0f;
+	static constexpr float wallSlideSpeed = -100.0f;
 };
 

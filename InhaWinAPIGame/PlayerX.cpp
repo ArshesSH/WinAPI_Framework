@@ -174,8 +174,6 @@ void PlayerX::UpdatePlayerState()
 			moveState = MoveState::WallSlide;
 		}
 
-
-
 	}
 }
 

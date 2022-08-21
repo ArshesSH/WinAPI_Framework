@@ -26,13 +26,17 @@ void PlayerX::Jump::DoJump( PlayerX& playerX, Scene& scene, float dt, float spee
 	}
 
 	playerX.vel.x = 0.0f;
-	if ( playerX.isRightKeyDown )
+
+	if ( !playerX.isOnWallSide )
 	{
-		playerX.vel.x = speed;
-	}
-	if ( playerX.isLeftKeyDown )
-	{
-		playerX.vel.x = -speed;
+		if ( playerX.isRightKeyDown )
+		{
+			playerX.vel.x = speed;
+		}
+		if ( playerX.isLeftKeyDown )
+		{
+			playerX.vel.x = -speed;
+		}
 	}
 
 	jumpTime += dt;

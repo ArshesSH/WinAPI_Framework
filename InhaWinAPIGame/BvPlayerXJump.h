@@ -11,9 +11,9 @@ public:
 
 protected:
 	void DoJump( PlayerX& playerX, class Scene& scene, float dt, float speed );
-	const float animSpeed = 0.06f;
+	const float animSpeed = 0.04f;
 private:
-	static constexpr float jumpMaxTime = 0.3f;
+	static constexpr float jumpMaxTime = 0.4f;
 	float jumpTime = 0.0f;
 };
 

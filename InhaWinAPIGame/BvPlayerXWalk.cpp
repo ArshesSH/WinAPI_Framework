@@ -10,6 +10,7 @@ PlayerX::Behavior* PlayerX::Walk::Update( PlayerX& playerX, Scene& scene, float 
 {
     if ( HasSucessors() )
     {
+        playerX.vel.x = 0.0f;
         return PassTorch();
     }
 
