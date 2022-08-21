@@ -375,7 +375,7 @@ public:
 
 
 private:
-	void KbdInput( );
+	void KbdInput( float dt );
 	void TestKbd(float dt, Scene& scene);
 	void UpdateWallSearcher(float dt);
 	bool IsWallSearcherCollide( Scene& scene );
@@ -392,6 +392,8 @@ private:
 	static constexpr float bulletSpawnDefaultY = 60.0f;
 	static constexpr float bullet1Width = 10.0f;
 	static constexpr float bullet1Height = 10.0f;
+	static constexpr float bulletChargeMiddle = 0.5f;
+	static constexpr float bulletChargeMax = 1.0f;
 
 	AnimationState curAnimState;
 	Animation<int> curAnimation;
@@ -417,6 +419,9 @@ private:
 	bool isJumpEnd = false;
 	bool isOnWallSide = false;
 	bool canAirDash = false;
+	bool fireNormalBuster = false;
+	bool fireMiddleBuster = false;
+	bool fireMaxBuster = false;
 
 	// Key Statement
 	bool isRightKeyDown = false;
@@ -429,7 +434,7 @@ private:
 	bool isEnterkeyDown = false;
 	bool isXKeyInputOnce = false;
 	int hoverCount = 0;
-
+	float chargeTime = 0.0f;
 
 	std::unique_ptr<Behavior> pBehavior;
 	Gravity gravity;

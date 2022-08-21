@@ -47,7 +47,7 @@ PlayerX::PlayerX( const Vec2<float>& pivotPos, const Vec2<float>& colliderRelati
 
 void PlayerX::Update( float dt, Scene& scene )
 {
-	KbdInput();
+	KbdInput(dt);
 	//TestKbd( dt, scene );
 	curAnimation.Update( dt, animPlaySpeed );
 
@@ -112,7 +112,6 @@ void PlayerX::Draw( HDC hdc )
 	pivotGizmo.Draw( hdc );
 
 	wallSearcher.Draw( gfx, { 255,0,255,0 } );
-
 #endif // NDEBUG
 }
 
@@ -176,7 +175,7 @@ void PlayerX::UpdatePlayerState()
 			{
 				moveState = MoveState::Idle;
 			}
-			if ( isCKeyDown )
+			if ( fireNormalBuster )
 			{
 				attackState = AttackState::Shoot;
 			}
@@ -360,7 +359,7 @@ void PlayerX::UpdatePlayerBehavior()
 	}
 }
 
-void PlayerX::KbdInput()
+void PlayerX::KbdInput(float dt)
 {
 	if ( GetAsyncKeyState( VK_LEFT ) & 0x8001 )
 	{
@@ -420,14 +419,36 @@ void PlayerX::KbdInput()
 		isJumpNow = false;
 	}
 
+
 	if ( GetAsyncKeyState( 'C' ) & 0x8001 )
 	{
 		isCKeyDown = true;
+		chargeTime += dt;
+		if ( chargeTime >= bulletChargeMiddle )
+		{
+			if ( chargeTime >= bulletChargeMax )
+			{
+				fireMiddleBuster = false;
+				fireMaxBuster = true;
+			}
+			else
+			{
+				fireMiddleBuster = true;
+			}
+		}
+		else
+		{
+			fireNormalBuster = true;
+		}
 	}
 	else
 	{
 		isCKeyDown = false;
+		fireMiddleBuster = false;
+		fireMaxBuster = false;
+		fireNormalBuster = false;
 	}
+
 }
 
 void PlayerX::TestKbd( float dt, Scene& scene )
@@ -466,6 +487,9 @@ bool PlayerX::IsWallSearcherCollide( Scene& scene )
 			return true;
 		}
 	}
+
+
+
 	return false;
 }
 
@@ -474,8 +498,6 @@ void PlayerX::SpawnBullet1( Scene& scene )
 	const float spawnX = (isFacingRight) ? bulletSpawnDefaultX : -bulletSpawnDefaultX;
 	const Vec2<float> dir = (isFacingRight) ? dirRight : dirLeft;
 	const Vec2<float> realativeSpawn = { spawnX, bulletSpawnDefaultY };
-
-
 
 	scene.AccessBulletPtrs().emplace_back(
 		std::make_unique<PlayerXBullet>( PlayerXBullet::Type::Bullet1, 400.0f, dir, GetPos() + realativeSpawn, Vec2<float>{ 0.0f, 0.0f }, Vec2<float>{ bullet1Width, bullet1Height }, isFacingRight )
