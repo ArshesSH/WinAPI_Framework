@@ -9,7 +9,7 @@ public:
 	Behavior* Update( PlayerX& playerX, class Scene& scene, float dt ) override;
 
 private:
-	bool IsInputOthers( PlayerX& playerX );
+	bool IsOtherKeyInputed( PlayerX& playerX );
 	void HoverEffect( PlayerX& playerX, class Scene& scene, float dt );
 private:
 	static constexpr float animSpeed = 0.5f;
@@ -20,5 +20,7 @@ private:
 	float hoverTime = 0.0f;
 	float hoverEffectTime = 0.0f;
 	int hoverEffectCount;
+
+	bool checkReinput = false;
 };
 

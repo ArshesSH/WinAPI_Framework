@@ -19,10 +19,19 @@ PlayerX::Behavior* PlayerX::Hover::Update( PlayerX& playerX, Scene& scene, float
 	{
 		HoverEffect( playerX, scene, dt );
 
-		if ( IsInputOthers( playerX ) )
+
 		{
-			playerX.hoverCount++;
+			if ( !(GetAsyncKeyState( VK_RIGHT ) & 0x8001) && !(GetAsyncKeyState( VK_LEFT ) & 0x8001) )
+			{
+				checkReinput = true;
+			}
+
+			if ( checkReinput && IsOtherKeyInputed( playerX ) )
+			{
+				playerX.hoverCount++;
+			}
 		}
+
 	}
 	else
 	{
@@ -32,9 +41,10 @@ PlayerX::Behavior* PlayerX::Hover::Update( PlayerX& playerX, Scene& scene, float
 	return nullptr;
 }
 
-bool PlayerX::Hover::IsInputOthers( PlayerX& playerX )
+
+bool PlayerX::Hover::IsOtherKeyInputed( PlayerX& playerX )
 {
-	return playerX.isZKeyDown || playerX.isRightKeyDown || playerX.isLeftKeyDown;
+	return playerX.isRightKeyDown || playerX.isLeftKeyDown;
 }
 
 void PlayerX::Hover::HoverEffect( PlayerX& playerX, Scene& scene, float dt )
