@@ -169,6 +169,7 @@
     <ClInclude Include="FileManager.h" />
     <ClInclude Include="Ground.h" />
     <ClInclude Include="PlayerController.h" />
+    <ClInclude Include="PlayerXBullet.h" />
     <ClInclude Include="Wall.h" />
     <ClInclude Include="PivotGizmo.h" />
     <ClInclude Include="PlayerX.h" />

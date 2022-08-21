@@ -130,6 +130,14 @@ public:
 		return { topLeft.x + halfWidth, topLeft.y + halfHeight };
 	}
 
+	template <typename T2>
+	inline _Rect<T> ResizeFromCenter( const Vec2<T2>& size )
+	{
+		const auto halfSize = Vec2<T>(size) / (T)2;
+		const auto center = GetCenter();
+		return { center - halfSize, center + halfSize };
+	}
+
 public:
 	T top;
 	T bottom;

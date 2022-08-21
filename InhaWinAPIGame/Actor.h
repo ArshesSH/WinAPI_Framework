@@ -110,6 +110,9 @@ protected:
 		pos = pos_in;
 		pCollider->SetPosByCenter( pos_in + relativePos );
 	}
+	void ChangeColliderSize( float width, float height )
+	{
+	}
 
 protected:
 	// Actor State

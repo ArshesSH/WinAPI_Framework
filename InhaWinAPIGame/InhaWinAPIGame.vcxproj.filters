@@ -282,6 +282,9 @@
     <ClInclude Include="Bullet.h">
       <Filter>소스 파일\GameObjects\DynamicActor</Filter>
     </ClInclude>
+    <ClInclude Include="PlayerXBullet.h">
+      <Filter>헤더 파일\GameObjects\Actor\DynamicActor\PlayerX</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="InhaWinAPIGame.cpp">

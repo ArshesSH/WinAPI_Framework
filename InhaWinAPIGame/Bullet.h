@@ -14,6 +14,7 @@ public:
 	{}
 
 	void Update( float dt, class Scene& scene ) override;
+	void ApplyDamage( int damage ) override {}
 
 private:
 	int damage = 0;

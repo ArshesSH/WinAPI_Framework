@@ -59,6 +59,10 @@ public:
 		const Vec2<T> delta = pos_in - rect.GetCenter();
 		rect += delta;
 	}
+	virtual void SetSize( const Vec2<T>& size )
+	{
+		rect = rect.ResizeFromCenter( size );
+	}
 	virtual void MoveBy( const Vec2<T>& offset )
 	{
 		rect += offset;
@@ -132,6 +136,14 @@ public:
 		{
 			v += moved;
 		}
+	}
+	void SetSize( const Vec2<T>& size ) override
+	{
+		Collider<T>::SetSize( size );
+		vertices[0]( rect.left, rect.top );
+		vertices[1]( rect.right, rect.top );
+		vertices[2]( rect.right, rect.bottom );
+		vertices[3]( rect.left, rect.bottom );
 	}
 	void MoveBy( const Vec2<T>& offset ) override
 	{
