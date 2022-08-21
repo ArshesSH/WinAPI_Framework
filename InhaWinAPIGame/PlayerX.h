@@ -9,8 +9,6 @@
 #include <iostream>
 #endif // !NDBUG
 
-
-
 class PlayerX : public Character
 {
 public:
@@ -98,6 +96,8 @@ public:
 	class WallSlide;
 	class WallKick;
 	class Crouch;
+
+	class Shoot;
 
 public:
 	PlayerX( const Vec2<float>& pivotPos, const Vec2<float>& colliderRelativePos = { 0.0f, 40.0f } );
@@ -385,7 +385,7 @@ private:
 	static constexpr float defaultMoveSpeed = 250.0f;
 	static constexpr float dashSpeed = 450.0f;
 	static constexpr float jumpSpeed = 350.0f;
-	static constexpr float wallsearcherLength = 30.0f;
+	static constexpr float wallsearcherLength = 28.0f;
 
 	AnimationState curAnimState;
 	Animation<int> curAnimation;

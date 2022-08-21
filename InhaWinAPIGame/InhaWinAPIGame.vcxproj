@@ -147,11 +147,13 @@
     <ClInclude Include="ActorTag.h" />
     <ClInclude Include="ActorTestScene.h" />
     <ClInclude Include="Animation.h" />
+    <ClInclude Include="Bullet.h" />
     <ClInclude Include="BvPlayerXAirbone.h" />
     <ClInclude Include="BvPlayerXCrouch.h" />
     <ClInclude Include="BvPlayerXHover.h" />
     <ClInclude Include="BvPlayerXIdle.h" />
     <ClInclude Include="BvPlayerXJump.h" />
+    <ClInclude Include="BvPlayerXShoot.h" />
     <ClInclude Include="BvPlayerXWalk.h" />
     <ClInclude Include="BvPlayerXWallSlide.h" />
     <ClInclude Include="Camera.h" />
@@ -204,12 +206,14 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ActorTestScene.cpp" />
+    <ClCompile Include="Bullet.cpp" />
     <ClCompile Include="BvPlayerXAirbone.cpp" />
     <ClCompile Include="BvPlayerXCrouch.cpp" />
     <ClCompile Include="BvPlayerXDash.cpp" />
     <ClCompile Include="BvPlayerXHover.cpp" />
     <ClCompile Include="BvPlayerXIdle.cpp" />
     <ClCompile Include="BvPlayerXJump.cpp" />
+    <ClCompile Include="BvPlayerXShoot.cpp" />
     <ClCompile Include="BvPlayerXWalk.cpp" />
     <ClCompile Include="BvPlayerXWallSlide.cpp" />
     <ClCompile Include="Character.cpp" />

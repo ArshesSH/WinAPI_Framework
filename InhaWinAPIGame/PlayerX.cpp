@@ -10,6 +10,7 @@
 #include "BvPlayerXHover.h"
 #include "BvPlayerXWallSlide.h"
 #include "BvPlayerXCrouch.h"
+#include "BvPlayerXShoot.h"
 
 PlayerX::PlayerX( const Vec2<float>& pivotPos, const Vec2<float>& colliderRelativePos )
 	:
@@ -37,6 +38,7 @@ PlayerX::PlayerX( const Vec2<float>& pivotPos, const Vec2<float>& colliderRelati
 	animationMap[(int)AnimationState::AirDashStart] = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/AirDashStart.anim" );
 	animationMap[(int)AnimationState::WallKick] = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/WallKick.anim" );
 	animationMap[(int)AnimationState::Crouch] = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/Crouch.anim" );
+	animationMap[(int)AnimationState::Shoot] = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/Shoot.anim" );
 
 	curAnimation = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/Idle.anim" );
 }
@@ -163,7 +165,14 @@ void PlayerX::UpdatePlayerState()
 		}
 		else
 		{
-			moveState = MoveState::Idle;
+			if ( attackState == AttackState::NoAttack )
+			{
+				moveState = MoveState::Idle;
+			}
+			if ( isCKeyDown )
+			{
+				attackState = AttackState::Shoot;
+			}
 		}
 	}
 	else
@@ -196,6 +205,7 @@ void PlayerX::UpdatePlayerBehavior()
 		{
 		case PlayerX::AttackState::NoAttack:
 			{
+				oldAttackState = attackState;
 				switch ( moveState )
 				{
 				case PlayerX::MoveState::Idle:
@@ -276,6 +286,64 @@ void PlayerX::UpdatePlayerBehavior()
 		case PlayerX::AttackState::Charge:
 			break;
 		case PlayerX::AttackState::Shoot:
+			{
+				oldAttackState = attackState;
+				switch ( moveState )
+				{
+				case PlayerX::MoveState::Idle:
+					{
+						oldMoveState = moveState;
+						pBehavior->PushSucessorState( new Shoot );
+					}
+					break;
+				case PlayerX::MoveState::Walk:
+					{
+					}
+					break;
+				case PlayerX::MoveState::Dash:
+					{
+					}
+					break;
+				case PlayerX::MoveState::AirDash:
+					{
+					}
+					break;
+				case PlayerX::MoveState::Jump:
+					{
+					}
+					break;
+				case PlayerX::MoveState::DashJump:
+					{
+					}
+					break;
+				case PlayerX::MoveState::Airbone:
+					{
+					}
+					break;
+				case PlayerX::MoveState::Hover:
+					{
+					}
+					break;
+				case PlayerX::MoveState::Land:
+					break;
+				case PlayerX::MoveState::Ladder:
+					break;
+				case PlayerX::MoveState::WallSlide:
+					{
+					}
+					break;
+				case PlayerX::MoveState::WallKick:
+					{
+					}
+					break;
+				case PlayerX::MoveState::Crouch:
+					{
+					}
+					break;
+				default:
+					break;
+				}
+			}
 			break;
 		case PlayerX::AttackState::Hurt:
 			break;
@@ -345,6 +413,14 @@ void PlayerX::KbdInput()
 		isJumpNow = false;
 	}
 
+	if ( GetAsyncKeyState( 'C' ) & 0x8001 )
+	{
+		isCKeyDown = true;
+	}
+	else
+	{
+		isCKeyDown = false;
+	}
 }
 
 void PlayerX::TestKbd( float dt, Scene& scene )

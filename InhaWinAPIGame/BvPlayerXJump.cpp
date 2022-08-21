@@ -10,6 +10,8 @@ PlayerX::Behavior* PlayerX::Jump::Update( PlayerX& playerX, Scene& scene, float 
 {
 	if ( HasSucessors() )
 	{
+		playerX.isJumpNow = false;
+		playerX.isJumpEnd = true;
 		return PassTorch();
 	}
 
@@ -67,6 +69,8 @@ PlayerX::Behavior* PlayerX::DashJump::Update( PlayerX& playerX, Scene& scene, fl
 {
 	if ( HasSucessors() )
 	{
+		playerX.isJumpNow = false;
+		playerX.isJumpEnd = true;
 		return PassTorch();
 	}
 
@@ -109,6 +113,8 @@ PlayerX::Behavior* PlayerX::WallKick::Update( PlayerX& playerX, Scene& scene, fl
 		playerX.moveState = MoveState::Airbone;
 		playerX.UpdatePlayerBehavior();
 		playerX.SetStopFacingTrack( false );
+		playerX.isJumpNow = false;
+		playerX.isJumpEnd = true;
 		return PassTorch();
 	}
 
