@@ -9,6 +9,7 @@
 #include "BvPlayerXJump.h"
 #include "BvPlayerXHover.h"
 #include "BvPlayerXWallSlide.h"
+#include "BvPlayerXCrouch.h"
 
 PlayerX::PlayerX( const Vec2<float>& pivotPos, const Vec2<float>& colliderRelativePos )
 	:
@@ -35,6 +36,7 @@ PlayerX::PlayerX( const Vec2<float>& pivotPos, const Vec2<float>& colliderRelati
 	animationMap[(int)AnimationState::WallCling] = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/WallCling.anim" );
 	animationMap[(int)AnimationState::AirDashStart] = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/AirDashStart.anim" );
 	animationMap[(int)AnimationState::WallKick] = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/WallKick.anim" );
+	animationMap[(int)AnimationState::Crouch] = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/Crouch.anim" );
 
 	curAnimation = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/Idle.anim" );
 }
@@ -146,7 +148,7 @@ void PlayerX::UpdatePlayerState()
 			{
 				moveState = MoveState::Dash;
 			}
-			else
+			else if( !isDownKeyDown )
 			{
 				moveState = MoveState::Walk;
 			}
@@ -154,6 +156,10 @@ void PlayerX::UpdatePlayerState()
 		else if ( isZKeyDown && !isDashEnd )
 		{
 			moveState = MoveState::Dash;
+		}
+		else if ( isDownKeyDown )
+		{
+			moveState = MoveState::Crouch;
 		}
 		else
 		{
@@ -256,6 +262,12 @@ void PlayerX::UpdatePlayerBehavior()
 						pBehavior->PushSucessorState( new WallKick );
 					}
 					break;
+				case PlayerX::MoveState::Crouch:
+					{
+						oldMoveState = moveState;
+						pBehavior->PushSucessorState( new Crouch );
+					}
+					break;
 				default:
 					break;
 				}
@@ -275,15 +287,6 @@ void PlayerX::UpdatePlayerBehavior()
 
 void PlayerX::KbdInput()
 {
-	if ( (GetAsyncKeyState( VK_LEFT ) & 0x8000) && (!isLeftKeyInputOnce) )
-	{
-		isLeftKeyInputOnce = true;
-	}
-	else if ( (GetAsyncKeyState( VK_LEFT ) == 0) )
-	{
-		isLeftKeyInputOnce = false;
-	}
-
 	if ( GetAsyncKeyState( VK_LEFT ) & 0x8001 )
 	{
 		isLeftKeyDown = true;
@@ -293,15 +296,6 @@ void PlayerX::KbdInput()
 		isLeftKeyDown = false;
 	}
 
-	if ( (GetAsyncKeyState( VK_RIGHT ) & 0x8000) && (!isRightKeyInputOnce) )
-	{
-		isRightKeyInputOnce = true;
-	}
-	else if ( (GetAsyncKeyState( VK_RIGHT ) == 0) )
-	{
-		isRightKeyInputOnce = false;
-	}
-
 	if ( GetAsyncKeyState( VK_RIGHT ) & 0x8001 )
 	{
 		isRightKeyDown = true;
@@ -309,6 +303,15 @@ void PlayerX::KbdInput()
 	else 
 	{
 		isRightKeyDown = false;
+	}
+
+	if ( GetAsyncKeyState( VK_DOWN ) & 0x8001 )
+	{
+		isDownKeyDown = true;
+	}
+	else
+	{
+		isDownKeyDown = false;
 	}
 
 	if ( GetAsyncKeyState( 'Z' ) & 0x8001 )

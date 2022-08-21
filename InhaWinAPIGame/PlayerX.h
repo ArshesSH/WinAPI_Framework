@@ -42,6 +42,9 @@ public:
 		WallKick,
 		ShootWallCling,
 		ShootWallKick,
+		Crouch,
+		CrouchShoot,
+		CrouchShootCharged,
 		LadderClimb,
 		LadderTop,
 		LadderShoot,
@@ -78,7 +81,8 @@ public:
 		Land,
 		Ladder,
 		WallSlide,
-		WallKick
+		WallKick,
+		Crouch
 	};
 
 public:
@@ -93,6 +97,7 @@ public:
 	class Hover;
 	class WallSlide;
 	class WallKick;
+	class Crouch;
 
 public:
 	PlayerX( const Vec2<float>& pivotPos, const Vec2<float>& colliderRelativePos = { 0.0f, 40.0f } );
@@ -208,6 +213,9 @@ public:
 		case PlayerX::MoveState::WallKick:
 			moveStateStr = L"MoveState = WallKick";
 			break;
+		case PlayerX::MoveState::Crouch:
+			moveStateStr = L"MoveState = Crouch";
+			break;
 		default:
 			break;
 		}
@@ -312,6 +320,15 @@ public:
 		case PlayerX::AnimationState::ShootWallKick:
 			animStateStr = L"ShootWallKick";
 			break;
+		case PlayerX::AnimationState::Crouch:
+			animStateStr = L"Crouch";
+			break;
+		case PlayerX::AnimationState::CrouchShoot:
+			animStateStr = L"CrouchShoot";
+			break;
+		case PlayerX::AnimationState::CrouchShootCharged:
+			animStateStr = L"CrouchShootCharged";
+			break;
 		case PlayerX::AnimationState::LadderClimb:
 			animStateStr = L"LadderClimb";
 			break;
@@ -398,14 +415,13 @@ private:
 	// Key Statement
 	bool isRightKeyDown = false;
 	bool isLeftKeyDown = false;
+	bool isDownKeyDown = false;
 	bool isZKeyDown = false;
 	bool isXKeyDown = false;
 	bool isCKeyDown = false;
 	bool isESCKeyDown = false;
 	bool isEnterkeyDown = false;
 	bool isXKeyInputOnce = false;
-	bool isRightKeyInputOnce = false;
-	bool isLeftKeyInputOnce = false;
 	int hoverCount = 0;
 
 
