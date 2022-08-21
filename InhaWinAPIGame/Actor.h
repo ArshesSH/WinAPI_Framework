@@ -66,6 +66,7 @@ public:
 	virtual void Update( float dt, class Scene& scene ) = 0;
 	virtual void SetTransform( const Mat3<float>& transform ) = 0;
 	virtual void Draw( HDC hdc ) = 0;
+	virtual void ApplyDamage( int damage ) = 0;
 
 	void DrawCollider( Gdiplus::Graphics& gfx, const Mat3<float>& transform )
 	{

@@ -10,7 +10,7 @@ void Bullet::Update( float dt, Scene& scene )
 	{
 		if ( enemy->IsCollideWith( scene.GetCollisionManager(), *(this->GetColliderPtr()) ) )
 		{
-			
+			enemy->ApplyDamage( damage );
 		}
 	}
 

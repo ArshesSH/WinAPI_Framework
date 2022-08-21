@@ -104,6 +104,7 @@ public:
 
 	void Update( float dt, class Scene& scene ) override;
 	void Draw( HDC hdc ) override;
+	void ApplyDamage( int damage ) override;
 
 	void SetTransform( const Mat3<float>& transform ) override
 	{
@@ -393,7 +394,7 @@ private:
 
 	LineCollider<float> wallSearcher;
 	const Vec2<float> wallSearcherOffset = { 0.0f,1.0f };
-
+	int hp = 20;
 
 	// Character Statement
 	AttackState attackState = AttackState::NoAttack;

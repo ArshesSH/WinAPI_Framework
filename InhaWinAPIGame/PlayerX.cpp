@@ -114,6 +114,11 @@ void PlayerX::Draw( HDC hdc )
 #endif // NDEBUG
 }
 
+void PlayerX::ApplyDamage( int damage )
+{
+	hp -= damage;
+}
+
 void PlayerX::UpdatePlayerState()
 {
 	if ( !isStopFacingTrack )
