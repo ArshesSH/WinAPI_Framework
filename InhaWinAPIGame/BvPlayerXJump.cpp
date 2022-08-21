@@ -115,6 +115,7 @@ PlayerX::Behavior* PlayerX::WallKick::Update( PlayerX& playerX, Scene& scene, fl
 		playerX.SetStopFacingTrack( false );
 		playerX.isJumpNow = false;
 		playerX.isJumpEnd = true;
+		playerX.vel.x = 0.0f;
 		return PassTorch();
 	}
 

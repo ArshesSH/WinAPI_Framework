@@ -12,6 +12,8 @@
 #include "BvPlayerXCrouch.h"
 #include "BvPlayerXShoot.h"
 
+#include "PlayerXBullet.h"
+
 PlayerX::PlayerX( const Vec2<float>& pivotPos, const Vec2<float>& colliderRelativePos )
 	:
 	Character( ActorTag::Player, pivotPos, RectF::FromCenter( colliderRelativePos, colliderHalfWidth, colliderHalfHeight ), 200.0f,
@@ -465,4 +467,17 @@ bool PlayerX::IsWallSearcherCollide( Scene& scene )
 		}
 	}
 	return false;
+}
+
+void PlayerX::SpawnBullet1( Scene& scene )
+{
+	const float spawnX = (isFacingRight) ? bulletSpawnDefaultX : -bulletSpawnDefaultX;
+	const Vec2<float> dir = (isFacingRight) ? dirRight : dirLeft;
+	const Vec2<float> realativeSpawn = { spawnX, bulletSpawnDefaultY };
+
+
+
+	scene.AccessBulletPtrs().emplace_back(
+		std::make_unique<PlayerXBullet>( PlayerXBullet::Type::Bullet1, 400.0f, dir, GetPos() + realativeSpawn, Vec2<float>{ 0.0f, 0.0f }, Vec2<float>{ bullet1Width, bullet1Height }, isFacingRight )
+	);
 }

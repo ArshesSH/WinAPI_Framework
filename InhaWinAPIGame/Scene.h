@@ -7,6 +7,7 @@
 #include "Wall.h"
 #include "CollisionManager.h"
 #include "Camera.h"
+#include "Bullet.h"
 
 class Scene
 {
@@ -49,6 +50,7 @@ public:
 		return wallPtrs;
 	}
 
+
 	std::vector<Actor*> FindActorByTag(ActorTag tag)
 	{
 		std::vector<Actor*> targets;
@@ -78,6 +80,18 @@ public:
 	{
 		return cm;
 	}
+
+	std::vector <std::unique_ptr<Bullet>>& AccessBulletPtrs()
+	{
+		return bulletPtrs;
+	}
+
+	void CollectingObjects()
+	{
+		UtilSH::remove_erase_if( actorPtrs, []( const auto& pActor ) {return pActor->ShouldDestroy(); } );
+		UtilSH::remove_erase_if( bulletPtrs, []( const auto& pBullet ) {return pBullet->ShouldDestroy(); } );
+	}
+
 protected:
 	void UpdateSceneRect( class Game& game );
 protected:
@@ -94,5 +108,6 @@ protected:
 	CollisionManager<float> cm;
 	std::vector<std::unique_ptr<Actor>> actorPtrs;
 	std::vector<std::unique_ptr<Wall>> wallPtrs;
+	std::vector<std::unique_ptr<Bullet>> bulletPtrs;
 };
 

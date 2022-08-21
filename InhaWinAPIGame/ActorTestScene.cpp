@@ -12,14 +12,20 @@ ActorTestScene::ActorTestScene( int sceneWidth, int sceneHeight, CoordinateTrans
 	wallPtrs.emplace_back( std::make_unique<Wall>( Vec2<float>{250.0f, 150.0f}, 50.0f, 200.0f ) );
 }
 
-void ActorTestScene::Update( float dt, Game & game )
+void ActorTestScene::Update( float dt, Game& game )
 {
 	MoveCamera( dt );
 
-	for ( auto& pActor : actorPtrs )
+	for ( const auto& pActor : actorPtrs )
 	{
 		pActor->Update( dt, *this );
 	}
+	for ( const auto& pBullet : bulletPtrs )
+	{
+		pBullet->Update( dt, *this );
+	}
+
+	CollectingObjects();
 }
 
 void ActorTestScene::Draw( HDC hdc )
@@ -27,21 +33,39 @@ void ActorTestScene::Draw( HDC hdc )
 	Gdiplus::Graphics gfx( hdc );
 	auto drawFuncs = [&]( HDC hdc, const Mat3<float>& camTransform )
 	{
-		for ( auto& pActor : actorPtrs )
+		for ( const auto& pActor : actorPtrs )
 		{
 			pActor->SetTransform( camTransform );
 			pActor->Draw( hdc );
+
+#ifndef NDBUG
 			const auto& pCollider = pActor->GetColliderPtr();
 			pCollider->UpdateMatrix( camTransform );
-			pCollider->Draw( gfx, {144,255,255,255} );
+			pCollider->Draw( gfx, { 144,255,255,255 } );
+#endif // !NDBUG
+		}
+		for ( const auto& pBullet : bulletPtrs )
+		{
+			pBullet->SetTransform( camTransform );
+			pBullet->Draw( hdc );
+
+#ifndef NDBUG
+			const auto& pCollider = pBullet->GetColliderPtr();
+			pCollider->UpdateMatrix( camTransform );
+			pCollider->Draw( gfx, { 144,255,255,255 } );
+#endif // !NDBUG
 		}
 
-		for ( auto& pWall : wallPtrs )
+
+#ifndef NDBUG
+		for ( const auto& pWall : wallPtrs )
 		{
 			const auto& pCollider = pWall->GetColliderPtr();
 			pCollider->UpdateMatrix( camTransform );
 			pCollider->Draw( gfx, { 144,255,0,255 } );
 		}
+#endif // !NDBUG
+
 	};
 
 	const float screenX = (sceneBottomRight.x - sceneTopLeft.x) / 2.0f;

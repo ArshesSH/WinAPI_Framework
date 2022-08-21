@@ -227,6 +227,7 @@
     <ClCompile Include="Ground.cpp" />
     <ClCompile Include="InhaWinAPIGame.cpp" />
     <ClCompile Include="PlayerX.cpp" />
+    <ClCompile Include="PlayerXBullet.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="Surface.cpp" />
     <ClCompile Include="TestScene.cpp" />

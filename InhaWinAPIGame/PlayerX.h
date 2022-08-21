@@ -379,6 +379,7 @@ private:
 	void TestKbd(float dt, Scene& scene);
 	void UpdateWallSearcher(float dt);
 	bool IsWallSearcherCollide( Scene& scene );
+	void SpawnBullet1(Scene& scene);
 private:
 	static constexpr float colliderHalfWidth = 20.0f;
 	static constexpr float colliderHalfHeight = 40.0f;
@@ -386,7 +387,11 @@ private:
 	static constexpr float defaultMoveSpeed = 250.0f;
 	static constexpr float dashSpeed = 450.0f;
 	static constexpr float jumpSpeed = 350.0f;
-	static constexpr float wallsearcherLength = 28.0f;
+	static constexpr float wallsearcherLength = 21.0f;
+	static constexpr float bulletSpawnDefaultX = 20.0f;
+	static constexpr float bulletSpawnDefaultY = 60.0f;
+	static constexpr float bullet1Width = 10.0f;
+	static constexpr float bullet1Height = 10.0f;
 
 	AnimationState curAnimState;
 	Animation<int> curAnimation;

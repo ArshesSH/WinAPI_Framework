@@ -3,6 +3,13 @@
 
 void Bullet::Update( float dt, Scene& scene )
 {
+	time += dt;
+
+	if ( time >= lifeCycle )
+	{
+		SetDestroy();
+	}
+
 	Move( dt, scene );
 
 	const auto& enemies = scene.FindActorByTag( oppositeTag );
@@ -18,4 +25,5 @@ void Bullet::Update( float dt, Scene& scene )
 	{
 		SetDestroy();
 	}
+	
 }

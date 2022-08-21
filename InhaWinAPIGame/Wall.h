@@ -19,6 +19,7 @@ public:
 	{
 
 	}
+	void ApplyDamage( int damage ) override {}
 
 private:
 

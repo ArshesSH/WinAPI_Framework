@@ -110,8 +110,9 @@ protected:
 		pos = pos_in;
 		pCollider->SetPosByCenter( pos_in + relativePos );
 	}
-	void ChangeColliderSize( float width, float height )
+	void ChangeColliderSize( const Vec2<float>& size )
 	{
+		pCollider->SetSize( size );
 	}
 
 protected:
