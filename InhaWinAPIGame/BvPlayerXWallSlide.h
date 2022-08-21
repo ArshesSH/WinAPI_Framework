@@ -8,6 +8,7 @@ public:
 	Behavior* Update( PlayerX& playerX, class Scene& scene, float dt ) override;
 
 private:
+	bool checkReinput = false;
 	static constexpr float animStartSpeed = 0.08f;
 	static constexpr float wallSlideSpeed = -150.0f;
 };

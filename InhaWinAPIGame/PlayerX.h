@@ -77,7 +77,8 @@ public:
 		Hover,
 		Land,
 		Ladder,
-		WallSlide
+		WallSlide,
+		WallKick
 	};
 
 public:
@@ -91,6 +92,7 @@ public:
 	class Airbone;
 	class Hover;
 	class WallSlide;
+	class WallKick;
 
 public:
 	PlayerX( const Vec2<float>& pivotPos, const Vec2<float>& colliderRelativePos = { 0.0f, 40.0f } );
@@ -202,6 +204,9 @@ public:
 			break;
 		case PlayerX::MoveState::WallSlide:
 			moveStateStr = L"MoveState = WallSlide";
+			break;
+		case PlayerX::MoveState::WallKick:
+			moveStateStr = L"MoveState = WallKick";
 			break;
 		default:
 			break;
@@ -363,7 +368,7 @@ private:
 	static constexpr float defaultMoveSpeed = 250.0f;
 	static constexpr float dashSpeed = 450.0f;
 	static constexpr float jumpSpeed = 350.0f;
-	static constexpr float wallsearcherLength = 25.0f;
+	static constexpr float wallsearcherLength = 30.0f;
 
 	AnimationState curAnimState;
 	Animation<int> curAnimation;

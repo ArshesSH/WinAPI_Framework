@@ -34,6 +34,7 @@ PlayerX::PlayerX( const Vec2<float>& pivotPos, const Vec2<float>& colliderRelati
 	animationMap[(int)AnimationState::WallSlide] = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/WallSlide.anim" );
 	animationMap[(int)AnimationState::WallCling] = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/WallCling.anim" );
 	animationMap[(int)AnimationState::AirDashStart] = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/AirDashStart.anim" );
+	animationMap[(int)AnimationState::WallKick] = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/WallKick.anim" );
 
 	curAnimation = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/Idle.anim" );
 }
@@ -47,7 +48,9 @@ void PlayerX::Update( float dt, Scene& scene )
 	UpdatePlayerState();
 	UpdatePlayerBehavior();
 	UpdateWallSearcher(dt);
+
 	isOnWallSide = IsWallSearcherCollide( scene );
+
 	isOnGround = IsCollideWithWall( GetColliderPos() - Vec2<float>{0, 1.0f}, scene );
 	//std::cout << "isOnGround : " << std::boolalpha << isOnGround << std::endl;
 	//std::cout << "Vel:{" << vel.x << ", " << vel.y << std::endl;
@@ -101,7 +104,9 @@ void PlayerX::Draw( HDC hdc )
 	DrawStateString( surf, hdc );
 	DrawAnimationStateString( surf, hdc );
 	pivotGizmo.Draw( hdc );
+
 	wallSearcher.Draw( gfx, { 255,0,255,0 } );
+
 #endif // NDEBUG
 }
 
@@ -173,8 +178,8 @@ void PlayerX::UpdatePlayerState()
 		{
 			moveState = MoveState::WallSlide;
 		}
-
 	}
+
 }
 
 void PlayerX::UpdatePlayerBehavior()
@@ -243,6 +248,12 @@ void PlayerX::UpdatePlayerBehavior()
 					{
 						oldMoveState = moveState;
 						pBehavior->PushSucessorState( new WallSlide );
+					}
+					break;
+				case PlayerX::MoveState::WallKick:
+					{
+						oldMoveState = moveState;
+						pBehavior->PushSucessorState( new WallKick );
 					}
 					break;
 				default:

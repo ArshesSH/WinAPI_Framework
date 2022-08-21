@@ -32,12 +32,12 @@ PlayerX::Behavior* PlayerX::Hover::Update( PlayerX& playerX, Scene& scene, float
 			if ( playerX.isRightKeyDown )
 			{
 				playerX.vel.x = playerX.defaultMoveSpeed;
-				hoverTime += 4*dt;
+				hoverTime += 3*dt;
 			}
 			if ( playerX.isLeftKeyDown )
 			{
 				playerX.vel.x = -playerX.defaultMoveSpeed;
-				hoverTime += 4*dt;
+				hoverTime += 3*dt;
 			}
 		}
 		ChangeAnimation( playerX );
