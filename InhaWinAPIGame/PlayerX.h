@@ -38,6 +38,7 @@ public:
 		Airbone,
 		Land,
 		ShootJump,
+		ShootAirbone,
 		ShootLand,
 		WallSlide,
 		WallCling,
@@ -325,6 +326,9 @@ public:
 			break;
 		case PlayerX::AnimationState::ShootJump:
 			animStateStr = L"ShootJump";
+			break;
+		case PlayerX::AnimationState::ShootAirbone:
+			animStateStr = L"ShootAirbone";
 			break;
 		case PlayerX::AnimationState::ShootLand:
 			animStateStr = L"ShootLand";

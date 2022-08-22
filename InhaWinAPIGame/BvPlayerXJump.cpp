@@ -40,18 +40,18 @@ PlayerX::Behavior* PlayerX::Jump::Update( PlayerX& playerX, Scene& scene, float 
 	{
 	case AttackState::Shoot:
 		{
-			ChangeToShootAnim( playerX, scene, PlayerXBullet::Type::Bullet1 );
+			ChangeToShootAnim( playerX, scene, PlayerXBullet::Type::Bullet1, PlayerX::AnimationState::ShootJump );
 		}
 		break;
 	case AttackState::ShootMid:
 		{
-			ChangeToShootAnim( playerX, scene, PlayerXBullet::Type::Bullet2 );
+			ChangeToShootAnim( playerX, scene, PlayerXBullet::Type::Bullet2, PlayerX::AnimationState::ShootJump );
 		}
 		break;
 
 	case AttackState::ShootMax:
 		{
-			ChangeToShootAnim( playerX, scene, PlayerXBullet::Type::Bullet3 );
+			ChangeToShootAnim( playerX, scene, PlayerXBullet::Type::Bullet3, PlayerX::AnimationState::ShootJump );
 		}
 		break;
 	}
@@ -95,12 +95,12 @@ void PlayerX::Jump::SetVelXByInput( PlayerX& playerX, float speed )
 	}
 }
 
-void PlayerX::Jump::ChangeToShootAnim( PlayerX& playerX, Scene& scene, PlayerXBullet::Type type )
+void PlayerX::Jump::ChangeToShootAnim( PlayerX& playerX, Scene& scene, PlayerXBullet::Type type, PlayerX::AnimationState targetAnim )
 {
 	if ( playerX.curAnimState == AnimationState::Jump )
 	{
 		int idx = playerX.curAnimation.GetFrameIndex();
-		playerX.SetAnimation( PlayerX::AnimationState::ShootJump, animSpeed );
+		playerX.SetAnimation( targetAnim, animSpeed );
 		playerX.curAnimation.SetFrameIndex( idx );
 		isStartResetAnimation = true;
 	}
@@ -126,7 +126,22 @@ void PlayerX::Jump::DoJump( PlayerX& playerX, Scene& scene, float dt )
 
 void PlayerX::DashJump::Activate( PlayerX& playerX, Scene& scene )
 {
-	playerX.SetAnimation( PlayerX::AnimationState::Jump, animSpeed );
+	switch ( playerX.attackState )
+	{
+	case AttackState::NoAttack:
+	case AttackState::Charge:
+		{
+			playerX.SetAnimation( PlayerX::AnimationState::Jump, animSpeed );
+		}
+		break;
+	case AttackState::Shoot:
+	case AttackState::ShootMid:
+	case AttackState::ShootMax:
+		{
+			playerX.SetAnimation( PlayerX::AnimationState::ShootJump, animSpeed );
+		}
+		break;
+	}
 	playerX.isJumpNow = true;
 }
 
@@ -137,6 +152,43 @@ PlayerX::Behavior* PlayerX::DashJump::Update( PlayerX& playerX, Scene& scene, fl
 		playerX.isJumpNow = false;
 		playerX.isJumpEnd = true;
 		return PassTorch();
+	}
+
+
+	switch ( playerX.attackState )
+	{
+	case AttackState::Shoot:
+		{
+			ChangeToShootAnim( playerX, scene, PlayerXBullet::Type::Bullet1, PlayerX::AnimationState::ShootJump );
+		}
+		break;
+	case AttackState::ShootMid:
+		{
+			ChangeToShootAnim( playerX, scene, PlayerXBullet::Type::Bullet2, PlayerX::AnimationState::ShootJump );
+		}
+		break;
+
+	case AttackState::ShootMax:
+		{
+			ChangeToShootAnim( playerX, scene, PlayerXBullet::Type::Bullet3, PlayerX::AnimationState::ShootJump );
+		}
+		break;
+	}
+
+	if ( isStartResetAnimation )
+	{
+		time += dt;
+		if ( time >= animResetTime )
+		{
+			if ( playerX.curAnimation.IsEnd() )
+			{
+				int idx = playerX.curAnimation.GetFrameIndex();
+				playerX.SetAnimation( AnimationState::Jump, jumpSpeed );
+				playerX.curAnimation.SetFrameIndex( idx );
+				isStartResetAnimation = false;
+				time = 0.0f;
+			}
+		}
 	}
 
 	if ( playerX.GetAnimation().IsEnd() )
@@ -152,7 +204,23 @@ PlayerX::Behavior* PlayerX::DashJump::Update( PlayerX& playerX, Scene& scene, fl
 
 void PlayerX::WallKick::Activate( PlayerX& playerX, Scene& scene )
 {
-	playerX.SetAnimation( PlayerX::AnimationState::WallKick, animSpeed );
+	switch ( playerX.attackState )
+	{
+	case AttackState::NoAttack:
+	case AttackState::Charge:
+		{
+			playerX.SetAnimation( PlayerX::AnimationState::WallKick, animSpeed );
+		}
+		break;
+	case AttackState::Shoot:
+	case AttackState::ShootMid:
+	case AttackState::ShootMax:
+		{
+			playerX.SetAnimation( PlayerX::AnimationState::ShootWallKick, animSpeed );
+		}
+		break;
+	}
+
 	playerX.isJumpNow = true;
 	playerX.hoverCount = 2;
 }
@@ -169,6 +237,26 @@ PlayerX::Behavior* PlayerX::WallKick::Update( PlayerX& playerX, Scene& scene, fl
 	{
 		changedVel = (playerX.isZKeyDown) ? playerX.dashSpeed : playerX.defaultMoveSpeed;
 		playerX.vel.x = changedVel;
+	}
+
+	switch ( playerX.attackState )
+	{
+	case AttackState::Shoot:
+		{
+			ChangeToShootAnim( playerX, scene, PlayerXBullet::Type::Bullet1, PlayerX::AnimationState::ShootWallKick );
+		}
+		break;
+	case AttackState::ShootMid:
+		{
+			ChangeToShootAnim( playerX, scene, PlayerXBullet::Type::Bullet2, PlayerX::AnimationState::ShootWallKick );
+		}
+		break;
+
+	case AttackState::ShootMax:
+		{
+			ChangeToShootAnim( playerX, scene, PlayerXBullet::Type::Bullet3, PlayerX::AnimationState::ShootWallKick );
+		}
+		break;
 	}
 
 	DoJump( playerX, scene, dt );

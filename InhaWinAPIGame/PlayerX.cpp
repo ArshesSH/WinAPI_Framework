@@ -34,6 +34,7 @@ PlayerX::PlayerX( const Vec2<float>& pivotPos, const Vec2<float>& colliderRelati
 	animationMap[(int)AnimationState::Airbone] = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/Airbone.anim" );
 	animationMap[(int)AnimationState::Jump] = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/Jump.anim" );
 	animationMap[(int)AnimationState::ShootJump] = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/ShootJump.anim" );
+	animationMap[(int)AnimationState::ShootAirbone] = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/ShootAirbone.anim" );
 	animationMap[(int)AnimationState::Hover] = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/Hover.anim" );
 	animationMap[(int)AnimationState::HoverFront] = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/HoverFront.anim" );
 	animationMap[(int)AnimationState::HoverBack] = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/HoverBack.anim" );
@@ -41,6 +42,7 @@ PlayerX::PlayerX( const Vec2<float>& pivotPos, const Vec2<float>& colliderRelati
 	animationMap[(int)AnimationState::WallCling] = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/WallCling.anim" );
 	animationMap[(int)AnimationState::AirDashStart] = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/AirDashStart.anim" );
 	animationMap[(int)AnimationState::WallKick] = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/WallKick.anim" );
+	animationMap[(int)AnimationState::ShootWallKick] = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/ShootWallKick.anim" );
 	animationMap[(int)AnimationState::Crouch] = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/Crouch.anim" );
 	animationMap[(int)AnimationState::Shoot] = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/Shoot.anim" );
 	animationMap[(int)AnimationState::ShootCharged] = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/ShootCharged.anim" );
