@@ -11,13 +11,20 @@ public:
 		maxHP( maxHP ),
 		pos(pos),
 		numPos(numPos),
-		healthRect( pos + tlPos,  pos +brPos ),
 		image( fileName ),
 		chroma(chroma),
 		lifeCountLeft( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/UI/HudNumbers.anim" ),
 		lifeCountRight( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/UI/HudNumbers.anim" ),
-		hpBarImage( L"Images/RockmanX5/UI/hpBar.bmp")
-	{}
+		hpBarImage( L"Images/RockmanX5/UI/hpBar.bmp"),
+		eachSegmentHeight(int( std::abs( (brPos - tlPos).y ) / maxHP )),
+		eachSegmentWidth( std::abs( (brPos - tlPos).x ))
+	{
+		for ( auto i = 0; i < maxHP; ++i )
+		{
+			hpSegmentPositions.emplace_back( tlPos.x, eachSegmentHeight * i );
+		}
+		
+	}
 
 	virtual ~HUD() = default;
 
@@ -41,15 +48,27 @@ public:
 		lifeCountRight.PlayGDI( hdc, image, numPos - Vec2<int>( 2, 0 ), 4, chroma );
 	}
 
+	void DrawHpBar( HDC hdc )
+	{
+		for ( const auto& hpBar : hpSegmentPositions )
+		{
+			surf.DrawImageNonChromaGDI( hdc, hpBarImage, hpBar, { eachSegmentWidth, eachSegmentHeight }, { 0,0 }, { 10,10 } );
+		}
+	}
+
 protected:
 	Surface<int> surf;
 	const int maxHP;
+	const int eachSegmentHeight;
+	const int eachSegmentWidth;
 	const COLORREF chroma;
 	Vec2<int> pos;
 	Vec2<int> numPos;
 	Image::ImageGDI<int> image;
 	Image::ImageGDI<int> hpBarImage;
 	Animation<int> hudAnimation;
+	std::vector<Vec2<int>> hpSegmentPositions;
+	
 	Animation<int> lifeCountLeft;
 	Animation<int> lifeCountRight;
 	RectI healthRect;
