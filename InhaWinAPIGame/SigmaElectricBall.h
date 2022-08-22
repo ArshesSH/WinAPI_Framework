@@ -45,4 +45,5 @@ private:
 
 	Animation<int> curAnimation;
 	bool isDirSet = false;
+	bool isDamgeOn = false;
 };

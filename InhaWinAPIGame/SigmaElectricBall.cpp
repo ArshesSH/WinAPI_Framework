@@ -24,6 +24,20 @@ void SigmaElectricBall::Update( float dt, Scene& scene )
 			Move( dt, scene );
 		}
 	}
+
+	//if ( !isDamgeOn )
+	{
+		const auto& enemies = scene.FindActorByTag( oppositeTag );
+		for ( const auto& enemy : enemies )
+		{
+			if ( enemy->IsCollideWith( scene.GetCollisionManager(), *(this->GetColliderPtr()) ) )
+			{
+				enemy->ApplyDamage( damage );
+				isDamgeOn = true;
+			}
+		}
+	}
+
 }
 
 void SigmaElectricBall::SetTransform( const Mat3<float>& transform )

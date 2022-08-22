@@ -151,6 +151,7 @@
     <ClInclude Include="BvPlayerXAirbone.h" />
     <ClInclude Include="BvPlayerXCrouch.h" />
     <ClInclude Include="BvPlayerXHover.h" />
+    <ClInclude Include="BvPlayerXHurt.h" />
     <ClInclude Include="BvPlayerXIdle.h" />
     <ClInclude Include="BvPlayerXJump.h" />
     <ClInclude Include="BvPlayerXWalk.h" />
@@ -223,6 +224,7 @@
     <ClCompile Include="BvPlayerXCrouch.cpp" />
     <ClCompile Include="BvPlayerXDash.cpp" />
     <ClCompile Include="BvPlayerXHover.cpp" />
+    <ClCompile Include="BvPlayerXHurt.cpp" />
     <ClCompile Include="BvPlayerXIdle.cpp" />
     <ClCompile Include="BvPlayerXJump.cpp" />
     <ClCompile Include="BvPlayerXWalk.cpp" />

@@ -10,6 +10,7 @@
 #include "BvPlayerXHover.h"
 #include "BvPlayerXWallSlide.h"
 #include "BvPlayerXCrouch.h"
+#include "BvPlayerXHurt.h"
 
 
 PlayerX::PlayerX( int maxHP, const Vec2<float>& pivotPos, const Vec2<float>& colliderRelativePos )
@@ -59,6 +60,9 @@ PlayerX::PlayerX( int maxHP, const Vec2<float>& pivotPos, const Vec2<float>& col
 	animationMap[(int)AnimationState::CrouchShoot] = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/CrouchShoot.anim" );
 	animationMap[(int)AnimationState::CrouchShootStart] = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/CrouchShootStart.anim" );
 	animationMap[(int)AnimationState::CrouchShootCharged] = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/CrouchShootCharged.anim" );
+	animationMap[(int)AnimationState::HurtA] = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/HurtA.anim" );
+	animationMap[(int)AnimationState::HurtB] = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/HurtB.anim" );
+	animationMap[(int)AnimationState::HurtC] = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/HurtC.anim" );
 
 	curAnimation = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/Idle.anim" );
 }
@@ -170,18 +174,21 @@ void PlayerX::Draw( HDC hdc )
 	pivotGizmo.Draw( hdc );
 	wallSearcher.Draw( gfx, { 255,0,255,0 } );
 	headCollider.Draw( gfx, { 255,0,255,0 } );
+
+	std::cout << "hp: " << hp << std::endl;
 #endif // NDEBUG
 
-	if ( isHeadCollide )
-	{
-		std::cout << "head collided" << std::endl;
-	}
+
 }
 
 void PlayerX::ApplyDamage( int damage )
 {
-	hp -= damage;
-	SetInvincible();
+	if ( !isInvincible )
+	{
+		hp -= damage;
+		SetInvincible();
+		pBehavior->PushSucessorState( new Hurt );
+	}
 }
 
 void PlayerX::UpdatePlayerState()

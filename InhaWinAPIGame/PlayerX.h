@@ -113,7 +113,7 @@ public:
 	class WallSlide;
 	class WallKick;
 	class Crouch;
-
+	class Hurt;
 	class Shoot;
 
 public:
@@ -441,7 +441,7 @@ private:
 	static constexpr float busterMinDelay = 0.3f;
 	static constexpr float chargeAnimSpeed = 0.1f;
 	static constexpr float chargeFinAnimSpeed = 0.05f;
-	static constexpr float invincibleTime = 0.5f;
+	static constexpr float invincibleTime = 2.0f;
 
 	const int maxHP;
 
@@ -477,6 +477,8 @@ private:
 	bool canAirDash = false;
 	bool isHeadCollide = false;
 	bool isInvincible = false;
+	bool playHurtAnim = false;
+	AnimationState beforeState;
 	float invincibleTimer = 0.0f;
 
 	float chargeTime = 0.0f;
