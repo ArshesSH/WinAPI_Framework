@@ -473,7 +473,7 @@ void PlayerX::SpawnBullet( PlayerXBullet::Type type, Scene& scene )
 
 	scene.AccessBulletPtrs().emplace_back(
 		std::make_unique<PlayerXBullet>(
-			type, dir, GetPos() + realativeSpawn, Vec2<float>{ 0.0f, 0.0f }, Vec2<float>{ bullet1Width, bullet1Height }, isFacingRight
+			type, dir, GetPos() + realativeSpawn, Vec2<float>{ 0.0f, 0.0f }, isFacingRight
 			)
 	);
 }

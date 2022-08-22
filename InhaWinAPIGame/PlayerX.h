@@ -414,8 +414,6 @@ private:
 	static constexpr float wallsearcherLength = 21.0f;
 	static constexpr float bulletSpawnDefaultX = 20.0f;
 	static constexpr float bulletSpawnDefaultY = 60.0f;
-	static constexpr float bullet1Width = 10.0f;
-	static constexpr float bullet1Height = 10.0f;
 	static constexpr float bulletChargeMiddle = 0.5f;
 	static constexpr float bulletChargeMax = 1.5f;
 	static constexpr float busterMinDelay = 0.3f;

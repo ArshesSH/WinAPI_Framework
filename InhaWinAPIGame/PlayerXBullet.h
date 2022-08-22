@@ -14,11 +14,11 @@ public:
 	};
 
 public:
-	PlayerXBullet( Type type, const Vec2<float>& dir, const Vec2<float>& pivotPos, const Vec2<float>& colliderRelativePos, const Vec2<float>& size, bool isFacingRight )
+	PlayerXBullet( Type type, const Vec2<float>& dir, const Vec2<float>& pivotPos, const Vec2<float>& colliderRelativePos, bool isFacingRight )
 		:
 		type(type),
 		isFacingRight(isFacingRight),
-		Bullet( ActorTag::PlayerBullet, ActorTag::Enemy, pivotPos, colliderRelativePos, size, bulletMoveSpeed, dir, 3,
+		Bullet( ActorTag::PlayerBullet, ActorTag::Enemy, pivotPos, colliderRelativePos, { bullet1Width, bullet1Height }, bulletMoveSpeed, dir, 3,
 			L"Images/RockmanX5/X/Bullet/Buster.bmp", L"Images/RockmanX5/X/Bullet/BusterFlip.bmp" )
 	{
 		animationMap[(int)Type::Bullet1] = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/Bullet/bullet1.anim" );
@@ -36,6 +36,7 @@ public:
 				animationState = Type::Bullet1;
 				curAnimation = animationMap[(int)Type::Bullet1];
 				animSpeed = bullet1AnimSpeed;
+
 			}
 			break;
 		case PlayerXBullet::Type::Bullet2:
@@ -45,6 +46,7 @@ public:
 				animationState = Type::Bullet2;
 				curAnimation = animationMap[(int)Type::Bullet2];
 				animSpeed = bullet2AnimSpeed;
+				this->ChangeColliderSize( { bullet2Width, bullet2Height } );
 			}
 
 			break;
@@ -55,6 +57,7 @@ public:
 				animationState = Type::Bullet3;
 				curAnimation = animationMap[(int)Type::Bullet3];
 				animSpeed = bullet3AnimSpeed;
+				this->ChangeColliderSize( { bullet3Width, bullet3Height } );
 			}
 			break;
 		}
@@ -85,7 +88,13 @@ private:
 	static constexpr float bullet1AnimSpeed = 0.03f;
 	static constexpr float bullet2AnimSpeed = 0.03f;
 	static constexpr float bullet3AnimSpeed = 0.05f;
-	static constexpr float bulletMoveSpeed = 700.0f;
+	static constexpr float bulletMoveSpeed = 800.0f;
+	static constexpr float bullet1Width = 10.0f;
+	static constexpr float bullet1Height = 10.0f;
+	static constexpr float bullet2Width = 30.0f;
+	static constexpr float bullet2Height = 30.0f;
+	static constexpr float bullet3Width = 100.0f;
+	static constexpr float bullet3Height = 100.0f;
 
 	Animation<int> curAnimation;
 	Type animationState = Type::Size;
