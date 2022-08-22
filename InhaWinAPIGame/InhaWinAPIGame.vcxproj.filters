@@ -249,9 +249,6 @@
     <ClInclude Include="PlayerX.h">
       <Filter>헤더 파일\GameObjects\Actor\DynamicActor\PlayerX</Filter>
     </ClInclude>
-    <ClInclude Include="BvPlayerXWalk.h">
-      <Filter>헤더 파일\GameObjects\Actor\DynamicActor\PlayerX\Behavior</Filter>
-    </ClInclude>
     <ClInclude Include="BvPlayerXIdle.h">
       <Filter>헤더 파일\GameObjects\Actor\DynamicActor\PlayerX\Behavior</Filter>
     </ClInclude>
@@ -287,6 +284,9 @@
     </ClInclude>
     <ClInclude Include="Keyboard.h">
       <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="BvPlayerXWalk.h">
+      <Filter>헤더 파일\GameObjects\Actor\DynamicActor\PlayerX\Behavior</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -332,9 +332,6 @@
     <ClCompile Include="PlayerX.cpp">
       <Filter>소스 파일\GameObjects\DynamicActor\PlayerX</Filter>
     </ClCompile>
-    <ClCompile Include="BvPlayerXWalk.cpp">
-      <Filter>소스 파일\GameObjects\DynamicActor\PlayerX\Behavior</Filter>
-    </ClCompile>
     <ClCompile Include="BvPlayerXIdle.cpp">
       <Filter>소스 파일\GameObjects\DynamicActor\PlayerX\Behavior</Filter>
     </ClCompile>
@@ -370,6 +367,9 @@
     </ClCompile>
     <ClCompile Include="Keyboard.cpp">
       <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="BvPlayerXWalk.cpp">
+      <Filter>소스 파일\GameObjects\DynamicActor\PlayerX\Behavior</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -10,79 +10,39 @@ public:
 		Bullet1,
 		Bullet2,
 		Bullet3,
+		HitNormal,
+		HitCharged,
+		HitImuned,
+		Bullet3Remain,
+		Bullet3Destroy,
 		Size
 	};
 
 public:
 	PlayerXBullet( Type type, const Vec2<float>& dir, const Vec2<float>& pivotPos, const Vec2<float>& colliderRelativePos, bool isFacingRight )
 		:
-		type(type),
-		isFacingRight(isFacingRight),
+		type( type ),
+		isFacingRight( isFacingRight ),
 		Bullet( ActorTag::PlayerBullet, ActorTag::Enemy, pivotPos, colliderRelativePos, { bullet1Width, bullet1Height }, bulletMoveSpeed, dir, 3,
 			L"Images/RockmanX5/X/Bullet/Buster.bmp", L"Images/RockmanX5/X/Bullet/BusterFlip.bmp" )
 	{
 		animationMap[(int)Type::Bullet1] = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/Bullet/bullet1.anim" );
 		animationMap[(int)Type::Bullet2] = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/Bullet/bullet2.anim" );
 		animationMap[(int)Type::Bullet3] = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/Bullet/bullet3.anim" );
+		animationMap[(int)Type::HitNormal] = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/Bullet/HitNormal.anim" );
+		animationMap[(int)Type::HitCharged] = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/Bullet/HitCharged.anim" );
+		animationMap[(int)Type::HitImuned] = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/Bullet/HitImuned.anim" );
+		animationMap[(int)Type::Bullet3Remain] = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/Bullet/Bullet3Remain.anim" );
+		animationMap[(int)Type::Bullet3Destroy] = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/Bullet/Bullet3Destroy.anim" );
 	}
-	void Update( float dt, class Scene& scene ) override
-	{
-		switch ( type )
-		{
-		case PlayerXBullet::Type::Bullet1:
-			if ( animationState != Type::Bullet1 )
-			{
-				damage = 3;
-				animationState = Type::Bullet1;
-				curAnimation = animationMap[(int)Type::Bullet1];
-				animSpeed = bullet1AnimSpeed;
+	void Update( float dt, class Scene& scene ) override;
+	void SetTransform( const Mat3<float>& transform ) override;
+	void Draw( HDC hdc ) override;
 
-			}
-			break;
-		case PlayerXBullet::Type::Bullet2:
-			if ( animationState != Type::Bullet2 )
-			{
-				damage = 4;
-				animationState = Type::Bullet2;
-				curAnimation = animationMap[(int)Type::Bullet2];
-				animSpeed = bullet2AnimSpeed;
-				this->ChangeColliderSize( { bullet2Width, bullet2Height } );
-			}
+	void ChangeAnimationToHit();
 
-			break;
-		case PlayerXBullet::Type::Bullet3:
-			if ( animationState != Type::Bullet3 )
-			{
-				damage = 8;
-				animationState = Type::Bullet3;
-				curAnimation = animationMap[(int)Type::Bullet3];
-				animSpeed = bullet3AnimSpeed;
-				this->ChangeColliderSize( { bullet3Width, bullet3Height } );
-			}
-			break;
-		}
-		if ( curAnimation.IsEnd() )
-		{
-			curAnimation.SetStop();
-		}
-		curAnimation.Update( dt, animSpeed );
-		Bullet::Update( dt, scene );
-	}
-	void SetTransform( const Mat3<float>& transform ) override
-	{
-		curAnimation.SetTransform( transform );
-	}
-	void Draw( HDC hdc ) override
-	{
-		if ( !isFacingRight )
-		{
-			curAnimation.PlayByCamGDI( hdc, spriteFlipped, Vec2<int>( GetPos() ), 2, chroma, true );
-		}
-		else
-		{
-			curAnimation.PlayByCamGDI( hdc, sprite, Vec2<int>( GetPos() ), 2, chroma );
-		}
-	}
+	bool CheckHitAnimationFinish() const;
+
 
 private:
 	static constexpr float bullet1AnimSpeed = 0.03f;
@@ -102,4 +62,6 @@ private:
 	bool isFacingRight;
 	const COLORREF chroma = RGB( 255, 0, 255 );
 	float animSpeed = 0.0f;
+
+	bool isPlayHit = false;
 };

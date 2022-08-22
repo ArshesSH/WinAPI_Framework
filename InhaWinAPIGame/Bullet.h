@@ -22,8 +22,7 @@ protected:
 	int damage = 0;
 	float lifeCycle = 3.0f;
 	ActorTag oppositeTag;
-
-private:
 	float time = 0.0f;
+
 	
 };

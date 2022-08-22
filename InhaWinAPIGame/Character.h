@@ -37,7 +37,7 @@ protected:
 
 	Vec2<float> vel = { 0.0f, 0.0f };
 	float moveSpeed = 0.0f;
-	bool isFacingRight = false;
+	bool isFacingRight = true;
 
 	float colliderHalfWidth;
 	float colliderHalfHeight;
