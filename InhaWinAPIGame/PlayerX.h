@@ -43,6 +43,7 @@ public:
 		WallSlide,
 		WallCling,
 		WallKick,
+		ShootWallSlide,
 		ShootWallCling,
 		ShootWallKick,
 		Crouch,
@@ -342,6 +343,9 @@ public:
 		case PlayerX::AnimationState::WallKick:
 			animStateStr = L"WallKick";
 			break;
+		case PlayerX::AnimationState::ShootWallSlide:
+			animStateStr = L"ShootWallSlide";
+			break;
 		case PlayerX::AnimationState::ShootWallCling:
 			animStateStr = L"ShootWallCling";
 			break;
@@ -408,17 +412,17 @@ private:
 	void TestKbd(float dt, Scene& scene);
 	void UpdateWallSearcher(float dt);
 	bool IsWallSearcherCollide( Scene& scene );
-	void SpawnBullet( PlayerXBullet::Type type, Scene& scene, const Vec2<float>& relativeSpawnPos );
+	void SpawnBullet( PlayerXBullet::Type type, Scene& scene, const Vec2<float>& relativeSpawnPos, bool isOppositeDir = false );
 private:
 	static constexpr float colliderHalfWidth = 20.0f;
 	static constexpr float colliderHalfHeight = 40.0f;
 	static constexpr COLORREF chroma = RGB( 84, 165, 75 );
-	static constexpr float defaultMoveSpeed = 250.0f;
+	static constexpr float defaultMoveSpeed = 200.0f;
 	static constexpr float dashSpeed = 400.0f;
 	static constexpr float jumpSpeed = 350.0f;
 	static constexpr float wallsearcherLength = 21.0f;
 	static constexpr float bulletSpawnDefaultX = 20.0f;
-	static constexpr float bulletSpawnDefaultY = 60.0f;
+	static constexpr float bulletSpawnDefaultY = 62.0f;
 	static constexpr float bulletSpawnDashX = 50.0f;
 	static constexpr float bulletSpawnDashY = 35.0f;
 	static constexpr float bulletChargeMiddle = 0.5f;

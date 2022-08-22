@@ -2,7 +2,23 @@
 
 void PlayerX::WallSlide::Activate( PlayerX& playerX, Scene& scene )
 {
-	playerX.SetAnimation( PlayerX::AnimationState::WallCling, animStartSpeed );
+	switch ( playerX.attackState )
+	{
+	case AttackState::NoAttack:
+	case AttackState::Charge:
+		{
+			playerX.SetAnimation( PlayerX::AnimationState::WallCling, animStartSpeed );
+		}
+		break;
+	case AttackState::Shoot:
+	case AttackState::ShootMid:
+	case AttackState::ShootMax:
+		{
+			playerX.SetAnimation( PlayerX::AnimationState::ShootWallCling, animStartSpeed );
+		}
+		break;
+	}
+
 	playerX.vel = { 0.0f, wallSlideSpeed };
 	playerX.SetStopFacingTrack();
 	playerX.hoverCount = 0;
@@ -16,7 +32,6 @@ PlayerX::Behavior* PlayerX::WallSlide::Update( PlayerX& playerX, Scene& scene, f
 		playerX.vel.y = 0.0f;
 		return PassTorch();
 	}
-
 
 	if ( !(GetAsyncKeyState( 'X' ) & 0x8001) )
 	{
@@ -33,10 +48,36 @@ PlayerX::Behavior* PlayerX::WallSlide::Update( PlayerX& playerX, Scene& scene, f
 		}
 	}
 
-	if ( playerX.curAnimState == AnimationState::WallCling && playerX.curAnimation.IsEnd() )
+
+	switch ( playerX.attackState )
 	{
-		playerX.SetAnimation( AnimationState::WallSlide, 0.0f );
+	case AttackState::NoAttack:
+	case AttackState::Charge:
+		{
+			if ( playerX.curAnimState == AnimationState::WallCling && playerX.curAnimation.IsEnd() )
+			{
+				playerX.SetAnimation( AnimationState::WallSlide, 0.0f );
+			}
+		}
+		break;
+	case AttackState::Shoot:
+		{
+			ChangeToShootAnim( playerX, scene, PlayerXBullet::Type::Bullet1, PlayerX::AnimationState::ShootWallSlide );
+		}
+		break;
+	case AttackState::ShootMid:
+		{
+			ChangeToShootAnim( playerX, scene, PlayerXBullet::Type::Bullet2, PlayerX::AnimationState::ShootWallSlide );
+		}
+		break;
+
+	case AttackState::ShootMax:
+		{
+			ChangeToShootAnim( playerX, scene, PlayerXBullet::Type::Bullet3, PlayerX::AnimationState::ShootWallSlide );
+		}
+		break;
 	}
+
 
 	if (( playerX.isFacingRight && playerX.isLeftKeyDown )|| (!playerX.isFacingRight && playerX.isRightKeyDown ))
 	{
@@ -46,4 +87,17 @@ PlayerX::Behavior* PlayerX::WallSlide::Update( PlayerX& playerX, Scene& scene, f
 	playerX.Move( dt, scene );
 
 	return nullptr;
+}
+
+void PlayerX::WallSlide::ChangeToShootAnim( PlayerX& playerX, Scene& scene, PlayerXBullet::Type type, PlayerX::AnimationState targetAnim )
+{
+	if ( playerX.curAnimState == AnimationState::WallSlide )
+	{
+		int idx = playerX.curAnimation.GetFrameIndex();
+		playerX.SetAnimation( targetAnim, animSpeed );
+		playerX.curAnimation.SetFrameIndex( idx );
+		isStartResetAnimation = true;
+	}
+	playerX.SpawnBullet( type, scene, { bulletSpawnDefaultX, bulletSpawnDefaultY }, true );
+	time = 0.0f;
 }

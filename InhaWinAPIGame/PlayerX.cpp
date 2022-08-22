@@ -40,6 +40,8 @@ PlayerX::PlayerX( const Vec2<float>& pivotPos, const Vec2<float>& colliderRelati
 	animationMap[(int)AnimationState::HoverBack] = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/HoverBack.anim" );
 	animationMap[(int)AnimationState::WallSlide] = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/WallSlide.anim" );
 	animationMap[(int)AnimationState::WallCling] = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/WallCling.anim" );
+	animationMap[(int)AnimationState::ShootWallCling] = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/ShootWallCling.anim" );
+	animationMap[(int)AnimationState::ShootWallSlide] = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/ShootWallSlide.anim" );
 	animationMap[(int)AnimationState::AirDashStart] = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/AirDashStart.anim" );
 	animationMap[(int)AnimationState::WallKick] = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/WallKick.anim" );
 	animationMap[(int)AnimationState::ShootWallKick] = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/ShootWallKick.anim" );
@@ -380,7 +382,6 @@ void PlayerX::KbdInput(float dt, Scene& scene)
 	if ( kbd.IsKeyDownOccur( 'C' ) )
 	{
 		attackState = AttackState::Shoot;
-		std::cout << " shoot" << std::endl;
 	}
 	else
 	{
@@ -423,15 +424,12 @@ void PlayerX::KbdInput(float dt, Scene& scene)
 		{
 		case PlayerX::ChargeState::Middle:
 			attackState = AttackState::ShootMid;
-			std::cout << "Mid" << std::endl;
 			break;
 		case PlayerX::ChargeState::Max:
 			attackState = AttackState::ShootMax;
-			std::cout << "Max" << std::endl;
 			break;
 		default:
 			attackState = AttackState::NoAttack;
-			std::cout << "Noop" << std::endl;
 			break;
 		}
 	}
@@ -478,15 +476,21 @@ bool PlayerX::IsWallSearcherCollide( Scene& scene )
 	return false;
 }
 
-void PlayerX::SpawnBullet( PlayerXBullet::Type type, Scene& scene, const Vec2<float>& relativeSpawnPos )
+void PlayerX::SpawnBullet( PlayerXBullet::Type type, Scene& scene, const Vec2<float>& relativeSpawnPos, bool isOppositeDir )
 {
-	const float spawnX = (isFacingRight) ? relativeSpawnPos.x : -relativeSpawnPos.x;
-	const Vec2<float> dir = (isFacingRight) ? dirRight : dirLeft;
+	bool isFace = (isOppositeDir) ? !isFacingRight : isFacingRight;
+
+	const float spawnX = (isFace) ? relativeSpawnPos.x : -relativeSpawnPos.x;
+	const Vec2<float> dir = (isFace) ? dirRight : dirLeft;
+	
+
+
 	const Vec2<float> realativeSpawn = { spawnX, relativeSpawnPos.y };
 
 	scene.AccessBulletPtrs().emplace_back(
 		std::make_unique<PlayerXBullet>(
-			type, dir, GetPos() + realativeSpawn, Vec2<float>{ 0.0f, 0.0f }, isFacingRight
+			type, dir, GetPos() + realativeSpawn, Vec2<float>{ 0.0f, 0.0f }, isFace
 			)
 	);
+
 }
