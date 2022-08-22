@@ -20,6 +20,7 @@ PlayerX::PlayerX( const Vec2<float>& pivotPos, const Vec2<float>& colliderRelati
 	pBehavior( std::make_unique<Idle>() ),
 	gravity( 20.0f ),
 	wallSearcher( pivotPos + Vec2<float>{-wallsearcherLength, 0.0f}, pivotPos + Vec2<float>{wallsearcherLength, 0.0f} ),
+	headCollider( RectF( {-18.0f, 0.0f}, {18.0f, 2.0f} ) ),
 	chargeImage( L"Images/RockmanX5/X/Bullet/Buster.bmp" ),
 	chargeAnimation(Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/Bullet/Charge.anim" ),
 	chargeFinAnim( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/Bullet/ChargeFinished.anim" )
@@ -78,9 +79,15 @@ void PlayerX::Update( float dt, Scene& scene )
 	UpdatePlayerState();
 	UpdatePlayerBehavior();
 	UpdateWallSearcher(dt);
+	UpdateHeadCollider( dt );
 
 	isOnWallSide = IsWallSearcherCollide( scene );
-
+	isHeadCollide = IsHeadColliderCollide( scene );
+	if ( isHeadCollide )
+	{
+		vel.y = gravity.GetGravityVel( vel, dt );
+		//SetPos( GetPos() - Vec2<float>{0.0f, 2.0f} );
+	}
 	isOnGround = IsCollideWithWall( GetColliderPos() - Vec2<float>{0, 1.0f}, scene ) || IsCollideWithGround( GetColliderPos() - Vec2<float>{0, 1.0f}, scene );
 
 
@@ -111,6 +118,7 @@ void PlayerX::Update( float dt, Scene& scene )
 	pivotGizmo.SetPos( Vec2<int>( pos ) );
 	pivotGizmo.SetTransform( scene.AccessCamera().GetTransform() );
 	wallSearcher.UpdateMatrix( scene.AccessCamera().GetTransform() );
+	headCollider.UpdateMatrix( scene.AccessCamera().GetTransform() );
 #endif // NDEBUG
 
 }
@@ -149,9 +157,14 @@ void PlayerX::Draw( HDC hdc )
 	DrawStateString( surf, hdc );
 	DrawAnimationStateString( surf, hdc );
 	pivotGizmo.Draw( hdc );
-
 	wallSearcher.Draw( gfx, { 255,0,255,0 } );
+	headCollider.Draw( gfx, { 255,0,255,0 } );
 #endif // NDEBUG
+
+	if ( isHeadCollide )
+	{
+		std::cout << "head collided" << std::endl;
+	}
 }
 
 void PlayerX::ApplyDamage( int damage )
@@ -463,6 +476,11 @@ void PlayerX::UpdateWallSearcher(float dt)
 	wallSearcher.SetPosByCenter( GetPos() + wallSearcherOffset );
 }
 
+void PlayerX::UpdateHeadCollider( float dt )
+{
+	headCollider.SetPosByCenter( GetPos() + headColliderOffset );
+}
+
 bool PlayerX::IsWallSearcherCollide( Scene& scene )
 {
 	for ( const auto& pWall : scene.GetWallPtrs() )
@@ -473,6 +491,18 @@ bool PlayerX::IsWallSearcherCollide( Scene& scene )
 		}
 	}
 
+	return false;
+}
+
+bool PlayerX::IsHeadColliderCollide( Scene& scene )
+{
+	for ( const auto& pWall : scene.GetWallPtrs() )
+	{
+		if ( pWall->IsCollideWith( scene.GetCollisionManager(), headCollider ) )
+		{
+			return true;
+		}
+	}
 	return false;
 }
 

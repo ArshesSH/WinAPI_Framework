@@ -16,19 +16,19 @@ private:
 	{
         if ( GetAsyncKeyState( 'A' ) & 0x8001 )
         {
-            cam.MoveBy( dirLeft * dt * 200 );
+            cam.MoveBy( dirLeft * dt * 1500 );
         }
         else if ( GetAsyncKeyState( 'D' ) & 0x8001 )
         {
-            cam.MoveBy( dirRight * dt * 200 );
+            cam.MoveBy( dirRight * dt * 1500 );
         }
         if ( GetAsyncKeyState( 'W' ) & 0x8001 )
         {
-            cam.MoveBy( dirUp * dt * 200 );
+            cam.MoveBy( dirUp * dt * 600 );
         }
         else if ( GetAsyncKeyState( 'S' ) & 0x8001 )
         {
-            cam.MoveBy( dirDown * dt * 200 );
+            cam.MoveBy( dirDown * dt * 600 );
         }
 
         if ( GetAsyncKeyState( 'Q' ) & 0x8001 )
@@ -48,7 +48,7 @@ private:
         const auto& pPlayer = FindPlayerPtr();
         //if ( cam.GetScreenRect(sceneWidth, sceneHeight).left >= 0.0f )
         {
-            cam.SetPos( { pPlayer->GetPos().x, cam.GetPos().y } );
+            //cam.SetPos( { pPlayer->GetPos().x, cam.GetPos().y } );
         }
 
 	}

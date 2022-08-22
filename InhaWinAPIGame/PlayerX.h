@@ -411,7 +411,9 @@ private:
 	void KbdInput( float dt, Scene& scene );
 	void TestKbd(float dt, Scene& scene);
 	void UpdateWallSearcher(float dt);
+	void UpdateHeadCollider( float dt );
 	bool IsWallSearcherCollide( Scene& scene );
+	bool IsHeadColliderCollide( Scene& scene );
 	void SpawnBullet( PlayerXBullet::Type type, Scene& scene, const Vec2<float>& relativeSpawnPos, bool isOppositeDir = false );
 private:
 	static constexpr float colliderHalfWidth = 20.0f;
@@ -421,6 +423,7 @@ private:
 	static constexpr float dashSpeed = 400.0f;
 	static constexpr float jumpSpeed = 350.0f;
 	static constexpr float wallsearcherLength = 21.0f;
+	static constexpr float headColliderLength = 20.0f;
 	static constexpr float bulletSpawnDefaultX = 20.0f;
 	static constexpr float bulletSpawnDefaultY = 62.0f;
 	static constexpr float bulletSpawnDashX = 50.0f;
@@ -436,7 +439,9 @@ private:
 	float animPlaySpeed;
 
 	LineCollider<float> wallSearcher;
+	ConvexCollider<float> headCollider;
 	const Vec2<float> wallSearcherOffset = { 0.0f,1.0f };
+	const Vec2<float> headColliderOffset = {0.0f, 90.0f};
 	int hp = 20;
 
 	Image::ImageGDI<int> chargeImage;
@@ -459,6 +464,7 @@ private:
 	bool isJumpEnd = false;
 	bool isOnWallSide = false;
 	bool canAirDash = false;
+	bool isHeadCollide = false;
 
 	float chargeTime = 0.0f;
 	ChargeState chargeState = ChargeState::NoCharge;
