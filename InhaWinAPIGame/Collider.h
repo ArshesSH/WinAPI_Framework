@@ -67,6 +67,7 @@ public:
 	{
 		rect += offset;
 	}
+	virtual Vec2<T> GetDir() = 0;
 	Type GetType() const
 	{
 		return type;
@@ -162,6 +163,8 @@ public:
 		this->surf.DrawFillPolygonPlus( gfx, vertices, (int)vertices.size(), color );
 	}
 
+	Vec2<T> GetDir() override { return { (T)0,(T)0 }; }
+
 private:
 	std::vector<Vec2<T>> vertices;
 };
@@ -196,7 +199,7 @@ public:
 		auto testRect = circle.GetOuterRect();
 		this->surf.DrawFillRectPlus( gfx, testRect.GetTopLeft(), testRect.GetWidth(), testRect.GetHeight(), { 144,0,0,255 } );
 	}
-
+	Vec2<T> GetDir() override { return { (T)0,(T)0 }; }
 	
 private:
 	Circle<T> circle;
@@ -234,9 +237,14 @@ public:
 	}
 	void Draw( Gdiplus::Graphics& gfx, const Gdiplus::Color& color ) override
 	{
-		this->surf.DrawFillRectPlus( gfx, this->rect.GetTopLeft(), this->rect.GetWidth(), this->rect.GetHeight(), { 144,0,0,255 } );
+		//this->surf.DrawFillRectPlus( gfx, this->rect.GetTopLeft(), this->rect.GetWidth(), this->rect.GetHeight(), { 144,0,0,255 } );
 
 		this->surf.DrawLinePlus( gfx, line.GetStartPos(), line.GetEndPos(), color, 1 );
+	}
+
+	Vec2<T> GetDir() override
+	{
+		return line.GetEndPos() - line.GetStartPos();
 	}
 private:
 	Line<T> line;

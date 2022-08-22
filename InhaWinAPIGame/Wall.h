@@ -15,7 +15,7 @@ public:
 	{
 		Gdiplus::Graphics gfx( hdc );
 	}
-	void SetTransform( const Mat3<float>& transform )
+	void SetTransform( const Mat3<float>& transform ) override
 	{
 
 	}

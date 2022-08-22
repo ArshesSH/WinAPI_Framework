@@ -5,6 +5,7 @@
 #include <vector>
 #include "Actor.h"
 #include "Wall.h"
+#include "Ground.h"
 #include "CollisionManager.h"
 #include "Camera.h"
 #include "Bullet.h"
@@ -50,7 +51,10 @@ public:
 	{
 		return wallPtrs;
 	}
-
+	const std::vector<std::unique_ptr<Ground>>& GetGroundPtrs() const
+	{
+		return groundPtrs;
+	}
 
 	std::vector<Actor*> FindActorByTag(ActorTag tag)
 	{
@@ -112,5 +116,6 @@ protected:
 	std::vector<std::unique_ptr<Actor>> actorPtrs;
 	std::vector<std::unique_ptr<Wall>> wallPtrs;
 	std::vector<std::unique_ptr<Bullet>> bulletPtrs;
+	std::vector<std::unique_ptr<Ground>> groundPtrs;
 };
 

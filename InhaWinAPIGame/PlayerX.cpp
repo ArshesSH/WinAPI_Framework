@@ -68,7 +68,9 @@ void PlayerX::Update( float dt, Scene& scene )
 
 	isOnWallSide = IsWallSearcherCollide( scene );
 
-	isOnGround = IsCollideWithWall( GetColliderPos() - Vec2<float>{0, 1.0f}, scene );
+	isOnGround = IsCollideWithWall( GetColliderPos() - Vec2<float>{0, 1.0f}, scene ) || IsCollideWithGround( GetColliderPos() - Vec2<float>{0, 1.0f}, scene );
+
+
 	//std::cout << "isOnGround : " << std::boolalpha << isOnGround << std::endl;
 	//std::cout << "Vel:{" << vel.x << ", " << vel.y << std::endl;
 	//std::cout << "isOnWallSide : " << std::boolalpha << isOnWallSide << std::endl;

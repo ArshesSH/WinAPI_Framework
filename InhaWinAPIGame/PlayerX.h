@@ -442,7 +442,6 @@ private:
 	bool isMoveStateChanged = false;
 
 	bool isStopFacingTrack = false;
-	bool isFacingRight = false;
 	bool isOnGround = false;
 	bool isJumpNow = false;
 	bool isDashEnd = false;

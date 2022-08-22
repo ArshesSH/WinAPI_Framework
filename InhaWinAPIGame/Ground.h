@@ -11,15 +11,18 @@ public:
 		Actor( ActorTag::Ground, line.GetStartPos(), std::make_unique<LineCollider<float>>( line ) )
 	{}
 
-	void Update( float dt, class Scene& scene );
-	void SetTransform( const Mat3<float>& transform )
+	void Update( float dt, class Scene& scene ) override
 	{
 
 	}
-	void Draw( HDC hdc )
+	void Draw( HDC hdc ) override
+	{
+	}
+	void SetTransform( const Mat3<float>& transform ) override
 	{
 
 	}
+	void ApplyDamage( int damage ) override {}
 
 private:
 
