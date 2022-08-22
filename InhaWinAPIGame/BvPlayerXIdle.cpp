@@ -35,7 +35,7 @@ PlayerX::Behavior* PlayerX::Idle::Update( PlayerX& playerX, Scene& scene, float 
 		break;
 	case AttackState::ShootMax:
 		{
-			playerX.SetAnimation( PlayerX::AnimationState::Shoot, shootSpeed );
+			playerX.SetAnimation( PlayerX::AnimationState::ShootCharged, chargeShootSpeed );
 			playerX.SpawnBullet( PlayerXBullet::Type::Bullet3, scene, { bulletSpawnDefaultX, bulletSpawnDefaultY } );
 		}
 		break;

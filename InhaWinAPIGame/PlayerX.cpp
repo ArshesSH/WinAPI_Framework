@@ -42,6 +42,7 @@ PlayerX::PlayerX( const Vec2<float>& pivotPos, const Vec2<float>& colliderRelati
 	animationMap[(int)AnimationState::WallKick] = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/WallKick.anim" );
 	animationMap[(int)AnimationState::Crouch] = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/Crouch.anim" );
 	animationMap[(int)AnimationState::Shoot] = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/Shoot.anim" );
+	animationMap[(int)AnimationState::ShootCharged] = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/ShootCharged.anim" );
 	animationMap[(int)AnimationState::ShootEnd] = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/ShootEnd.anim" );
 	animationMap[(int)AnimationState::ShootWalkStart] = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/ShootWalkStart.anim" );
 	animationMap[(int)AnimationState::ShootWalkLoop] = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/ShootWalkLoop.anim" );
@@ -210,7 +211,7 @@ void PlayerX::UpdatePlayerState()
 		{
 			moveState = MoveState::Airbone;
 		}
-		if ( hoverCount == 1 )
+		if ( canAirDash && hoverCount == 1 )
 		{
 			moveState = MoveState::Hover;
 		}

@@ -3,7 +3,6 @@
 
 void PlayerX::Dash::Activate( PlayerX& playerX, Scene& scene )
 {
-
 	switch ( playerX.attackState )
 	{
 	case AttackState::NoAttack:
@@ -20,7 +19,6 @@ void PlayerX::Dash::Activate( PlayerX& playerX, Scene& scene )
 		}
 		break;
 	}
-
 }
 
 PlayerX::Behavior* PlayerX::Dash::Update( PlayerX& playerX, Scene& scene, float dt )

@@ -2,8 +2,26 @@
 
 void PlayerX::Crouch::Activate( PlayerX& playerX, Scene& scene )
 {
-	playerX.SetAnimation( PlayerX::AnimationState::Crouch, animSpeed );
-	playerX.vel = { 0.0f, 0.0f };
+
+
+	switch ( playerX.attackState )
+	{
+	case AttackState::NoAttack:
+	case AttackState::Charge:
+		{
+			playerX.SetAnimation( PlayerX::AnimationState::Crouch, animSpeed );
+			playerX.vel = { 0.0f, 0.0f };
+		}
+		break;
+	case AttackState::Shoot:
+	case AttackState::ShootMid:
+	case AttackState::ShootMax:
+		{
+			//playerX.SetAnimation( PlayerX::AnimationState::ShootDashStart, animStartSpeed );
+		}
+		break;
+	}
+
 }
 
 PlayerX::Behavior* PlayerX::Crouch::Update( PlayerX& playerX, Scene& scene, float dt )
