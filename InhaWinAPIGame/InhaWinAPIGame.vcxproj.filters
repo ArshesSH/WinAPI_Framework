@@ -100,6 +100,12 @@
     <Filter Include="소스 파일\GameObjects\DynamicActor\PlayerX\Behavior">
       <UniqueIdentifier>{11fb8af2-ccaa-47a1-8d3f-df8c4fa37031}</UniqueIdentifier>
     </Filter>
+    <Filter Include="헤더 파일\GameObjects\Actor\DynamicActor\SigmaHead">
+      <UniqueIdentifier>{3896bc04-fffc-480a-86f2-661134218c8b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\GameObjects\Actor\DynamicActor\SigmaHead\Behavior">
+      <UniqueIdentifier>{cb03a08e-9170-413a-9c8f-ed23492742d5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -285,6 +291,24 @@
     <ClInclude Include="BvPlayerXCrouch.h">
       <Filter>헤더 파일\GameObjects\Actor\DynamicActor\PlayerX\Behavior</Filter>
     </ClInclude>
+    <ClInclude Include="Enemy.h">
+      <Filter>헤더 파일\GameObjects\Actor\DynamicActor</Filter>
+    </ClInclude>
+    <ClInclude Include="SigmaHead.h">
+      <Filter>헤더 파일\GameObjects\Actor\DynamicActor\SigmaHead</Filter>
+    </ClInclude>
+    <ClInclude Include="BvSigmaHeadReady.h">
+      <Filter>헤더 파일\GameObjects\Actor\DynamicActor\SigmaHead\Behavior</Filter>
+    </ClInclude>
+    <ClInclude Include="BvSigmaHeadFade.h">
+      <Filter>헤더 파일\GameObjects\Actor\DynamicActor\SigmaHead\Behavior</Filter>
+    </ClInclude>
+    <ClInclude Include="BvSigmaHeadOpen.h">
+      <Filter>헤더 파일\GameObjects\Actor\DynamicActor\SigmaHead\Behavior</Filter>
+    </ClInclude>
+    <ClInclude Include="BvSigmaHeadElectricAttack.h">
+      <Filter>헤더 파일\GameObjects\Actor\DynamicActor\SigmaHead\Behavior</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="InhaWinAPIGame.cpp">
@@ -364,6 +388,21 @@
     </ClCompile>
     <ClCompile Include="BvPlayerXCrouch.cpp">
       <Filter>소스 파일\GameObjects\DynamicActor\PlayerX\Behavior</Filter>
+    </ClCompile>
+    <ClCompile Include="SigmaHead.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="BvSigmaHeadReady.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="BvSigmaHeadFade.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="BvSigmaHeadOpen.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="BvSigmaHeadElectricAttack.cpp">
+      <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

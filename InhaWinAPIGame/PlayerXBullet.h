@@ -40,6 +40,7 @@ public:
 	void Draw( HDC hdc ) override;
 
 	void ChangeAnimationToHit();
+	void ChangeAnimationToImmune();
 
 	bool CheckHitAnimationFinish() const;
 

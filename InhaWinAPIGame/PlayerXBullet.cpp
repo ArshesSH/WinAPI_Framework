@@ -43,27 +43,38 @@ void PlayerXBullet::Update( float dt, Scene& scene )
 
 	curAnimation.Update( dt, animSpeed );
 
-
-
 	// Base class Update
 	time += dt;
 	if ( time >= lifeCycle )
 	{
 		SetDestroy();
 	}
-	Move( dt, scene );
-	const auto& enemies = scene.FindActorByTag( oppositeTag );
-	for ( const auto& enemy : enemies )
+
+	if ( !isPlayHit )
 	{
-		if ( enemy->IsCollideWith( scene.GetCollisionManager(), *(this->GetColliderPtr()) ) )
+		Move( dt, scene );
+
+		const auto& enemies = scene.FindActorByTag( oppositeTag );
+		for ( const auto& enemy : enemies )
 		{
-			enemy->ApplyDamage( damage );
-			if ( !isPlayHit )
+			if ( enemy->IsCollideWith( scene.GetCollisionManager(), *(this->GetColliderPtr()) ) )
 			{
-				ChangeAnimationToHit();
+				enemy->ApplyDamage( damage );
+
+
+				vel.x = 0.0f;
+				if ( enemy->IsImune() )
+				{
+					ChangeAnimationToImmune();
+				}
+				else
+				{
+					ChangeAnimationToHit();
+				}
 			}
 		}
 	}
+
 	if ( IsCollideWithWall( GetNextPos( dt ), scene ) || IsCollideWithGround( GetNextPos( dt ), scene ) )
 	{
 		if ( !isPlayHit )
@@ -111,6 +122,13 @@ void PlayerXBullet::ChangeAnimationToHit()
 		break;
 	}
 
+	curAnimation = animationMap[(int)type];
+	isPlayHit = true;
+}
+
+void PlayerXBullet::ChangeAnimationToImmune()
+{
+	type = Type::HitImuned;
 	curAnimation = animationMap[(int)type];
 	isPlayHit = true;
 }

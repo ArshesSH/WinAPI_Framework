@@ -103,6 +103,11 @@ public:
 		return pCollider->GetCenter();
 	}
 
+	bool IsImune() const
+	{
+		return isImune;
+	}
+
 protected:
 	void SetPos(const Vec2<float>& pos_in)
 	{
@@ -120,6 +125,7 @@ protected:
 	ActorTag tag;
 	bool shouldDestroy = false;
 	bool isStatic = false;
+	bool isImune = false;
 
 private:
 	Vec2<float> pos;

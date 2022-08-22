@@ -2,6 +2,7 @@
 
 #include "Game.h"
 #include "PlayerX.h"
+#include "SigmaHead.h"
 
 ActorTestScene::ActorTestScene( int sceneWidth, int sceneHeight, CoordinateTransformer& ct )
 	:
@@ -12,6 +13,8 @@ ActorTestScene::ActorTestScene( int sceneWidth, int sceneHeight, CoordinateTrans
 	cam.SetPos( { 200.0f,240.0f } );
 	cam.SetScale( 1.0f );
 	actorPtrs.emplace_back( std::make_unique<PlayerX>( Vec2<float>{ 300.0f, 300.0f } ) );
+	actorPtrs.emplace_back( std::make_unique<SigmaHead>( Vec2<float>{ 500.0f, 200.0f } ) );
+
 	wallPtrs.emplace_back( std::make_unique<Wall>( Vec2<float>{500.0f, 30.0f}, 1000.0f, 50.0f ) );
 	wallPtrs.emplace_back( std::make_unique<Wall>( Vec2<float>{500.0f, 500.0f}, 1000.0f, 50.0f ) );
 	wallPtrs.emplace_back( std::make_unique<Wall>( Vec2<float>{-50.0f, 150.0f}, 50.0f, 300.0f ) );
@@ -68,17 +71,19 @@ void ActorTestScene::Draw( HDC hdc )
 	{
 		stageSurf.DrawImageNonChromaGDI( hdc, stageImage, { 0,0 }, stageSize, { 0,0 }, stageImage.GetImageSize() );
 
-		for ( const auto& pActor : actorPtrs )
+
+		for ( auto i = actorPtrs.rbegin(); i != actorPtrs.rend(); ++i )
 		{
-			pActor->SetTransform( camTransform );
-			pActor->Draw( hdc );
+			(*i)->SetTransform( camTransform );
+			(*i)->Draw( hdc );
 
 #ifndef NDBUG
-			const auto& pCollider = pActor->GetColliderPtr();
+			const auto& pCollider = (*i)->GetColliderPtr();
 			pCollider->UpdateMatrix( camTransform );
 			pCollider->Draw( gfx, { 144,255,255,255 } );
 #endif // !NDBUG
 		}
+
 		for ( const auto& pBullet : bulletPtrs )
 		{
 			pBullet->SetTransform( camTransform );
@@ -110,6 +115,18 @@ void ActorTestScene::Draw( HDC hdc )
 		}
 #endif // !NDBUG
 
+
+//		for ( const auto& pActor : actorPtrs )
+//		{
+//			pActor->SetTransform( camTransform );
+//			pActor->Draw( hdc );
+//
+//#ifndef NDBUG
+//			const auto& pCollider = pActor->GetColliderPtr();
+//			pCollider->UpdateMatrix( camTransform );
+//			pCollider->Draw( gfx, { 144,255,255,255 } );
+//#endif // !NDBUG
+//		}
 	};
 
 	const float screenX = (sceneBottomRight.x - sceneTopLeft.x) / 2.0f;

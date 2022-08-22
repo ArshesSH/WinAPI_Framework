@@ -17,12 +17,9 @@ public:
 
 	void Update( float dt, class Scene& scene ) override;
 	void ApplyDamage( int damage ) override {}
-
 protected:
 	int damage = 0;
 	float lifeCycle = 3.0f;
 	ActorTag oppositeTag;
 	float time = 0.0f;
-
-	
 };

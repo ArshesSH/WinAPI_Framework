@@ -155,6 +155,10 @@
     <ClInclude Include="BvPlayerXJump.h" />
     <ClInclude Include="BvPlayerXWalk.h" />
     <ClInclude Include="BvPlayerXWallSlide.h" />
+    <ClInclude Include="BvSigmaHeadElectricAttack.h" />
+    <ClInclude Include="BvSigmaHeadFade.h" />
+    <ClInclude Include="BvSigmaHeadOpen.h" />
+    <ClInclude Include="BvSigmaHeadReady.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Circle.h" />
     <ClInclude Include="Codex.h" />
@@ -165,11 +169,13 @@
     <ClInclude Include="CoordinateTransformer.h" />
     <ClInclude Include="BvPlayerXDash.h" />
     <ClInclude Include="EditorFrame.h" />
+    <ClInclude Include="Enemy.h" />
     <ClInclude Include="FileManager.h" />
     <ClInclude Include="Ground.h" />
     <ClInclude Include="Keyboard.h" />
     <ClInclude Include="PlayerController.h" />
     <ClInclude Include="PlayerXBullet.h" />
+    <ClInclude Include="SigmaHead.h" />
     <ClInclude Include="Wall.h" />
     <ClInclude Include="PivotGizmo.h" />
     <ClInclude Include="PlayerX.h" />
@@ -216,6 +222,10 @@
     <ClCompile Include="BvPlayerXJump.cpp" />
     <ClCompile Include="BvPlayerXWalk.cpp" />
     <ClCompile Include="BvPlayerXWallSlide.cpp" />
+    <ClCompile Include="BvSigmaHeadElectricAttack.cpp" />
+    <ClCompile Include="BvSigmaHeadFade.cpp" />
+    <ClCompile Include="BvSigmaHeadOpen.cpp" />
+    <ClCompile Include="BvSigmaHeadReady.cpp" />
     <ClCompile Include="Character.cpp" />
     <ClCompile Include="ColliderTypeTrait.cpp" />
     <ClCompile Include="CoordinateTransformer.cpp" />
@@ -229,6 +239,7 @@
     <ClCompile Include="PlayerX.cpp" />
     <ClCompile Include="PlayerXBullet.cpp" />
     <ClCompile Include="Scene.cpp" />
+    <ClCompile Include="SigmaHead.cpp" />
     <ClCompile Include="Surface.cpp" />
     <ClCompile Include="TestScene.cpp" />
     <ClCompile Include="Wall.cpp" />
