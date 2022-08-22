@@ -21,7 +21,7 @@ void Bullet::Update( float dt, Scene& scene )
 		}
 	}
 
-	if ( IsCollideWithWall( GetNextPos( dt ), scene ) )
+	if ( IsCollideWithWall( GetNextPos( dt ), scene ) || IsCollideWithGround( GetNextPos( dt ), scene ) )
 	{
 		SetDestroy();
 	}

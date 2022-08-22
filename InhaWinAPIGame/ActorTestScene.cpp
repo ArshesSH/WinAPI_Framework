@@ -16,7 +16,7 @@ ActorTestScene::ActorTestScene( int sceneWidth, int sceneHeight, CoordinateTrans
 	//wallPtrs.emplace_back( std::make_unique<Wall>( Vec2<float>{-50.0f, 150.0f}, 50.0f, 300.0f ) );
 	wallPtrs.emplace_back( std::make_unique<Wall>( Vec2<float>{1600.0f, 0.0f}, 250.0f, 175.0f ) );
 	//groundPtrs.emplace_back( std::make_unique<Ground>( Line<float>( { -200, 200 }, { 0, 100 } ) ) );
-	groundPtrs.emplace_back( std::make_unique<Ground>( Line<float>( { -200, 150 }, { 0, 100 } ) ) );
+	//groundPtrs.emplace_back( std::make_unique<Ground>( Line<float>( { -200, 150 }, { 0, 100 } ) ) );
 }
 
 void ActorTestScene::Update( float dt, Game& game )
