@@ -18,12 +18,12 @@ public:
 
 		if ( !curKeyState )
 		{
-			vKeyStatetable[vKey] = curKeyState;
+			vKeyDownStatetable[vKey] = curKeyState;
 		}
 
-		if ( curKeyState == true && vKeyStatetable[vKey] == false )
+		if ( curKeyState == true && vKeyDownStatetable[vKey] == false )
 		{
-			vKeyStatetable[vKey] = curKeyState;
+			vKeyDownStatetable[vKey] = curKeyState;
 			return true;
 		}
 		return false;
@@ -33,19 +33,21 @@ public:
 	{
 		bool curKeyState = GetAsyncKeyState( vKey ) & 0x8000;
 
-		if ( curKeyState )
-		{
-			vKeyStatetable[vKey] = curKeyState;
-		}
 
-		if ( curKeyState == false && vKeyStatetable[vKey] == true )
+		if ( curKeyState == false && vKeyUpStatetable[vKey] == true )
 		{
-			vKeyStatetable[vKey] = curKeyState;
+			vKeyUpStatetable[vKey] = curKeyState;
 			return true;
 		}
+		if ( curKeyState )
+		{
+			vKeyUpStatetable[vKey] = curKeyState;
+		}
+
 		return false;
 	}
 
 private:
-	std::unordered_map<int, bool> vKeyStatetable;
+	std::unordered_map<int, bool> vKeyDownStatetable;
+	std::unordered_map<int, bool> vKeyUpStatetable;
 };

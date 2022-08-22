@@ -6,6 +6,8 @@
 #include "Gravity.h"
 #include "Keyboard.h"
 
+#include "PlayerXBullet.h"
+
 #ifndef NDBUG
 #include <iostream>
 #endif // !NDBUG
@@ -66,6 +68,8 @@ public:
 		NoAttack,
 		Charge,
 		Shoot,
+		ShootMid,
+		ShootMax,
 		Hurt
 	};
 	enum class MoveState
@@ -87,9 +91,9 @@ public:
 	enum class ChargeState
 	{
 		NoCharge,
-		FireNormal,
-		FireMiddle,
-		FireMax
+		Normal,
+		Middle,
+		Max
 	};
 
 public:
@@ -240,6 +244,12 @@ public:
 		case PlayerX::AttackState::Shoot:
 			attackStateStr = L"AttackState = Shoot";
 			break;
+		case PlayerX::AttackState::ShootMid:
+			attackStateStr = L"AttackState = ShootMid";
+			break;
+		case PlayerX::AttackState::ShootMax:
+			attackStateStr = L"AttackState = ShootMax";
+			break;
 		case PlayerX::AttackState::Hurt:
 			attackStateStr = L"AttackState = Hurt";
 			break;
@@ -383,6 +393,8 @@ public:
 		}
 		surf.DrawStringGDI( hdc, { 0, 80 }, animStateStr );
 	}
+
+
 #endif // !NDEBUG
 
 
@@ -391,7 +403,7 @@ private:
 	void TestKbd(float dt, Scene& scene);
 	void UpdateWallSearcher(float dt);
 	bool IsWallSearcherCollide( Scene& scene );
-	void SpawnBullet1(Scene& scene);
+	void SpawnBullet( PlayerXBullet::Type type, Scene& scene);
 private:
 	static constexpr float colliderHalfWidth = 20.0f;
 	static constexpr float colliderHalfHeight = 40.0f;
@@ -405,8 +417,10 @@ private:
 	static constexpr float bullet1Width = 10.0f;
 	static constexpr float bullet1Height = 10.0f;
 	static constexpr float bulletChargeMiddle = 0.5f;
-	static constexpr float bulletChargeMax = 1.0f;
+	static constexpr float bulletChargeMax = 1.5f;
 	static constexpr float busterMinDelay = 0.3f;
+	static constexpr float chargeAnimSpeed = 0.1f;
+	static constexpr float chargeFinAnimSpeed = 0.05f;
 
 	AnimationState curAnimState;
 	Animation<int> curAnimation;
@@ -415,6 +429,11 @@ private:
 	LineCollider<float> wallSearcher;
 	const Vec2<float> wallSearcherOffset = { 0.0f,1.0f };
 	int hp = 20;
+
+	Image::ImageGDI<int> chargeImage;
+	Animation<int> chargeAnimation;
+	Animation<int> chargeFinAnim;
+	const Vec2<float> chargeOffset = { 0.0f, 50.0f };
 
 	// Character Statement
 	AttackState attackState = AttackState::NoAttack;
@@ -432,6 +451,9 @@ private:
 	bool isJumpEnd = false;
 	bool isOnWallSide = false;
 	bool canAirDash = false;
+
+	float chargeTime = 0.0f;
+	ChargeState chargeState = ChargeState::NoCharge;
 
 	// Key Statement
 	Keyboard kbd;

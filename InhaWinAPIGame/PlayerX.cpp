@@ -12,7 +12,6 @@
 #include "BvPlayerXCrouch.h"
 #include "BvPlayerXShoot.h"
 
-#include "PlayerXBullet.h"
 
 PlayerX::PlayerX( const Vec2<float>& pivotPos, const Vec2<float>& colliderRelativePos )
 	:
@@ -21,7 +20,10 @@ PlayerX::PlayerX( const Vec2<float>& pivotPos, const Vec2<float>& colliderRelati
 	pivotGizmo( Vec2<int>( pivotPos ) ),
 	pBehavior( std::make_unique<Idle>() ),
 	gravity( 20.0f ),
-	wallSearcher( pivotPos + Vec2<float>{-wallsearcherLength, 0.0f}, pivotPos + Vec2<float>{wallsearcherLength, 0.0f} )
+	wallSearcher( pivotPos + Vec2<float>{-wallsearcherLength, 0.0f}, pivotPos + Vec2<float>{wallsearcherLength, 0.0f} ),
+	chargeImage( L"Images/RockmanX5/X/Bullet/Buster.bmp" ),
+	chargeAnimation(Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/Bullet/Charge.anim" ),
+	chargeFinAnim( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/Bullet/ChargeFinished.anim" )
 {
 	animationMap[(int)AnimationState::Idle] = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/Idle.anim" );
 	animationMap[(int)AnimationState::IdleBlink] = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/IdleBlink.anim" );
@@ -51,6 +53,14 @@ void PlayerX::Update( float dt, Scene& scene )
 	KbdInput(dt, scene );
 	//TestKbd( dt, scene );
 	curAnimation.Update( dt, animPlaySpeed );
+
+	if ( attackState == AttackState::Charge )
+	{
+		chargeAnimation.SetTransform( scene.AccessCamera().GetTransform() );
+		chargeAnimation.Update( dt, chargeAnimSpeed );
+		chargeFinAnim.SetTransform( scene.AccessCamera().GetTransform() );
+		chargeFinAnim.Update( dt, chargeFinAnimSpeed );
+	}
 
 	UpdatePlayerState();
 	UpdatePlayerBehavior();
@@ -99,6 +109,18 @@ void PlayerX::Draw( HDC hdc )
 	else
 	{
 		curAnimation.PlayByCamGDI( hdc, spriteFlipped, Vec2<int>( GetPos() ), 2, chroma, true );
+	}
+
+	if ( attackState == AttackState::Charge )
+	{
+		if ( chargeTime <= bulletChargeMax )
+		{
+			chargeAnimation.PlayByCamGDI( hdc, chargeImage, Vec2<int>( GetPos() + chargeOffset ), 2, RGB( 255, 0, 255 ) );
+		}
+		else
+		{
+			chargeFinAnim.PlayByCamGDI( hdc, chargeImage, Vec2<int>( GetPos() + chargeOffset ), 2, RGB( 255, 0, 255 ) );
+		}
 	}
 
 #ifndef NDEBUG
@@ -174,11 +196,6 @@ void PlayerX::UpdatePlayerState()
 		else
 		{
 			moveState = MoveState::Idle;
-
-			if ( isCKeyInputOnce )
-			{
-				attackState = AttackState::Shoot;
-			}
 		}
 	}
 	else
@@ -207,157 +224,78 @@ void PlayerX::UpdatePlayerBehavior()
 {
 	if ( CheckMoveStateChange() )
 	{
-
-	}
-
-
-	if ( CheckMoveStateChange() || CheckAttackStateChange() )
-	{
-		switch ( attackState )
+		oldAttackState = attackState;
+		switch ( moveState )
 		{
-		case PlayerX::AttackState::NoAttack:
+		case PlayerX::MoveState::Idle:
 			{
-				oldAttackState = attackState;
-				switch ( moveState )
-				{
-				case PlayerX::MoveState::Idle:
-					{
-						oldMoveState = moveState;
-						pBehavior->PushSucessorState( new Idle );
-					}
-					break;
-				case PlayerX::MoveState::Walk:
-					{
-						oldMoveState = moveState;
-						pBehavior->PushSucessorState( new Walk );
-					}
-					break;
-				case PlayerX::MoveState::Dash:
-					{
-						oldMoveState = moveState;
-						pBehavior->PushSucessorState( new Dash );
-					}
-					break;
-				case PlayerX::MoveState::AirDash:
-					{
-						oldMoveState = moveState;
-						pBehavior->PushSucessorState( new AirDash );
-					}
-					break;
-				case PlayerX::MoveState::Jump:
-					{
-						oldMoveState = moveState;
-						pBehavior->PushSucessorState( new Jump );
-					}
-					break;
-				case PlayerX::MoveState::DashJump:
-					{
-						oldMoveState = moveState;
-						pBehavior->PushSucessorState( new DashJump );
-					}
-					break;
-				case PlayerX::MoveState::Airbone:
-					{
-						oldMoveState = moveState;
-						pBehavior->PushSucessorState( new Airbone );
-					}
-					break;
-				case PlayerX::MoveState::Hover:
-					{
-						oldMoveState = moveState;
-						pBehavior->PushSucessorState( new Hover );
-					}
-					break;
-				case PlayerX::MoveState::Land:
-					break;
-				case PlayerX::MoveState::Ladder:
-					break;
-				case PlayerX::MoveState::WallSlide:
-					{
-						oldMoveState = moveState;
-						pBehavior->PushSucessorState( new WallSlide );
-					}
-					break;
-				case PlayerX::MoveState::WallKick:
-					{
-						oldMoveState = moveState;
-						pBehavior->PushSucessorState( new WallKick );
-					}
-					break;
-				case PlayerX::MoveState::Crouch:
-					{
-						oldMoveState = moveState;
-						pBehavior->PushSucessorState( new Crouch );
-					}
-					break;
-				default:
-					break;
-				}
+				oldMoveState = moveState;
+				pBehavior->PushSucessorState( new Idle );
 			}
 			break;
-		case PlayerX::AttackState::Charge:
-			break;
-		case PlayerX::AttackState::Shoot:
+		case PlayerX::MoveState::Walk:
 			{
-				oldAttackState = attackState;
-				switch ( moveState )
-				{
-				case PlayerX::MoveState::Idle:
-					{
-						oldMoveState = moveState;
-						pBehavior->PushSucessorState( new Shoot );
-					}
-					break;
-				case PlayerX::MoveState::Walk:
-					{
-					}
-					break;
-				case PlayerX::MoveState::Dash:
-					{
-					}
-					break;
-				case PlayerX::MoveState::AirDash:
-					{
-					}
-					break;
-				case PlayerX::MoveState::Jump:
-					{
-					}
-					break;
-				case PlayerX::MoveState::DashJump:
-					{
-					}
-					break;
-				case PlayerX::MoveState::Airbone:
-					{
-					}
-					break;
-				case PlayerX::MoveState::Hover:
-					{
-					}
-					break;
-				case PlayerX::MoveState::Land:
-					break;
-				case PlayerX::MoveState::Ladder:
-					break;
-				case PlayerX::MoveState::WallSlide:
-					{
-					}
-					break;
-				case PlayerX::MoveState::WallKick:
-					{
-					}
-					break;
-				case PlayerX::MoveState::Crouch:
-					{
-					}
-					break;
-				default:
-					break;
-				}
+				oldMoveState = moveState;
+				pBehavior->PushSucessorState( new Walk );
 			}
 			break;
-		case PlayerX::AttackState::Hurt:
+		case PlayerX::MoveState::Dash:
+			{
+				oldMoveState = moveState;
+				pBehavior->PushSucessorState( new Dash );
+			}
+			break;
+		case PlayerX::MoveState::AirDash:
+			{
+				oldMoveState = moveState;
+				pBehavior->PushSucessorState( new AirDash );
+			}
+			break;
+		case PlayerX::MoveState::Jump:
+			{
+				oldMoveState = moveState;
+				pBehavior->PushSucessorState( new Jump );
+			}
+			break;
+		case PlayerX::MoveState::DashJump:
+			{
+				oldMoveState = moveState;
+				pBehavior->PushSucessorState( new DashJump );
+			}
+			break;
+		case PlayerX::MoveState::Airbone:
+			{
+				oldMoveState = moveState;
+				pBehavior->PushSucessorState( new Airbone );
+			}
+			break;
+		case PlayerX::MoveState::Hover:
+			{
+				oldMoveState = moveState;
+				pBehavior->PushSucessorState( new Hover );
+			}
+			break;
+		case PlayerX::MoveState::Land:
+			break;
+		case PlayerX::MoveState::Ladder:
+			break;
+		case PlayerX::MoveState::WallSlide:
+			{
+				oldMoveState = moveState;
+				pBehavior->PushSucessorState( new WallSlide );
+			}
+			break;
+		case PlayerX::MoveState::WallKick:
+			{
+				oldMoveState = moveState;
+				pBehavior->PushSucessorState( new WallKick );
+			}
+			break;
+		case PlayerX::MoveState::Crouch:
+			{
+				oldMoveState = moveState;
+				pBehavior->PushSucessorState( new Crouch );
+			}
 			break;
 		default:
 			break;
@@ -426,17 +364,64 @@ void PlayerX::KbdInput(float dt, Scene& scene)
 	}
 
 
-	isCKeyInputOnce = kbd.IsKeyDownOccur( 'C' );
+	if ( kbd.IsKeyDownOccur( 'C' ) )
+	{
+		attackState = AttackState::Shoot;
+		std::cout << " shoot" << std::endl;
+	}
+	else
+	{
+		attackState = AttackState::NoAttack;
+	}
 
 	if ( kbd.IsKeyPressed('C') )
 	{
 		isCKeyDown = true;
+	
+
+		chargeTime += dt;
+		if ( chargeTime >= bulletChargeMiddle )
+		{
+			attackState = AttackState::Charge;
+			if ( chargeTime >= bulletChargeMax )
+			{
+				chargeState = ChargeState::Max;
+			}
+			else
+			{
+				chargeState = ChargeState::Middle;
+			}
+		}
+		else
+		{
+			chargeState = ChargeState::Normal;
+		}
 	}
 	else
 	{
 		isCKeyDown = false;
 	}
-
+	if ( kbd.IsKeyUpOccur( 'C' ) )
+	{
+		chargeTime = 0.0f;
+		chargeAnimation.SetFrameIndex( 0 );
+		chargeFinAnim.SetFrameIndex( 0 );
+		switch ( chargeState )
+		{
+		case PlayerX::ChargeState::Middle:
+			attackState = AttackState::ShootMid;
+			std::cout << "Mid" << std::endl;
+			break;
+		case PlayerX::ChargeState::Max:
+			attackState = AttackState::ShootMax;
+			std::cout << "Max" << std::endl;
+			break;
+		default:
+			attackState = AttackState::NoAttack;
+			std::cout << "Noop" << std::endl;
+			break;
+		}
+	}
 
 }
 
@@ -480,13 +465,15 @@ bool PlayerX::IsWallSearcherCollide( Scene& scene )
 	return false;
 }
 
-void PlayerX::SpawnBullet1( Scene& scene )
+void PlayerX::SpawnBullet( PlayerXBullet::Type type, Scene& scene )
 {
 	const float spawnX = (isFacingRight) ? bulletSpawnDefaultX : -bulletSpawnDefaultX;
 	const Vec2<float> dir = (isFacingRight) ? dirRight : dirLeft;
 	const Vec2<float> realativeSpawn = { spawnX, bulletSpawnDefaultY };
 
 	scene.AccessBulletPtrs().emplace_back(
-		std::make_unique<PlayerXBullet>( PlayerXBullet::Type::Bullet1, 400.0f, dir, GetPos() + realativeSpawn, Vec2<float>{ 0.0f, 0.0f }, Vec2<float>{ bullet1Width, bullet1Height }, isFacingRight )
+		std::make_unique<PlayerXBullet>(
+			type, dir, GetPos() + realativeSpawn, Vec2<float>{ 0.0f, 0.0f }, Vec2<float>{ bullet1Width, bullet1Height }, isFacingRight
+			)
 	);
 }

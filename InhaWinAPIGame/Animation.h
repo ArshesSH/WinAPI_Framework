@@ -136,6 +136,11 @@ public:
 		surf.DrawImageChromaGDI( hdc, image.GetHBitmap(), curTopLeft, (size * (T)power), curSprite.GetTopLeft(), size, chroma );
 	}
 
+	void SetFrameIndex( int idx )
+	{
+		curIdx = idx;
+	}
+
 private:
 	Surface<T> surf;
 	SpriteType spriteType;

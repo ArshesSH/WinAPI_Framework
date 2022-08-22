@@ -14,7 +14,32 @@ PlayerX::Behavior* PlayerX::Idle::Update( PlayerX& playerX, Scene& scene, float 
 		return PassTorch();
 	}
 
-	SetRandomAnimation( playerX );
+	switch ( playerX.attackState )
+	{
+	case AttackState::NoAttack:
+		{
+			SetRandomAnimation( playerX );
+		}
+		break;
+	case AttackState::Shoot:
+		{
+			playerX.SetAnimation( PlayerX::AnimationState::Shoot, shootSpeed );
+			playerX.SpawnBullet( PlayerXBullet::Type::Bullet1, scene );
+		}
+		break;
+	case AttackState::ShootMid:
+		{
+			playerX.SetAnimation( PlayerX::AnimationState::Shoot, shootSpeed );
+			playerX.SpawnBullet( PlayerXBullet::Type::Bullet2, scene );
+		}
+		break;
+	case AttackState::ShootMax:
+		{
+			playerX.SetAnimation( PlayerX::AnimationState::Shoot, shootSpeed );
+			playerX.SpawnBullet( PlayerXBullet::Type::Bullet3, scene );
+		}
+		break;
+	}
 
 	return nullptr;
 }

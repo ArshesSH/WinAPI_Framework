@@ -20,10 +20,10 @@ public:
 
 protected:
 	int damage = 0;
+	float lifeCycle = 3.0f;
 	ActorTag oppositeTag;
 
 private:
-	static constexpr float lifeCycle = 5.0f;
 	float time = 0.0f;
 	
 };

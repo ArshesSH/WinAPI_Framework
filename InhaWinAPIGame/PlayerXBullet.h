@@ -14,11 +14,11 @@ public:
 	};
 
 public:
-	PlayerXBullet( Type type, float speed, const Vec2<float>& dir, const Vec2<float>& pivotPos, const Vec2<float>& colliderRelativePos, const Vec2<float>& size, bool isFacingRight )
+	PlayerXBullet( Type type, const Vec2<float>& dir, const Vec2<float>& pivotPos, const Vec2<float>& colliderRelativePos, const Vec2<float>& size, bool isFacingRight )
 		:
 		type(type),
 		isFacingRight(isFacingRight),
-		Bullet( ActorTag::PlayerBullet, ActorTag::Enemy, pivotPos, colliderRelativePos, size, speed, dir, 3,
+		Bullet( ActorTag::PlayerBullet, ActorTag::Enemy, pivotPos, colliderRelativePos, size, bulletMoveSpeed, dir, 3,
 			L"Images/RockmanX5/X/Bullet/Buster.bmp", L"Images/RockmanX5/X/Bullet/BusterFlip.bmp" )
 	{
 		animationMap[(int)Type::Bullet1] = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/Bullet/bullet1.anim" );
@@ -83,8 +83,9 @@ public:
 
 private:
 	static constexpr float bullet1AnimSpeed = 0.03f;
-	static constexpr float bullet2AnimSpeed = 0.1f;
-	static constexpr float bullet3AnimSpeed = 0.1f;
+	static constexpr float bullet2AnimSpeed = 0.03f;
+	static constexpr float bullet3AnimSpeed = 0.05f;
+	static constexpr float bulletMoveSpeed = 700.0f;
 
 	Animation<int> curAnimation;
 	Type animationState = Type::Size;

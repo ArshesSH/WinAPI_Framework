@@ -9,7 +9,7 @@ public:
 
 private:
 	static constexpr float idleSpeed = 0.3f;
-	static constexpr float shootSpeed = 0.08f;
+	static constexpr float shootSpeed = 0.1f;
 	static constexpr float idleBlinkSpeed = 0.11f;
 	static constexpr int idleMaxCount = 3;
 
