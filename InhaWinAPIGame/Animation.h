@@ -5,6 +5,7 @@
 #include "Image.h"
 #include "UtilSH.h"
 #include "FileManager.h"
+#include <iostream>
 
 template <typename T>
 class Animation
@@ -108,10 +109,12 @@ public:
 	void PlayByCamGDI( HDC hdc, const Image::ImageGDI<T>& image, const Vec2<T>& topLeft, float power, COLORREF chroma, bool isFlipped = false )
 	{
 		_Rect<T> curSprite = frames[curIdx].sprite;
-		auto curPivot = (Vec2<T>{ frames[curIdx].pivot.x, curSprite.GetHeight() - frames[curIdx].pivot.y })* (T)power;
+
+		const auto curPivotX = isFlipped ? curSprite.GetWidth() -frames[curIdx].pivot.x : frames[curIdx].pivot.x;
+
+		auto curPivot = (Vec2<T>{ curPivotX, curSprite.GetHeight() - frames[curIdx].pivot.y })* (T)power;
 
 		const Vec2<T> curTopLeft = (topLeft - curPivot);
-
 		if ( isFlipped )
 		{
 			const auto transform = Mat3<T>::Translation( { (T)(image.GetImageSize().x), (T)0 } ) * Mat3<T>::ScaleIndependent( -1, 1 );
@@ -128,7 +131,7 @@ public:
 	void PlayByCamGDIFlip( HDC hdc, const Image::ImageGDI<T>& image, const Vec2<T>& topLeft, float power, COLORREF chroma )
 	{
 		const auto curSprite = frames[curIdx].sprite;
-		const auto curPivot = (Vec2<T>{ frames[curIdx].pivot.x, curSprite.GetHeight() - frames[curIdx].pivot.y })* (T)power;
+		const auto curPivot = (Vec2<T>{ curSprite.GetWidth() - frames[curIdx].pivot.x, curSprite.GetHeight() - frames[curIdx].pivot.y })* (T)power;
 		const Vec2<T> curTopLeft = Mat3<T>::ScaleIndependent( -1, 1 ) *
 			Mat3<T>::Translation( { (T)(image.GetImageSize().x / 2), (T)0 } ) * (topLeft - curPivot);
 		const Vec2<T>& size = { curSprite.GetWidth(), curSprite.GetHeight() };

@@ -32,7 +32,6 @@ PlayerX::Behavior* PlayerX::Dash::Update( PlayerX& playerX, Scene& scene, float 
 		}
 	}
 
-
 	switch ( playerX.attackState )
 	{
 	case AttackState::NoAttack:

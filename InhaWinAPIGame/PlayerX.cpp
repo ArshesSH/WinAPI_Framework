@@ -49,6 +49,9 @@ PlayerX::PlayerX( const Vec2<float>& pivotPos, const Vec2<float>& colliderRelati
 	animationMap[(int)AnimationState::ShootDashStart] = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/ShootDashStart.anim" );
 	animationMap[(int)AnimationState::ShootDashLoop] = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/ShootDashLoop.anim" );
 	animationMap[(int)AnimationState::ShootDashEnd] = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/ShootDashEnd.anim" );
+	animationMap[(int)AnimationState::CrouchShoot] = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/CrouchShoot.anim" );
+	animationMap[(int)AnimationState::CrouchShootStart] = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/CrouchShootStart.anim" );
+	animationMap[(int)AnimationState::CrouchShootCharged] = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/CrouchShootCharged.anim" );
 
 	curAnimation = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/Idle.anim" );
 }
