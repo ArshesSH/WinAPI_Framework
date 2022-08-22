@@ -416,7 +416,7 @@ private:
 	static constexpr float bulletSpawnDefaultX = 20.0f;
 	static constexpr float bulletSpawnDefaultY = 60.0f;
 	static constexpr float bulletSpawnDashX = 50.0f;
-	static constexpr float bulletSpawnDashY = 40.0f;
+	static constexpr float bulletSpawnDashY = 35.0f;
 	static constexpr float bulletChargeMiddle = 0.5f;
 	static constexpr float bulletChargeMax = 1.5f;
 	static constexpr float busterMinDelay = 0.3f;

@@ -12,10 +12,14 @@ public:
 protected:
 	void DoJump( PlayerX& playerX, class Scene& scene, float dt );
 	void SetVelXByInput( PlayerX& playerX, float speed );
+	void ChangeToShootAnim( PlayerX& playerX, Scene& scene, PlayerXBullet::Type type );
 	const float animSpeed = 0.04f;
 private:
 	static constexpr float jumpMaxTime = 0.3f;
+	static constexpr float animResetTime = 0.5f;
 	float jumpTime = 0.0f;
+	bool isStartResetAnimation = false;
+	float time = 0.0f;
 };
 
 class PlayerX::DashJump : public PlayerX::Jump

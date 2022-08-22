@@ -2,7 +2,23 @@
 
 void PlayerX::Jump::Activate( PlayerX& playerX, Scene& scene )
 {
-	playerX.SetAnimation( PlayerX::AnimationState::Jump, animSpeed );
+	switch ( playerX.attackState )
+	{
+	case AttackState::NoAttack:
+	case AttackState::Charge:
+		{
+			playerX.SetAnimation( PlayerX::AnimationState::Jump, animSpeed );
+		}
+		break;
+	case AttackState::Shoot:
+	case AttackState::ShootMid:
+	case AttackState::ShootMax:
+		{
+			playerX.SetAnimation( PlayerX::AnimationState::ShootJump, animSpeed );
+		}
+		break;
+	}
+
 	playerX.isJumpNow = true;
 }
 
@@ -18,6 +34,42 @@ PlayerX::Behavior* PlayerX::Jump::Update( PlayerX& playerX, Scene& scene, float 
 	if ( playerX.GetAnimation().IsEnd() )
 	{
 		playerX.curAnimation.SetStop();
+	}
+
+	switch ( playerX.attackState )
+	{
+	case AttackState::Shoot:
+		{
+			ChangeToShootAnim( playerX, scene, PlayerXBullet::Type::Bullet1 );
+		}
+		break;
+	case AttackState::ShootMid:
+		{
+			ChangeToShootAnim( playerX, scene, PlayerXBullet::Type::Bullet2 );
+		}
+		break;
+
+	case AttackState::ShootMax:
+		{
+			ChangeToShootAnim( playerX, scene, PlayerXBullet::Type::Bullet3 );
+		}
+		break;
+	}
+
+	if ( isStartResetAnimation )
+	{
+		time += dt;
+		if ( time >= animResetTime )
+		{
+			if ( playerX.curAnimation.IsEnd() )
+			{
+				int idx = playerX.curAnimation.GetFrameIndex();
+				playerX.SetAnimation( AnimationState::Jump, jumpSpeed );
+				playerX.curAnimation.SetFrameIndex( idx );
+				isStartResetAnimation = false;
+				time = 0.0f;
+			}
+		}
 	}
 
 	SetVelXByInput( playerX, playerX.defaultMoveSpeed );
@@ -41,6 +93,19 @@ void PlayerX::Jump::SetVelXByInput( PlayerX& playerX, float speed )
 			playerX.vel.x = -speed;
 		}
 	}
+}
+
+void PlayerX::Jump::ChangeToShootAnim( PlayerX& playerX, Scene& scene, PlayerXBullet::Type type )
+{
+	if ( playerX.curAnimState == AnimationState::Jump )
+	{
+		int idx = playerX.curAnimation.GetFrameIndex();
+		playerX.SetAnimation( PlayerX::AnimationState::ShootJump, animSpeed );
+		playerX.curAnimation.SetFrameIndex( idx );
+		isStartResetAnimation = true;
+	}
+	playerX.SpawnBullet( type, scene, { bulletSpawnDefaultX, bulletSpawnDefaultY } );
+	time = 0.0f;
 }
 
 void PlayerX::Jump::DoJump( PlayerX& playerX, Scene& scene, float dt )
