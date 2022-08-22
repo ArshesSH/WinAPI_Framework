@@ -8,6 +8,7 @@
 
 #include "PlayerXBullet.h"
 
+
 #ifndef NDBUG
 #include <iostream>
 #endif // !NDBUG
@@ -116,7 +117,7 @@ public:
 	class Shoot;
 
 public:
-	PlayerX( const Vec2<float>& pivotPos, const Vec2<float>& colliderRelativePos = { 0.0f, 40.0f } );
+	PlayerX( int maxHP, const Vec2<float>& pivotPos, const Vec2<float>& colliderRelativePos = { 0.0f, 40.0f } );
 
 	void Update( float dt, class Scene& scene ) override;
 	void Draw( HDC hdc ) override;
@@ -187,7 +188,10 @@ public:
 
 	void UpdatePlayerState();
 	void UpdatePlayerBehavior();
-	
+	int GetHP() const override
+	{
+		return hp;
+	}
 
 #ifndef NDEBUG
 	void DrawStateString(Surface<int>& surf, HDC hdc)
@@ -415,6 +419,10 @@ private:
 	bool IsWallSearcherCollide( Scene& scene );
 	bool IsHeadColliderCollide( Scene& scene );
 	void SpawnBullet( PlayerXBullet::Type type, Scene& scene, const Vec2<float>& relativeSpawnPos, bool isOppositeDir = false );
+	void SetInvincible( bool val = true )
+	{
+		isInvincible = val;
+	}
 private:
 	static constexpr float colliderHalfWidth = 20.0f;
 	static constexpr float colliderHalfHeight = 40.0f;
@@ -433,6 +441,9 @@ private:
 	static constexpr float busterMinDelay = 0.3f;
 	static constexpr float chargeAnimSpeed = 0.1f;
 	static constexpr float chargeFinAnimSpeed = 0.05f;
+	static constexpr float invincibleTime = 0.5f;
+
+	const int maxHP;
 
 	AnimationState curAnimState;
 	Animation<int> curAnimation;
@@ -442,7 +453,7 @@ private:
 	ConvexCollider<float> headCollider;
 	const Vec2<float> wallSearcherOffset = { 0.0f,1.0f };
 	const Vec2<float> headColliderOffset = {0.0f, 90.0f};
-	int hp = 20;
+	int hp = maxHP;
 
 	Image::ImageGDI<int> chargeImage;
 	Animation<int> chargeAnimation;
@@ -465,9 +476,12 @@ private:
 	bool isOnWallSide = false;
 	bool canAirDash = false;
 	bool isHeadCollide = false;
+	bool isInvincible = false;
+	float invincibleTimer = 0.0f;
 
 	float chargeTime = 0.0f;
 	ChargeState chargeState = ChargeState::NoCharge;
+
 
 	// Key Statement
 	Keyboard kbd;

@@ -309,6 +309,21 @@
     <ClInclude Include="BvSigmaHeadElectricAttack.h">
       <Filter>헤더 파일\GameObjects\Actor\DynamicActor\SigmaHead\Behavior</Filter>
     </ClInclude>
+    <ClInclude Include="SigmaElectricBall.h">
+      <Filter>헤더 파일\GameObjects\Actor\DynamicActor\SigmaHead</Filter>
+    </ClInclude>
+    <ClInclude Include="BvSigmaHeadDecide.h">
+      <Filter>헤더 파일\GameObjects\Actor\DynamicActor\SigmaHead\Behavior</Filter>
+    </ClInclude>
+    <ClInclude Include="BvSigmaHeadDamaged.h">
+      <Filter>헤더 파일\GameObjects\Actor\DynamicActor\SigmaHead\Behavior</Filter>
+    </ClInclude>
+    <ClInclude Include="HUD.h">
+      <Filter>헤더 파일\GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerXHUD.h">
+      <Filter>헤더 파일\GameObjects</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="InhaWinAPIGame.cpp">
@@ -402,6 +417,18 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="BvSigmaHeadElectricAttack.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="SigmaElectricBall.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="BvSigmaHeadDecide.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="BvSigmaHeadDamaged.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerXHUD.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>

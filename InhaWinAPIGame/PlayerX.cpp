@@ -12,10 +12,11 @@
 #include "BvPlayerXCrouch.h"
 
 
-PlayerX::PlayerX( const Vec2<float>& pivotPos, const Vec2<float>& colliderRelativePos )
+PlayerX::PlayerX( int maxHP, const Vec2<float>& pivotPos, const Vec2<float>& colliderRelativePos )
 	:
 	Character( ActorTag::Player, pivotPos, RectF::FromCenter( colliderRelativePos, colliderHalfWidth, colliderHalfHeight ), 200.0f,
 		L"Images/RockmanX5/X/ForthArmorSprite.bmp", L"Images/RockmanX5/X/ForthArmorSpriteFlip.bmp" ),
+	maxHP(maxHP),
 	pivotGizmo( Vec2<int>( pivotPos ) ),
 	pBehavior( std::make_unique<Idle>() ),
 	gravity( 20.0f ),
@@ -91,6 +92,16 @@ void PlayerX::Update( float dt, Scene& scene )
 	isOnGround = IsCollideWithWall( GetColliderPos() - Vec2<float>{0, 1.0f}, scene ) || IsCollideWithGround( GetColliderPos() - Vec2<float>{0, 1.0f}, scene );
 
 
+	if ( isInvincible )
+	{
+		invincibleTimer += dt;
+		if ( invincibleTimer >= invincibleTime )
+		{
+			SetInvincible( false );
+			invincibleTimer = 0.0f;
+		}
+	}
+
 	//std::cout << "isOnGround : " << std::boolalpha << isOnGround << std::endl;
 	//std::cout << "Vel:{" << vel.x << ", " << vel.y << std::endl;
 	//std::cout << "isOnWallSide : " << std::boolalpha << isOnWallSide << std::endl;
@@ -152,8 +163,8 @@ void PlayerX::Draw( HDC hdc )
 	Gdiplus::Graphics gfx( hdc );
 	surf.DrawStringGDI( hdc, { 0,0 }, imgPosStr );
 	surf.DrawStringGDI( hdc, { 0,20 }, colliderPosStr );
-	surf.DrawStringGDI( hdc, { 0,100 }, isRightKeyStr );
-	surf.DrawStringGDI( hdc, { 0,120 }, isLeftKeyStr );
+	//surf.DrawStringGDI( hdc, { 0,100 }, isRightKeyStr );
+	//surf.DrawStringGDI( hdc, { 0,120 }, isLeftKeyStr );
 	DrawStateString( surf, hdc );
 	DrawAnimationStateString( surf, hdc );
 	pivotGizmo.Draw( hdc );
@@ -170,6 +181,7 @@ void PlayerX::Draw( HDC hdc )
 void PlayerX::ApplyDamage( int damage )
 {
 	hp -= damage;
+	SetInvincible();
 }
 
 void PlayerX::UpdatePlayerState()

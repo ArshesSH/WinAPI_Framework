@@ -24,6 +24,7 @@ public:
 
 	}
 	void ApplyDamage( int damage ) override {}
+	int GetHP() const override { return 0; }
 
 private:
 

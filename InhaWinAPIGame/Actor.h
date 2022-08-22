@@ -67,6 +67,7 @@ public:
 	virtual void SetTransform( const Mat3<float>& transform ) = 0;
 	virtual void Draw( HDC hdc ) = 0;
 	virtual void ApplyDamage( int damage ) = 0;
+	virtual int GetHP() const = 0;
 
 	void DrawCollider( Gdiplus::Graphics& gfx, const Mat3<float>& transform )
 	{
@@ -107,6 +108,7 @@ public:
 	{
 		return isImune;
 	}
+
 
 protected:
 	void SetPos(const Vec2<float>& pos_in)

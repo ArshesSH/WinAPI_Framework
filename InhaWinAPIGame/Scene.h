@@ -10,6 +10,7 @@
 #include "Camera.h"
 #include "Bullet.h"
 #include "Keyboard.h"
+#include <random>
 
 class Scene
 {
@@ -20,7 +21,8 @@ public:
 		sceneHeight( sceneHeight ),
 		sceneTopLeft( 0, 0 ),
 		sceneBottomRight( sceneWidth, sceneHeight ),
-		cam( ct )
+		cam( ct ),
+		rng(rd())
 	{}
 	virtual ~Scene() {}
 	virtual void Update(float dt, class Game& game ) = 0;
@@ -56,7 +58,7 @@ public:
 		return groundPtrs;
 	}
 
-	std::vector<Actor*> FindActorByTag(ActorTag tag)
+	std::vector<Actor*> FindActorByTag(ActorTag tag) const
 	{
 		std::vector<Actor*> targets;
 		for ( const auto& pActor : actorPtrs )
@@ -69,7 +71,20 @@ public:
 		return targets;
 	}
 
-	const std::unique_ptr<Actor>& FindPlayerPtr()
+	Actor* FindPlayer() const
+	{
+		for ( const auto& pActor : actorPtrs )
+		{
+			if ( pActor->IsTagSameWith( ActorTag::Player ) )
+			{
+				return pActor.get();
+			}
+		}
+		return nullptr;
+	}
+
+
+	const std::unique_ptr<Actor>& FindPlayerPtr() const
 	{
 		for ( const auto& pActor : actorPtrs )
 		{
@@ -97,6 +112,15 @@ public:
 		UtilSH::remove_erase_if( bulletPtrs, []( const auto& pBullet ) {return pBullet->ShouldDestroy(); } );
 	}
 
+	std::mt19937& GetRandomEngine()
+	{
+		return rng;
+	}
+
+	int GetPlayerLife() const
+	{
+		return playerLife;
+	}
 
 protected:
 	void UpdateSceneRect( class Game& game );
@@ -105,6 +129,7 @@ protected:
 
 	int sceneWidth;
 	int sceneHeight;
+	int playerLife = 02;
 	
 	RECT sceneRect = {0,0,0,0};
 	Vec2<int> sceneTopLeft;
@@ -113,6 +138,10 @@ protected:
 
 	Camera cam;
 	CollisionManager<float> cm;
+
+	std::random_device rd;
+	std::mt19937 rng;
+
 	std::vector<std::unique_ptr<Actor>> actorPtrs;
 	std::vector<std::unique_ptr<Wall>> wallPtrs;
 	std::vector<std::unique_ptr<Bullet>> bulletPtrs;

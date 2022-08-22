@@ -2,6 +2,7 @@
 
 #include "Scene.h"
 #include "Camera.h"
+#include "PlayerXHUD.h"
 
 class ActorTestScene : public Scene
 {
@@ -46,14 +47,19 @@ private:
         }
 
         const auto& pPlayer = FindPlayerPtr();
-        //if ( cam.GetScreenRect(sceneWidth, sceneHeight).left >= 0.0f )
+        if ( cam.GetScreenRect( sceneWidth, sceneHeight ).left <= 0.0f )
         {
-            //cam.SetPos( { pPlayer->GetPos().x, cam.GetPos().y } );
+            //cam.SetPos( cam.GetScreenRect( sceneWidth, sceneHeight ).GetCenter() );
+        }
+        {
+            cam.SetPos( { pPlayer->GetPos().x, cam.GetPos().y } );
         }
 
 	}
 
 private:
+    static constexpr int playerXMaxHP = 20;
+
     const Vec2<float> dirLeft = { -1.0f, 0.0f };
     const Vec2<float> dirUp = { 0.0f, 1.0f };
     const Vec2<float> dirRight = { 1.0f, 0.0f };
@@ -62,4 +68,6 @@ private:
     Image::ImageGDI<int> stageImage;
     Surface<int> stageSurf;
     Vec2<int> stageSize;
+
+    PlayerXHUD xHUD;
 };

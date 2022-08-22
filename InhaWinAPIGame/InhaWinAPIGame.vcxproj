@@ -155,6 +155,8 @@
     <ClInclude Include="BvPlayerXJump.h" />
     <ClInclude Include="BvPlayerXWalk.h" />
     <ClInclude Include="BvPlayerXWallSlide.h" />
+    <ClInclude Include="BvSigmaHeadDamaged.h" />
+    <ClInclude Include="BvSigmaHeadDecide.h" />
     <ClInclude Include="BvSigmaHeadElectricAttack.h" />
     <ClInclude Include="BvSigmaHeadFade.h" />
     <ClInclude Include="BvSigmaHeadOpen.h" />
@@ -172,9 +174,12 @@
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="FileManager.h" />
     <ClInclude Include="Ground.h" />
+    <ClInclude Include="HUD.h" />
     <ClInclude Include="Keyboard.h" />
     <ClInclude Include="PlayerController.h" />
     <ClInclude Include="PlayerXBullet.h" />
+    <ClInclude Include="PlayerXHUD.h" />
+    <ClInclude Include="SigmaElectricBall.h" />
     <ClInclude Include="SigmaHead.h" />
     <ClInclude Include="Wall.h" />
     <ClInclude Include="PivotGizmo.h" />
@@ -222,6 +227,8 @@
     <ClCompile Include="BvPlayerXJump.cpp" />
     <ClCompile Include="BvPlayerXWalk.cpp" />
     <ClCompile Include="BvPlayerXWallSlide.cpp" />
+    <ClCompile Include="BvSigmaHeadDamaged.cpp" />
+    <ClCompile Include="BvSigmaHeadDecide.cpp" />
     <ClCompile Include="BvSigmaHeadElectricAttack.cpp" />
     <ClCompile Include="BvSigmaHeadFade.cpp" />
     <ClCompile Include="BvSigmaHeadOpen.cpp" />
@@ -238,7 +245,9 @@
     <ClCompile Include="Keyboard.cpp" />
     <ClCompile Include="PlayerX.cpp" />
     <ClCompile Include="PlayerXBullet.cpp" />
+    <ClCompile Include="PlayerXHUD.cpp" />
     <ClCompile Include="Scene.cpp" />
+    <ClCompile Include="SigmaElectricBall.cpp" />
     <ClCompile Include="SigmaHead.cpp" />
     <ClCompile Include="Surface.cpp" />
     <ClCompile Include="TestScene.cpp" />

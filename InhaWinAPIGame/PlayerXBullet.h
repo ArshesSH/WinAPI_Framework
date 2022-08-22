@@ -38,17 +38,17 @@ public:
 	void Update( float dt, class Scene& scene ) override;
 	void SetTransform( const Mat3<float>& transform ) override;
 	void Draw( HDC hdc ) override;
+	int GetHP() const override { return 0; }
 
 	void ChangeAnimationToHit();
 	void ChangeAnimationToImmune();
-
 	bool CheckHitAnimationFinish() const;
 
 
 private:
-	static constexpr float bullet1AnimSpeed = 0.03f;
-	static constexpr float bullet2AnimSpeed = 0.03f;
-	static constexpr float bullet3AnimSpeed = 0.05f;
+	static constexpr float bullet1AnimSpeed = 0.02f;
+	static constexpr float bullet2AnimSpeed = 0.02f;
+	static constexpr float bullet3AnimSpeed = 0.02f;
 	static constexpr float bulletMoveSpeed = 800.0f;
 	static constexpr float bullet1Width = 10.0f;
 	static constexpr float bullet1Height = 10.0f;

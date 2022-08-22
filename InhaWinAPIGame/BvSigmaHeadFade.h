@@ -11,7 +11,7 @@ public:
 private:
 	static constexpr float animSpeed = 0.03f;
 	static constexpr float playTime = 0.5f;
-	const Vec2<float> resetPos = { 500.0f, 300.0f };
+	const Vec2<float> resetPos = { 700.0f, 300.0f };
 	float time = 0.0f;
 	bool isFadeIn = false;
 };

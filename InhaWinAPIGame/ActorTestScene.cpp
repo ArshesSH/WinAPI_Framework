@@ -8,12 +8,13 @@ ActorTestScene::ActorTestScene( int sceneWidth, int sceneHeight, CoordinateTrans
 	:
 	Scene( sceneWidth, sceneHeight, ct ),
 	stageImage( L"Images/RockmanX5/OpeningStage.bmp" ),
-	stageSize( stageImage.GetImageSize() * 2 )
+	stageSize( stageImage.GetImageSize() * 2 ),
+	xHUD( playerXMaxHP, {20, 110} )
 {
 	cam.SetPos( { 200.0f,240.0f } );
-	cam.SetScale( 1.0f );
-	actorPtrs.emplace_back( std::make_unique<PlayerX>( Vec2<float>{ 300.0f, 300.0f } ) );
-	actorPtrs.emplace_back( std::make_unique<SigmaHead>( Vec2<float>{ 500.0f, 200.0f } ) );
+	cam.SetScale( 2.0f );
+	actorPtrs.emplace_back( std::make_unique<PlayerX>( playerXMaxHP, Vec2<float>{ 300.0f, 300.0f } ) );
+	actorPtrs.emplace_back( std::make_unique<SigmaHead>( Vec2<float>{ 700.0f, 200.0f }, GetRandomEngine() ) );
 
 	wallPtrs.emplace_back( std::make_unique<Wall>( Vec2<float>{500.0f, 30.0f}, 1000.0f, 50.0f ) );
 	wallPtrs.emplace_back( std::make_unique<Wall>( Vec2<float>{500.0f, 500.0f}, 1000.0f, 50.0f ) );
@@ -58,6 +59,8 @@ void ActorTestScene::Update( float dt, Game& game )
 	{
 		pBullet->Update( dt, *this );
 	}
+
+	xHUD.Update( dt, *this );
 
 	stageSurf.SetTransformation( cam.GetTransform() );
 
@@ -115,24 +118,14 @@ void ActorTestScene::Draw( HDC hdc )
 		}
 #endif // !NDBUG
 
-
-//		for ( const auto& pActor : actorPtrs )
-//		{
-//			pActor->SetTransform( camTransform );
-//			pActor->Draw( hdc );
-//
-//#ifndef NDBUG
-//			const auto& pCollider = pActor->GetColliderPtr();
-//			pCollider->UpdateMatrix( camTransform );
-//			pCollider->Draw( gfx, { 144,255,255,255 } );
-//#endif // !NDBUG
-//		}
+		xHUD.Draw( hdc );
 	};
 
 	const float screenX = (sceneBottomRight.x - sceneTopLeft.x) / 2.0f;
 	const float screenY = (sceneBottomRight.y - sceneTopLeft.y) / 2.0f;
 
 	cam.Draw( hdc, { screenX, screenY }, drawFuncs );
+
 }
 
 

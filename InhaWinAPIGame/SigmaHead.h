@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Enemy.h"
+#include <random>
 
 class SigmaHead : public Enemy
 {
@@ -20,29 +21,21 @@ public:
 	class Fade;
 	class Decide;
 	class Open;
+	class Damaged;
 	class ElectricAttack;
 
 public:
-	SigmaHead(const Vec2<float>& pos )
-		:
-		Enemy( pos, { 0.0f, 0.0f }, colliderHalfWidth, colliderHalfHeight, moveSpeed,
-			L"Images/RockmanX5/Sigma/SigmaHead.bmp", L"Images/RockmanX5/Sigma/SigmaHead.bmp" ),
-		hitCollider(RectF::FromCenter(pos, hitColX, hitColY ))
-	{
-		animationMap[(int)AnimationState::Idle] = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/Sigma/SigmaIdle.anim" );
-		animationMap[(int)AnimationState::Ready] = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/Sigma/SigmaReady.anim" );
-		animationMap[(int)AnimationState::Fade] = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/Sigma/SigmaFade.anim" );
-		animationMap[(int)AnimationState::Open] = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/Sigma/SigmaOpen.anim" );
-		animationMap[(int)AnimationState::Damaged] = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/Sigma/SigmaDamaged.anim" );
+	SigmaHead( const Vec2<float>& pos, std::mt19937& rng );
 
-		SetAnimation( AnimationState::Idle, animPlaySpeed );
-		SetInvincible();
-
-	}
 
 	void Update( float dt, class Scene& scene ) override;
 	void Draw( HDC hdc ) override;
 	void ApplyDamage( int damage ) override;
+	void Move( float dt, const class Scene& scene ) override;
+	int GetHP() const override
+	{
+		return hp;
+	}
 
 	void SetTransform( const Mat3<float>& transform ) override
 	{
@@ -57,14 +50,19 @@ public:
 
 	void SetInvincible( bool mode = true )
 	{
-		isInvincible = true;
-		isImune = true;
+		isInvincible = mode;
+		isImune = mode;
+	}
+
+	bool IsDead() const
+	{
+		return hp < 0;
 	}
 
 private:
 	static constexpr float colliderHalfWidth = 120.0f;
 	static constexpr float colliderHalfHeight = 100.0f;
-	static constexpr float moveSpeed = 200.0f;
+	static constexpr float moveSpeed = 350.0f;
 	static constexpr float colliderRelPosX = 0.0f;
 	static constexpr float colliderRelPosY = 0.0f;
 	static constexpr float hitColX = 10.0f;
@@ -77,6 +75,7 @@ private:
 
 	int hp = 30;
 	bool isInvincible = true;
+	bool isDamaged = false;
 	float animPlaySpeed = 0.0f;
 	
 	Animation<int> curAnimation;

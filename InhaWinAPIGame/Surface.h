@@ -155,8 +155,8 @@ public:
 		hBrush = CreateSolidBrush( color );
 		oldBrush = (HBRUSH)SelectObject( hdc, hBrush );
 
-		auto tl = transform * Vec3<float>{ left, top, 1 };
-		auto br = transform * Vec3<float>{ right, bottom, 1 };
+		auto tl = transform * Vec3<float>{ (float)left, (float)top, (float)1 };
+		auto br = transform * Vec3<float>{ (float)right, (float)bottom, (float)1 };
 		if ( tl.y > br.y )
 		{
 			std::swap( tl.y, br.y );
@@ -194,6 +194,10 @@ public:
 	void DrawFillRectPlus( Gdiplus::Graphics& graphics, R rect, Gdiplus::Color color )
 	{
 		DrawFillRectPlus( graphics, { rect.X, rect.Y }, { rect.X + rect.Width, rect.Y + rect.Height }, color );
+	}
+	void DrawFillRectPlus( Gdiplus::Graphics& graphics, _Rect<T> rect, Gdiplus::Color color )
+	{
+		DrawFillRectPlus( graphics, rect.GetTopLeft(), { rect.GetWidth(), rect.GetHeight() }, color );
 	}
 	void DrawFillRectPlus( Gdiplus::Graphics& graphics, const Vec2<T>& topLeft, T width, T height, Gdiplus::Color color )
 	{
@@ -342,14 +346,6 @@ public:
 		StretchBlt( hdc, (int)tl.x, (int)tl.y, (int)sizeT.x, (int)sizeT.y,
 			hMemDC, (int)imageStart.x, (int)imageStart.y, (int)imageSize.x, (int)imageSize.y, SRCCOPY );
 
-		Surface<T> tmpSurf;
-		const std::wstring testStr = L"curTopLeft : (" + std::to_wstring( tl.x ) + L"," + std::to_wstring( tl.y ) + L")";
-		tmpSurf.DrawStringGDI( hdc, { 0, 140 }, testStr );
-		const std::wstring testStr2 = L"curBr : (" + std::to_wstring( br.x ) + L"," + std::to_wstring( br.y ) + L")";
-		tmpSurf.DrawStringGDI( hdc, { 0, 160 }, testStr2 );
-		const std::wstring testStrSize = L"cursizeT : (" + std::to_wstring( sizeT.x ) + L"," + std::to_wstring( sizeT.y ) + L")";
-		tmpSurf.DrawStringGDI( hdc, { 0, 180 }, testStrSize );
-
 		SelectObject( hMemDC, hOldBitmap );
 		DeleteObject( hMemDC );
 	}
@@ -420,13 +416,6 @@ public:
 		TransparentBlt( hdc, (int)tl.x, (int)tl.y, (int)sizeT.x, (int)sizeT.y, hMemDC,
 			(int)imageStart.x, (int)imageStart.y, (int)imageSize.x, (int)imageSize.y, chroma );
 
-		//Surface<T> tmpSurf;
-		//const std::wstring testStr = L"curTopLeft : (" + std::to_wstring( tl.x ) + L"," + std::to_wstring( tl.y ) + L")";
-		//tmpSurf.DrawStringGDI( hdc, { 0, 40 }, testStr );
-		//const std::wstring testStr2 = L"curBr : (" + std::to_wstring( br.x ) + L"," + std::to_wstring( br.y ) + L")";
-		//tmpSurf.DrawStringGDI( hdc, { 0, 60 }, testStr2 );
-		//const std::wstring testStrSize = L"cursizeT : (" + std::to_wstring( sizeT.x ) + L"," + std::to_wstring( sizeT.y ) + L")";
-		//tmpSurf.DrawStringGDI( hdc, { 0, 80 }, testStrSize );
 
 		SelectObject( hMemDC, hOldBitmap );
 		DeleteObject( hMemDC );
