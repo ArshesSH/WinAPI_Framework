@@ -1,4 +1,4 @@
-#include "BvPlayerXWalk.h"
+#include "BvPlayerXW.h"
 #include "Scene.h"
 
 void PlayerX::Walk::Activate( PlayerX& playerX, Scene& scene )
@@ -17,11 +17,11 @@ void PlayerX::Walk::Activate( PlayerX& playerX, Scene& scene )
 
 PlayerX::Behavior* PlayerX::Walk::Update( PlayerX& playerX, Scene& scene, float dt )
 {
-    if ( HasSucessors() )
-    {
-        playerX.vel.x = 0.0f;
-        return PassTorch();
-    }
+	if ( HasSucessors() )
+	{
+		playerX.vel.x = 0.0f;
+		return PassTorch();
+	}
 
 	switch ( playerX.attackState )
 	{
@@ -41,52 +41,52 @@ PlayerX::Behavior* PlayerX::Walk::Update( PlayerX& playerX, Scene& scene, float 
 	case AttackState::ShootMid:
 		{
 			ChangeToShootAnim( playerX, scene, PlayerXBullet::Type::Bullet2 );
-		break;
+			break;
 	case AttackState::ShootMax:
 		{
 			ChangeToShootAnim( playerX, scene, PlayerXBullet::Type::Bullet3 );
 		}
 		break;
-	}
-
-	if ( isStartResetAnimation )
-	{
-		time += dt;
-		if ( time >= walkResetTime )
-		{
-			playerX.SetAnimation( AnimationState::WalkLoop, animLoopSpeed );
-			isStartResetAnimation = false;
-			time = 0.0f;
 		}
+
+		if ( isStartResetAnimation )
+		{
+			time += dt;
+			if ( time >= walkResetTime )
+			{
+				playerX.SetAnimation( AnimationState::WalkLoop, animLoopSpeed );
+				isStartResetAnimation = false;
+				time = 0.0f;
+			}
+		}
+
+		DoWalk( playerX, scene, dt );
+
+		return nullptr;
 	}
 
-    DoWalk( playerX, scene, dt );
-
-    return nullptr;
 }
 
-void PlayerX::Walk::DoWalk( PlayerX& playerX, Scene& scene, float dt )
+void PlayerX::Walk::DoWalk( PlayerX & playerX, Scene & scene, float dt )
 {
-    if ( playerX.isRightKeyDown )
-    {
-        playerX.vel.x = playerX.defaultMoveSpeed;
-    }
-    if ( playerX.isLeftKeyDown )
-    {
-        playerX.vel.x = -playerX.defaultMoveSpeed;
-    }
-    playerX.Move( dt, scene );
-    
+	if ( playerX.isRightKeyDown )
+	{
+		playerX.vel.x = playerX.defaultMoveSpeed;
+	}
+	if ( playerX.isLeftKeyDown )
+	{
+		playerX.vel.x = -playerX.defaultMoveSpeed;
+	}
+	playerX.Move( dt, scene );
+
 #ifndef NDBUG
-    //std::cout << "PlayerSpeedX = " << playerX.vel.x << std::endl;
+	//std::cout << "PlayerSpeedX = " << playerX.vel.x << std::endl;
 #endif // !NDBUG
 
 }
 
-
-
-/*
-
+void PlayerX::Walk::ChangeToShootAnim( PlayerX& playerX, Scene& scene, PlayerXBullet::Type type )
+{
 	if ( playerX.curAnimState == AnimationState::WalkLoop )
 	{
 		const int idx = playerX.curAnimation.GetFrameIndex();
@@ -96,4 +96,4 @@ void PlayerX::Walk::DoWalk( PlayerX& playerX, Scene& scene, float dt )
 		isStartResetAnimation = true;
 	}
 
-*/
+}

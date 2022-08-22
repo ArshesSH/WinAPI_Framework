@@ -21,3 +21,4 @@ private:
 	bool isStartResetAnimation = false;
 	float time = 0.0f;
 };
+
