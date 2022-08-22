@@ -102,7 +102,6 @@ void PlayerX::Walk::DoWalk( PlayerX & playerX, Scene & scene, float dt )
 
 void PlayerX::Walk::ChangeToShootAnim( PlayerX& playerX, Scene& scene, PlayerXBullet::Type type )
 {
-
 	if ( playerX.curAnimState == AnimationState::WalkLoop )
 	{
 		int idx = playerX.curAnimation.GetFrameIndex();
@@ -110,6 +109,6 @@ void PlayerX::Walk::ChangeToShootAnim( PlayerX& playerX, Scene& scene, PlayerXBu
 		playerX.curAnimation.SetFrameIndex( idx );
 		isStartResetAnimation = true;
 	}
-	playerX.SpawnBullet( type, scene );
+	playerX.SpawnBullet( type, scene, { bulletSpawnDefaultX, bulletSpawnDefaultY } );
 	time = 0.0f;
 }

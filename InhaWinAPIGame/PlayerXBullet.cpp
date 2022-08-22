@@ -61,7 +61,6 @@ void PlayerXBullet::Update( float dt, Scene& scene )
 			if ( !isPlayHit )
 			{
 				ChangeAnimationToHit();
-				///SetDestroy();
 			}
 		}
 	}
@@ -70,7 +69,6 @@ void PlayerXBullet::Update( float dt, Scene& scene )
 		if ( !isPlayHit )
 		{
 			ChangeAnimationToHit();
-			//SetDestroy();
 		}
 	}
 

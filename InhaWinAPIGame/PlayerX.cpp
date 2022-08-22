@@ -10,7 +10,6 @@
 #include "BvPlayerXHover.h"
 #include "BvPlayerXWallSlide.h"
 #include "BvPlayerXCrouch.h"
-#include "BvPlayerXShoot.h"
 
 
 PlayerX::PlayerX( const Vec2<float>& pivotPos, const Vec2<float>& colliderRelativePos )
@@ -46,6 +45,9 @@ PlayerX::PlayerX( const Vec2<float>& pivotPos, const Vec2<float>& colliderRelati
 	animationMap[(int)AnimationState::ShootEnd] = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/ShootEnd.anim" );
 	animationMap[(int)AnimationState::ShootWalkStart] = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/ShootWalkStart.anim" );
 	animationMap[(int)AnimationState::ShootWalkLoop] = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/ShootWalkLoop.anim" );
+	animationMap[(int)AnimationState::ShootDashStart] = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/ShootDashStart.anim" );
+	animationMap[(int)AnimationState::ShootDashLoop] = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/ShootDashLoop.anim" );
+	animationMap[(int)AnimationState::ShootDashEnd] = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/ShootDashEnd.anim" );
 
 	curAnimation = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/Idle.anim" );
 }
@@ -469,11 +471,11 @@ bool PlayerX::IsWallSearcherCollide( Scene& scene )
 	return false;
 }
 
-void PlayerX::SpawnBullet( PlayerXBullet::Type type, Scene& scene )
+void PlayerX::SpawnBullet( PlayerXBullet::Type type, Scene& scene, const Vec2<float>& relativeSpawnPos )
 {
-	const float spawnX = (isFacingRight) ? bulletSpawnDefaultX : -bulletSpawnDefaultX;
+	const float spawnX = (isFacingRight) ? relativeSpawnPos.x : -relativeSpawnPos.x;
 	const Vec2<float> dir = (isFacingRight) ? dirRight : dirLeft;
-	const Vec2<float> realativeSpawn = { spawnX, bulletSpawnDefaultY };
+	const Vec2<float> realativeSpawn = { spawnX, relativeSpawnPos.y };
 
 	scene.AccessBulletPtrs().emplace_back(
 		std::make_unique<PlayerXBullet>(

@@ -264,18 +264,6 @@
     <ClInclude Include="BvPlayerXAirbone.h">
       <Filter>헤더 파일\GameObjects\Actor\DynamicActor\PlayerX\Behavior</Filter>
     </ClInclude>
-    <ClInclude Include="BvPlayerXHover.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="BvPlayerXWallSlide.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="BvPlayerXCrouch.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="BvPlayerXShoot.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="Bullet.h">
       <Filter>소스 파일\GameObjects\DynamicActor</Filter>
     </ClInclude>
@@ -286,6 +274,15 @@
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="BvPlayerXWalk.h">
+      <Filter>헤더 파일\GameObjects\Actor\DynamicActor\PlayerX\Behavior</Filter>
+    </ClInclude>
+    <ClInclude Include="BvPlayerXHover.h">
+      <Filter>헤더 파일\GameObjects\Actor\DynamicActor\PlayerX\Behavior</Filter>
+    </ClInclude>
+    <ClInclude Include="BvPlayerXWallSlide.h">
+      <Filter>헤더 파일\GameObjects\Actor\DynamicActor\PlayerX\Behavior</Filter>
+    </ClInclude>
+    <ClInclude Include="BvPlayerXCrouch.h">
       <Filter>헤더 파일\GameObjects\Actor\DynamicActor\PlayerX\Behavior</Filter>
     </ClInclude>
   </ItemGroup>
@@ -344,21 +341,6 @@
     <ClCompile Include="BvPlayerXAirbone.cpp">
       <Filter>소스 파일\GameObjects\DynamicActor\PlayerX\Behavior</Filter>
     </ClCompile>
-    <ClCompile Include="BvPlayerXJump.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="BvPlayerXHover.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="BvPlayerXWallSlide.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="BvPlayerXCrouch.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="BvPlayerXShoot.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="Bullet.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
@@ -369,6 +351,18 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="BvPlayerXWalk.cpp">
+      <Filter>소스 파일\GameObjects\DynamicActor\PlayerX\Behavior</Filter>
+    </ClCompile>
+    <ClCompile Include="BvPlayerXWallSlide.cpp">
+      <Filter>소스 파일\GameObjects\DynamicActor\PlayerX\Behavior</Filter>
+    </ClCompile>
+    <ClCompile Include="BvPlayerXJump.cpp">
+      <Filter>소스 파일\GameObjects\DynamicActor\PlayerX\Behavior</Filter>
+    </ClCompile>
+    <ClCompile Include="BvPlayerXHover.cpp">
+      <Filter>소스 파일\GameObjects\DynamicActor\PlayerX\Behavior</Filter>
+    </ClCompile>
+    <ClCompile Include="BvPlayerXCrouch.cpp">
       <Filter>소스 파일\GameObjects\DynamicActor\PlayerX\Behavior</Filter>
     </ClCompile>
   </ItemGroup>

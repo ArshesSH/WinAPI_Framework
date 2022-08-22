@@ -153,7 +153,6 @@
     <ClInclude Include="BvPlayerXHover.h" />
     <ClInclude Include="BvPlayerXIdle.h" />
     <ClInclude Include="BvPlayerXJump.h" />
-    <ClInclude Include="BvPlayerXShoot.h" />
     <ClInclude Include="BvPlayerXWalk.h" />
     <ClInclude Include="BvPlayerXWallSlide.h" />
     <ClInclude Include="Camera.h" />
@@ -215,7 +214,6 @@
     <ClCompile Include="BvPlayerXHover.cpp" />
     <ClCompile Include="BvPlayerXIdle.cpp" />
     <ClCompile Include="BvPlayerXJump.cpp" />
-    <ClCompile Include="BvPlayerXShoot.cpp" />
     <ClCompile Include="BvPlayerXWalk.cpp" />
     <ClCompile Include="BvPlayerXWallSlide.cpp" />
     <ClCompile Include="Character.cpp" />

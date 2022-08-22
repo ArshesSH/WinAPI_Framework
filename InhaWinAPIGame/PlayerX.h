@@ -403,7 +403,7 @@ private:
 	void TestKbd(float dt, Scene& scene);
 	void UpdateWallSearcher(float dt);
 	bool IsWallSearcherCollide( Scene& scene );
-	void SpawnBullet( PlayerXBullet::Type type, Scene& scene);
+	void SpawnBullet( PlayerXBullet::Type type, Scene& scene, const Vec2<float>& relativeSpawnPos );
 private:
 	static constexpr float colliderHalfWidth = 20.0f;
 	static constexpr float colliderHalfHeight = 40.0f;
@@ -414,6 +414,8 @@ private:
 	static constexpr float wallsearcherLength = 21.0f;
 	static constexpr float bulletSpawnDefaultX = 20.0f;
 	static constexpr float bulletSpawnDefaultY = 60.0f;
+	static constexpr float bulletSpawnDashX = 50.0f;
+	static constexpr float bulletSpawnDashY = 30.0f;
 	static constexpr float bulletChargeMiddle = 0.5f;
 	static constexpr float bulletChargeMax = 1.5f;
 	static constexpr float busterMinDelay = 0.3f;
