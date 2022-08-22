@@ -285,6 +285,9 @@
     <ClInclude Include="PlayerXBullet.h">
       <Filter>헤더 파일\GameObjects\Actor\DynamicActor\PlayerX</Filter>
     </ClInclude>
+    <ClInclude Include="Keyboard.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="InhaWinAPIGame.cpp">
@@ -363,6 +366,9 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="PlayerXBullet.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Keyboard.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>

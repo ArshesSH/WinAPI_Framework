@@ -41,13 +41,14 @@ PlayerX::PlayerX( const Vec2<float>& pivotPos, const Vec2<float>& colliderRelati
 	animationMap[(int)AnimationState::WallKick] = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/WallKick.anim" );
 	animationMap[(int)AnimationState::Crouch] = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/Crouch.anim" );
 	animationMap[(int)AnimationState::Shoot] = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/Shoot.anim" );
+	animationMap[(int)AnimationState::ShootEnd] = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/ShootEnd.anim" );
 
 	curAnimation = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/Idle.anim" );
 }
 
 void PlayerX::Update( float dt, Scene& scene )
 {
-	KbdInput(dt);
+	KbdInput(dt, scene );
 	//TestKbd( dt, scene );
 	curAnimation.Update( dt, animPlaySpeed );
 
@@ -62,6 +63,7 @@ void PlayerX::Update( float dt, Scene& scene )
 	//std::cout << "Vel:{" << vel.x << ", " << vel.y << std::endl;
 	//std::cout << "isOnWallSide : " << std::boolalpha << isOnWallSide << std::endl;
 	
+
 	// Update Behavior
 	while ( auto pNewState = pBehavior->Update(*this, scene, dt) )
 	{
@@ -171,11 +173,9 @@ void PlayerX::UpdatePlayerState()
 		}
 		else
 		{
-			if ( attackState == AttackState::NoAttack || chargeState == ChargeState::NoCharge )
-			{
-				moveState = MoveState::Idle;
-			}
-			if ( chargeState == ChargeState::FireNormal )
+			moveState = MoveState::Idle;
+
+			if ( isCKeyInputOnce )
 			{
 				attackState = AttackState::Shoot;
 			}
@@ -205,6 +205,12 @@ void PlayerX::UpdatePlayerState()
 
 void PlayerX::UpdatePlayerBehavior()
 {
+	if ( CheckMoveStateChange() )
+	{
+
+	}
+
+
 	if ( CheckMoveStateChange() || CheckAttackStateChange() )
 	{
 		switch ( attackState )
@@ -359,7 +365,7 @@ void PlayerX::UpdatePlayerBehavior()
 	}
 }
 
-void PlayerX::KbdInput(float dt)
+void PlayerX::KbdInput(float dt, Scene& scene)
 {
 	if ( GetAsyncKeyState( VK_LEFT ) & 0x8001 )
 	{
@@ -420,33 +426,18 @@ void PlayerX::KbdInput(float dt)
 	}
 
 
-	if ( GetAsyncKeyState( 'C' ) & 0x8001 )
+	isCKeyInputOnce = kbd.IsKeyDownOccur( 'C' );
+
+	if ( kbd.IsKeyPressed('C') )
 	{
 		isCKeyDown = true;
-		chargeTime += dt;
-		if ( chargeTime >= bulletChargeMiddle )
-		{
-			if ( chargeTime >= bulletChargeMax )
-			{
-				chargeState = ChargeState::FireMax;
-			}
-			else
-			{
-				chargeState = ChargeState::FireMiddle;
-			}
-		}
-		else
-		{
-			chargeState = ChargeState::FireNormal;
-		}
 	}
 	else
 	{
-		chargeState = ChargeState::NoCharge;
 		isCKeyDown = false;
-		chargeTime = 0.0f;
 	}
-	std::cout << "chargeTime : " << chargeTime << std::endl;
+
+
 }
 
 void PlayerX::TestKbd( float dt, Scene& scene )
@@ -485,8 +476,6 @@ bool PlayerX::IsWallSearcherCollide( Scene& scene )
 			return true;
 		}
 	}
-
-
 
 	return false;
 }

@@ -15,6 +15,7 @@ PlayerX::Behavior* PlayerX::Idle::Update( PlayerX& playerX, Scene& scene, float 
 	}
 
 	SetRandomAnimation( playerX );
+
 	return nullptr;
 }
 

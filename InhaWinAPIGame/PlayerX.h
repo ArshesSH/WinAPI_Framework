@@ -4,6 +4,7 @@
 #include "Image.h"
 #include "PivotGizmo.h"
 #include "Gravity.h"
+#include "Keyboard.h"
 
 #ifndef NDBUG
 #include <iostream>
@@ -19,6 +20,7 @@ public:
 		IdleBlink,
 		IdleLowHP,
 		Shoot,
+		ShootEnd,
 		ShootCharged,
 		WalkStart,
 		WalkLoop,
@@ -268,6 +270,9 @@ public:
 		case PlayerX::AnimationState::Shoot:
 			animStateStr = L"Shoot";
 			break;
+		case PlayerX::AnimationState::ShootEnd:
+			animStateStr = L"ShootEnd";
+			break;
 		case PlayerX::AnimationState::ShootCharged:
 			animStateStr = L"ShootCharged";
 			break;
@@ -382,7 +387,7 @@ public:
 
 
 private:
-	void KbdInput( float dt );
+	void KbdInput( float dt, Scene& scene );
 	void TestKbd(float dt, Scene& scene);
 	void UpdateWallSearcher(float dt);
 	bool IsWallSearcherCollide( Scene& scene );
@@ -392,7 +397,7 @@ private:
 	static constexpr float colliderHalfHeight = 40.0f;
 	static constexpr COLORREF chroma = RGB( 84, 165, 75 );
 	static constexpr float defaultMoveSpeed = 250.0f;
-	static constexpr float dashSpeed = 450.0f;
+	static constexpr float dashSpeed = 400.0f;
 	static constexpr float jumpSpeed = 350.0f;
 	static constexpr float wallsearcherLength = 21.0f;
 	static constexpr float bulletSpawnDefaultX = 20.0f;
@@ -427,9 +432,9 @@ private:
 	bool isJumpEnd = false;
 	bool isOnWallSide = false;
 	bool canAirDash = false;
-	ChargeState chargeState = ChargeState::NoCharge;
 
 	// Key Statement
+	Keyboard kbd;
 	bool isRightKeyDown = false;
 	bool isLeftKeyDown = false;
 	bool isDownKeyDown = false;
@@ -439,8 +444,8 @@ private:
 	bool isESCKeyDown = false;
 	bool isEnterkeyDown = false;
 	bool isXKeyInputOnce = false;
+	bool isCKeyInputOnce = false;
 	int hoverCount = 0;
-	float chargeTime = 0.0f;
 
 	std::unique_ptr<Behavior> pBehavior;
 	Gravity gravity;

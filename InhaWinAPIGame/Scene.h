@@ -8,6 +8,7 @@
 #include "CollisionManager.h"
 #include "Camera.h"
 #include "Bullet.h"
+#include "Keyboard.h"
 
 class Scene
 {
@@ -92,6 +93,7 @@ public:
 		UtilSH::remove_erase_if( bulletPtrs, []( const auto& pBullet ) {return pBullet->ShouldDestroy(); } );
 	}
 
+
 protected:
 	void UpdateSceneRect( class Game& game );
 protected:
@@ -103,6 +105,7 @@ protected:
 	RECT sceneRect = {0,0,0,0};
 	Vec2<int> sceneTopLeft;
 	Vec2<int> sceneBottomRight;
+
 
 	Camera cam;
 	CollisionManager<float> cm;

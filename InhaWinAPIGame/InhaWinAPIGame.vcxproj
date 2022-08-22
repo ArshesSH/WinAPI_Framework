@@ -168,6 +168,7 @@
     <ClInclude Include="EditorFrame.h" />
     <ClInclude Include="FileManager.h" />
     <ClInclude Include="Ground.h" />
+    <ClInclude Include="Keyboard.h" />
     <ClInclude Include="PlayerController.h" />
     <ClInclude Include="PlayerXBullet.h" />
     <ClInclude Include="Wall.h" />
@@ -226,6 +227,7 @@
     <ClCompile Include="GDIPlusManager.cpp" />
     <ClCompile Include="Ground.cpp" />
     <ClCompile Include="InhaWinAPIGame.cpp" />
+    <ClCompile Include="Keyboard.cpp" />
     <ClCompile Include="PlayerX.cpp" />
     <ClCompile Include="PlayerXBullet.cpp" />
     <ClCompile Include="Scene.cpp" />

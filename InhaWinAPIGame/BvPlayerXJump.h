@@ -14,7 +14,7 @@ protected:
 	void SetVelXByInput( PlayerX& playerX, float speed );
 	const float animSpeed = 0.04f;
 private:
-	static constexpr float jumpMaxTime = 0.4f;
+	static constexpr float jumpMaxTime = 0.3f;
 	float jumpTime = 0.0f;
 };
 
