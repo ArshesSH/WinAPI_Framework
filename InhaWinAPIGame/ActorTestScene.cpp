@@ -13,7 +13,7 @@ ActorTestScene::ActorTestScene( int sceneWidth, int sceneHeight, CoordinateTrans
 {
 	cam.SetPos( { 500.0f,240.0f } );
 	cam.SetScale( 2.0f );
-	actorPtrs.emplace_back( std::make_unique<PlayerX>( playerXMaxHP, Vec2<float>{ 300.0f, 300.0f } ) );
+	actorPtrs.emplace_back( std::make_unique<PlayerX>( playerXMaxHP, Vec2<float>{ 500.0f, 300.0f } ) );
 
 	wallPtrs.emplace_back( std::make_unique<Wall>( Vec2<float>{500.0f, 30.0f}, 1000.0f, 50.0f ) );
 	wallPtrs.emplace_back( std::make_unique<Wall>( Vec2<float>{500.0f, 500.0f}, 1000.0f, 50.0f ) );
@@ -82,34 +82,34 @@ void ActorTestScene::Draw( HDC hdc )
 
 
 
-#ifndef NDBUG
-		for ( const auto& pWall : wallPtrs )
-		{
-			const auto& pCollider = pWall->GetColliderPtr();
-			pCollider->UpdateMatrix( camTransform );
-			pCollider->Draw( gfx, { 144,255,0,255 } );
-		}
-#endif // !NDBUG
+//#ifndef NDBUG
+//		for ( const auto& pWall : wallPtrs )
+//		{
+//			const auto& pCollider = pWall->GetColliderPtr();
+//			pCollider->UpdateMatrix( camTransform );
+//			pCollider->Draw( gfx, { 144,255,0,255 } );
+//		}
+//#endif // !NDBUG
 
-#ifndef NDBUG
-		for ( const auto& pGround : groundPtrs )
-		{
-			const auto& pCollider = pGround->GetColliderPtr();
-			pCollider->UpdateMatrix( camTransform );
-			pCollider->Draw( gfx, { 255,0,0,255 } );
-		}
-#endif // !NDBUG
+//#ifndef NDBUG
+//		for ( const auto& pGround : groundPtrs )
+//		{
+//			const auto& pCollider = pGround->GetColliderPtr();
+//			pCollider->UpdateMatrix( camTransform );
+//			pCollider->Draw( gfx, { 255,0,0,255 } );
+//		}
+//#endif // !NDBUG
 
 		for ( auto i = actorPtrs.rbegin(); i != actorPtrs.rend(); ++i )
 		{
 			(*i)->SetTransform( camTransform );
 			(*i)->Draw( hdc );
 
-#ifndef NDBUG
-			const auto& pCollider = (*i)->GetColliderPtr();
-			pCollider->UpdateMatrix( camTransform );
-			pCollider->Draw( gfx, { 144,255,255,255 } );
-#endif // !NDBUG
+//#ifndef NDBUG
+//			const auto& pCollider = (*i)->GetColliderPtr();
+//			pCollider->UpdateMatrix( camTransform );
+//			pCollider->Draw( gfx, { 144,255,255,255 } );
+//#endif // !NDBUG
 		}
 
 		for ( const auto& pBullet : bulletPtrs )
@@ -117,11 +117,11 @@ void ActorTestScene::Draw( HDC hdc )
 			pBullet->SetTransform( camTransform );
 			pBullet->Draw( hdc );
 
-#ifndef NDBUG
-			const auto& pCollider = pBullet->GetColliderPtr();
-			pCollider->UpdateMatrix( camTransform );
-			pCollider->Draw( gfx, { 144,255,255,255 } );
-#endif // !NDBUG
+//#ifndef NDBUG
+//			const auto& pCollider = pBullet->GetColliderPtr();
+//			pCollider->UpdateMatrix( camTransform );
+//			pCollider->Draw( gfx, { 144,255,255,255 } );
+//#endif // !NDBUG
 		}
 		xHUD.Draw( hdc );
 	};

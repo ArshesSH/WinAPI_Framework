@@ -40,10 +40,10 @@ void SigmaHead::Update( float dt, Scene& scene )
 		}
 
 
-#ifndef NDEBUG
-		hitCollider.UpdateMatrix( scene.AccessCamera().GetTransform() );
-		std::cout << "hp: " << hp << std::endl;
-#endif // !NDEBUG
+//#ifndef NDEBUG
+//		hitCollider.UpdateMatrix( scene.AccessCamera().GetTransform() );
+//		std::cout << "hp: " << hp << std::endl;
+//#endif // !NDEBUG
 	}
 }
 
@@ -51,10 +51,10 @@ void SigmaHead::Draw( HDC hdc )
 {
 	curAnimation.PlayByCamGDI( hdc, sprite, Vec2<int>( GetPos() ), 2, chroma );
 
-#ifndef NDEBUG
-	Gdiplus::Graphics gfx( hdc );
-	hitCollider.Draw( gfx, { 255,0,255,0 } );
-#endif // !NDEBUG
+//#ifndef NDEBUG
+//	Gdiplus::Graphics gfx( hdc );
+//	hitCollider.Draw( gfx, { 255,0,255,0 } );
+//#endif // !NDEBUG
 
 }
 

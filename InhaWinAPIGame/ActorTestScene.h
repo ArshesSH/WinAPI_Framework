@@ -47,13 +47,11 @@ private:
         }
 
         const auto& pPlayer = FindPlayerPtr();
-        if ( cam.GetScreenRect( sceneWidth, sceneHeight ).left <= 0.0f )
-        {
-            //cam.SetPos( cam.GetScreenRect( sceneWidth, sceneHeight ).GetCenter() );
-        }
+        if ( cam.GetScreenRect( sceneWidth, sceneHeight ).left >= 0.0f )
         {
             cam.SetPos( { pPlayer->GetPos().x, cam.GetPos().y } );
         }
+        
 
 	}
 

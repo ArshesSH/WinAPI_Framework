@@ -18,7 +18,9 @@ PlayerX::PlayerX( int maxHP, const Vec2<float>& pivotPos, const Vec2<float>& col
 	Character( ActorTag::Player, pivotPos, RectF::FromCenter( colliderRelativePos, colliderHalfWidth, colliderHalfHeight ), 200.0f,
 		L"Images/RockmanX5/X/ForthArmorSprite.bmp", L"Images/RockmanX5/X/ForthArmorSpriteFlip.bmp" ),
 	maxHP(maxHP),
+#ifndef NDEBUG
 	pivotGizmo( Vec2<int>( pivotPos ) ),
+#endif // !NDEBUG
 	pBehavior( std::make_unique<Idle>() ),
 	gravity( 20.0f ),
 	wallSearcher( pivotPos + Vec2<float>{-wallsearcherLength, 0.0f}, pivotPos + Vec2<float>{wallsearcherLength, 0.0f} ),
@@ -172,21 +174,21 @@ void PlayerX::Draw( HDC hdc )
 		}
 	}
 
-#ifndef NDEBUG
-	// Debug
-	Surface<int> surf;
-	Gdiplus::Graphics gfx( hdc );
-	surf.DrawStringGDI( hdc, { 0,0 }, imgPosStr );
-	surf.DrawStringGDI( hdc, { 0,20 }, colliderPosStr );
-	//surf.DrawStringGDI( hdc, { 0,100 }, isRightKeyStr );
-	//surf.DrawStringGDI( hdc, { 0,120 }, isLeftKeyStr );
-	DrawStateString( surf, hdc );
-	DrawAnimationStateString( surf, hdc );
-	pivotGizmo.Draw( hdc );
-	wallSearcher.Draw( gfx, { 255,0,255,0 } );
-	headCollider.Draw( gfx, { 255,0,255,0 } );
-
-#endif // NDEBUG
+//#ifndef NDEBUG
+//	// Debug
+//	Surface<int> surf;
+//	Gdiplus::Graphics gfx( hdc );
+//	surf.DrawStringGDI( hdc, { 0,0 }, imgPosStr );
+//	surf.DrawStringGDI( hdc, { 0,20 }, colliderPosStr );
+//	//surf.DrawStringGDI( hdc, { 0,100 }, isRightKeyStr );
+//	//surf.DrawStringGDI( hdc, { 0,120 }, isLeftKeyStr );
+//	DrawStateString( surf, hdc );
+//	DrawAnimationStateString( surf, hdc );
+//	pivotGizmo.Draw( hdc );
+//	wallSearcher.Draw( gfx, { 255,0,255,0 } );
+//	headCollider.Draw( gfx, { 255,0,255,0 } );
+//
+//#endif // NDEBUG
 
 
 }

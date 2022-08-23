@@ -8,7 +8,7 @@ void PlayerXHUD::Update( float dt, Scene& scene )
 	
 	if ( hp != hpSegmentPositions.size() )
 	{
-		for ( int i = hp; i < hpSegmentPositions.size(); ++i )
+		for ( size_t i = hp; i < hpSegmentPositions.size(); ++i )
 		{
 			hpSegmentPositions.pop_back();
 		}
