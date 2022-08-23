@@ -44,6 +44,7 @@ ActorTestScene::ActorTestScene( int sceneWidth, int sceneHeight, CoordinateTrans
 	wallPtrs.emplace_back( std::make_unique<Wall>( Vec2<float>( 7552, 0 ), Vec2<float>( 7680, 252 ) ) );
 	wallPtrs.emplace_back( std::make_unique<Wall>( Vec2<float>( 8128, 0 ), Vec2<float>( 8256, 252 ) ) );
 	wallPtrs.emplace_back( std::make_unique<Wall>( Vec2<float>( 8256, 0 ), Vec2<float>( 8864, 100 ) ) );
+	wallPtrs.emplace_back( std::make_unique<Wall>( Vec2<float>( 8864, 0 ), Vec2<float>( 8960, 1000 ) ) );
 }
 
 void ActorTestScene::Update( float dt, Game& game )
