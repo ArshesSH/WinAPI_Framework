@@ -42,6 +42,7 @@ void SigmaHead::Update( float dt, Scene& scene )
 
 #ifndef NDEBUG
 		hitCollider.UpdateMatrix( scene.AccessCamera().GetTransform() );
+		std::cout << "hp: " << hp << std::endl;
 #endif // !NDEBUG
 	}
 }

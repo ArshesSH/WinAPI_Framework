@@ -73,7 +73,7 @@ private:
 
 	const Vec2<float> hitColRelPos = { hitColRelPosX, hitColRelPosY };
 
-	int hp = 30;
+	int hp = 20;
 	bool isInvincible = true;
 	bool isDamaged = false;
 	float animPlaySpeed = 0.0f;

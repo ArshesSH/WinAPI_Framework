@@ -25,7 +25,8 @@ PlayerX::PlayerX( int maxHP, const Vec2<float>& pivotPos, const Vec2<float>& col
 	headCollider( RectF( {-18.0f, 0.0f}, {18.0f, 2.0f} ) ),
 	chargeImage( L"Images/RockmanX5/X/Bullet/Buster.bmp" ),
 	chargeAnimation(Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/Bullet/Charge.anim" ),
-	chargeFinAnim( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/Bullet/ChargeFinished.anim" )
+	chargeFinAnim( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/Bullet/ChargeFinished.anim" ),
+	lastJumpPos(pivotPos)
 {
 	animationMap[(int)AnimationState::Idle] = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/Idle.anim" );
 	animationMap[(int)AnimationState::IdleBlink] = Animation<int>( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/X/IdleBlink.anim" );
@@ -69,7 +70,7 @@ PlayerX::PlayerX( int maxHP, const Vec2<float>& pivotPos, const Vec2<float>& col
 
 void PlayerX::Update( float dt, Scene& scene )
 {
-	KbdInput(dt, scene );
+	KbdInput( dt, scene );
 	//TestKbd( dt, scene );
 	curAnimation.Update( dt, animPlaySpeed );
 
@@ -83,7 +84,7 @@ void PlayerX::Update( float dt, Scene& scene )
 
 	UpdatePlayerState();
 	UpdatePlayerBehavior();
-	UpdateWallSearcher(dt);
+	UpdateWallSearcher( dt );
 	UpdateHeadCollider( dt );
 
 	isOnWallSide = IsWallSearcherCollide( scene );
@@ -109,7 +110,17 @@ void PlayerX::Update( float dt, Scene& scene )
 	//std::cout << "isOnGround : " << std::boolalpha << isOnGround << std::endl;
 	//std::cout << "Vel:{" << vel.x << ", " << vel.y << std::endl;
 	//std::cout << "isOnWallSide : " << std::boolalpha << isOnWallSide << std::endl;
-	
+
+
+	if ( GetPos().y <= -500.0f )
+	{
+		ResetCharacter( scene );
+	}
+
+	if ( hp <= 0 )
+	{
+		ResetCharacter( scene );
+	}
 
 	// Update Behavior
 	while ( auto pNewState = pBehavior->Update(*this, scene, dt) )
@@ -175,7 +186,6 @@ void PlayerX::Draw( HDC hdc )
 	wallSearcher.Draw( gfx, { 255,0,255,0 } );
 	headCollider.Draw( gfx, { 255,0,255,0 } );
 
-	std::cout << "hp: " << hp << std::endl;
 #endif // NDEBUG
 
 
@@ -220,6 +230,7 @@ void PlayerX::UpdatePlayerState()
 			{
 				moveState = MoveState::Jump;
 			}
+			lastJumpPos = GetPos();
 		}
 		else if ( isRightKeyDown ^ isLeftKeyDown )
 		{
@@ -348,6 +359,13 @@ void PlayerX::UpdatePlayerBehavior()
 			break;
 		}
 	}
+}
+
+void PlayerX::ResetCharacter( Scene& scene )
+{
+	SetPos( lastJumpPos );
+	scene.DecreasePlayerLife();
+	hp = maxHP;
 }
 
 void PlayerX::KbdInput(float dt, Scene& scene)

@@ -69,5 +69,6 @@ private:
     Surface<int> stageSurf;
     Vec2<int> stageSize;
 
+    Keyboard kbd;
     PlayerXHUD xHUD;
 };

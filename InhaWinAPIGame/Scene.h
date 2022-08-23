@@ -122,6 +122,14 @@ public:
 		return playerLife;
 	}
 
+	void DecreasePlayerLife()
+	{
+		if ( playerLife >= 0 )
+		{
+			--playerLife;
+		}
+	}
+
 protected:
 	void UpdateSceneRect( class Game& game );
 protected:

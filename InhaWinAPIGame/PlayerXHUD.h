@@ -15,10 +15,6 @@ public:
 
 	void Update( float dt, class Scene& scene ) override;
 	void Draw(HDC hdc) override;
-	void DrawHPBar( Gdiplus::Graphics& gfx )
-	{
-		
-	}
 
 private:
 	static constexpr COLORREF chroma = RGB( 255, 0, 255 );

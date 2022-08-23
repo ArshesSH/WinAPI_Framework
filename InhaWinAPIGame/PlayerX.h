@@ -192,6 +192,7 @@ public:
 	{
 		return hp;
 	}
+	void ResetCharacter( class Scene& scene );
 
 #ifndef NDEBUG
 	void DrawStateString(Surface<int>& surf, HDC hdc)
@@ -498,6 +499,8 @@ private:
 	bool isXKeyInputOnce = false;
 	bool isCKeyInputOnce = false;
 	int hoverCount = 0;
+
+	Vec2<float> lastJumpPos;
 
 	std::unique_ptr<Behavior> pBehavior;
 	Gravity gravity;

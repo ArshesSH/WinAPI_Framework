@@ -11,10 +11,9 @@ ActorTestScene::ActorTestScene( int sceneWidth, int sceneHeight, CoordinateTrans
 	stageSize( stageImage.GetImageSize() * 2 ),
 	xHUD( playerXMaxHP, {20, 110} )
 {
-	cam.SetPos( { 200.0f,240.0f } );
+	cam.SetPos( { 500.0f,240.0f } );
 	cam.SetScale( 2.0f );
 	actorPtrs.emplace_back( std::make_unique<PlayerX>( playerXMaxHP, Vec2<float>{ 300.0f, 300.0f } ) );
-	actorPtrs.emplace_back( std::make_unique<SigmaHead>( Vec2<float>{ 700.0f, 200.0f }, GetRandomEngine() ) );
 
 	wallPtrs.emplace_back( std::make_unique<Wall>( Vec2<float>{500.0f, 30.0f}, 1000.0f, 50.0f ) );
 	wallPtrs.emplace_back( std::make_unique<Wall>( Vec2<float>{500.0f, 500.0f}, 1000.0f, 50.0f ) );
@@ -65,6 +64,11 @@ void ActorTestScene::Update( float dt, Game& game )
 	stageSurf.SetTransformation( cam.GetTransform() );
 
 	CollectingObjects();
+
+	if ( kbd.IsKeyDownOccur( 'P' ) )
+	{
+		actorPtrs.emplace_back( std::make_unique<SigmaHead>( Vec2<float>{ 8712.0f, 250.0f }, GetRandomEngine() ) );
+	}
 }
 
 void ActorTestScene::Draw( HDC hdc )
@@ -74,6 +78,26 @@ void ActorTestScene::Draw( HDC hdc )
 	{
 		stageSurf.DrawImageNonChromaGDI( hdc, stageImage, { 0,0 }, stageSize, { 0,0 }, stageImage.GetImageSize() );
 
+
+
+
+#ifndef NDBUG
+		for ( const auto& pWall : wallPtrs )
+		{
+			const auto& pCollider = pWall->GetColliderPtr();
+			pCollider->UpdateMatrix( camTransform );
+			pCollider->Draw( gfx, { 144,255,0,255 } );
+		}
+#endif // !NDBUG
+
+#ifndef NDBUG
+		for ( const auto& pGround : groundPtrs )
+		{
+			const auto& pCollider = pGround->GetColliderPtr();
+			pCollider->UpdateMatrix( camTransform );
+			pCollider->Draw( gfx, { 255,0,0,255 } );
+		}
+#endif // !NDBUG
 
 		for ( auto i = actorPtrs.rbegin(); i != actorPtrs.rend(); ++i )
 		{
@@ -98,26 +122,6 @@ void ActorTestScene::Draw( HDC hdc )
 			pCollider->Draw( gfx, { 144,255,255,255 } );
 #endif // !NDBUG
 		}
-
-
-#ifndef NDBUG
-		for ( const auto& pWall : wallPtrs )
-		{
-			const auto& pCollider = pWall->GetColliderPtr();
-			pCollider->UpdateMatrix( camTransform );
-			pCollider->Draw( gfx, { 144,255,0,255 } );
-		}
-#endif // !NDBUG
-
-#ifndef NDBUG
-		for ( const auto& pGround : groundPtrs )
-		{
-			const auto& pCollider = pGround->GetColliderPtr();
-			pCollider->UpdateMatrix( camTransform );
-			pCollider->Draw( gfx, { 255,0,0,255 } );
-		}
-#endif // !NDBUG
-
 		xHUD.Draw( hdc );
 	};
 
