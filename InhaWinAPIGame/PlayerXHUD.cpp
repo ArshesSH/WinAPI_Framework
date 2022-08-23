@@ -5,15 +5,16 @@
 void PlayerXHUD::Update( float dt, Scene& scene )
 {
 	const int hp = (scene.FindPlayerPtr()->GetHP());
-	
-	if ( hp != hpSegmentPositions.size() )
+	if ( !hpSegmentPositions.empty() )
 	{
-		for ( size_t i = hp; i < hpSegmentPositions.size(); ++i )
+		if ( hp != hpSegmentPositions.size() )
 		{
-			hpSegmentPositions.pop_back();
+			for ( size_t i = hp; i < hpSegmentPositions.size(); ++i )
+			{
+				hpSegmentPositions.pop_back();
+			}
 		}
 	}
-
 
 	UpdateLifeCount( dt, scene.GetPlayerLife() );
 
