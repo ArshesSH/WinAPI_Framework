@@ -106,6 +106,12 @@
     <Filter Include="헤더 파일\GameObjects\Actor\DynamicActor\SigmaHead\Behavior">
       <UniqueIdentifier>{cb03a08e-9170-413a-9c8f-ed23492742d5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\GameObjects\DynamicActor\Sigma">
+      <UniqueIdentifier>{bbc4f8d9-cd86-43e9-bf36-88d1b059c30a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\GameObjects\DynamicActor\Sigma\Behavior">
+      <UniqueIdentifier>{9743efb5-050c-440c-915c-000525f65007}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -246,9 +252,6 @@
     <ClInclude Include="ActorTestScene.h">
       <Filter>헤더 파일\GameObjects\Scene</Filter>
     </ClInclude>
-    <ClInclude Include="TestScene.h">
-      <Filter>헤더 파일\GameObjects\Scene</Filter>
-    </ClInclude>
     <ClInclude Include="PlayerController.h">
       <Filter>헤더 파일\Engine</Filter>
     </ClInclude>
@@ -270,14 +273,8 @@
     <ClInclude Include="BvPlayerXAirbone.h">
       <Filter>헤더 파일\GameObjects\Actor\DynamicActor\PlayerX\Behavior</Filter>
     </ClInclude>
-    <ClInclude Include="Bullet.h">
-      <Filter>소스 파일\GameObjects\DynamicActor</Filter>
-    </ClInclude>
     <ClInclude Include="PlayerXBullet.h">
       <Filter>헤더 파일\GameObjects\Actor\DynamicActor\PlayerX</Filter>
-    </ClInclude>
-    <ClInclude Include="Keyboard.h">
-      <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="BvPlayerXWalk.h">
       <Filter>헤더 파일\GameObjects\Actor\DynamicActor\PlayerX\Behavior</Filter>
@@ -327,6 +324,12 @@
     <ClInclude Include="BvPlayerXHurt.h">
       <Filter>헤더 파일\GameObjects\Actor\DynamicActor\PlayerX\Behavior</Filter>
     </ClInclude>
+    <ClInclude Include="Bullet.h">
+      <Filter>헤더 파일\GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="Keyboard.h">
+      <Filter>헤더 파일\Engine\Utilities</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="InhaWinAPIGame.cpp">
@@ -353,12 +356,6 @@
     <ClCompile Include="CoordinateTransformer.cpp">
       <Filter>소스 파일\Engine\Utility</Filter>
     </ClCompile>
-    <ClCompile Include="ColliderTypeTrait.cpp">
-      <Filter>소스 파일\Engine\Physics</Filter>
-    </ClCompile>
-    <ClCompile Include="TestScene.cpp">
-      <Filter>소스 파일\GameObjects\Scene</Filter>
-    </ClCompile>
     <ClCompile Include="ActorTestScene.cpp">
       <Filter>소스 파일\GameObjects\Scene</Filter>
     </ClCompile>
@@ -383,15 +380,6 @@
     <ClCompile Include="BvPlayerXAirbone.cpp">
       <Filter>소스 파일\GameObjects\DynamicActor\PlayerX\Behavior</Filter>
     </ClCompile>
-    <ClCompile Include="Bullet.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="PlayerXBullet.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="Keyboard.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="BvPlayerXWalk.cpp">
       <Filter>소스 파일\GameObjects\DynamicActor\PlayerX\Behavior</Filter>
     </ClCompile>
@@ -407,35 +395,47 @@
     <ClCompile Include="BvPlayerXCrouch.cpp">
       <Filter>소스 파일\GameObjects\DynamicActor\PlayerX\Behavior</Filter>
     </ClCompile>
-    <ClCompile Include="SigmaHead.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="BvSigmaHeadReady.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="BvSigmaHeadFade.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="BvSigmaHeadOpen.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="BvSigmaHeadElectricAttack.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="SigmaElectricBall.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="BvSigmaHeadDecide.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="BvSigmaHeadDamaged.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="PlayerXHUD.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="BvPlayerXHurt.cpp">
-      <Filter>소스 파일</Filter>
+      <Filter>소스 파일\GameObjects\DynamicActor\PlayerX\Behavior</Filter>
+    </ClCompile>
+    <ClCompile Include="BvSigmaHeadDamaged.cpp">
+      <Filter>소스 파일\GameObjects\DynamicActor\Sigma\Behavior</Filter>
+    </ClCompile>
+    <ClCompile Include="BvSigmaHeadDecide.cpp">
+      <Filter>소스 파일\GameObjects\DynamicActor\Sigma\Behavior</Filter>
+    </ClCompile>
+    <ClCompile Include="BvSigmaHeadElectricAttack.cpp">
+      <Filter>소스 파일\GameObjects\DynamicActor\Sigma\Behavior</Filter>
+    </ClCompile>
+    <ClCompile Include="BvSigmaHeadFade.cpp">
+      <Filter>소스 파일\GameObjects\DynamicActor\Sigma\Behavior</Filter>
+    </ClCompile>
+    <ClCompile Include="BvSigmaHeadOpen.cpp">
+      <Filter>소스 파일\GameObjects\DynamicActor\Sigma\Behavior</Filter>
+    </ClCompile>
+    <ClCompile Include="BvSigmaHeadReady.cpp">
+      <Filter>소스 파일\GameObjects\DynamicActor\Sigma\Behavior</Filter>
+    </ClCompile>
+    <ClCompile Include="SigmaElectricBall.cpp">
+      <Filter>소스 파일\Engine\Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="ColliderTypeTrait.cpp">
+      <Filter>소스 파일\GameObjects\DynamicActor\Sigma</Filter>
+    </ClCompile>
+    <ClCompile Include="SigmaHead.cpp">
+      <Filter>소스 파일\GameObjects\DynamicActor\Sigma</Filter>
+    </ClCompile>
+    <ClCompile Include="Bullet.cpp">
+      <Filter>소스 파일\GameObjects\DynamicActor</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerXBullet.cpp">
+      <Filter>소스 파일\GameObjects\DynamicActor\PlayerX</Filter>
+    </ClCompile>
+    <ClCompile Include="Keyboard.cpp">
+      <Filter>소스 파일\Engine\Utility</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

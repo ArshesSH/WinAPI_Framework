@@ -16,7 +16,7 @@ public:
 	}
 
 	void Update( float dt, class Scene& scene ) override;
-	void ApplyDamage( int damage ) override {}
+	void ApplyDamage( int damage_in ) override {}
 protected:
 	int damage = 0;
 	float lifeCycle = 3.0f;

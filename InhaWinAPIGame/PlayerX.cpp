@@ -551,15 +551,16 @@ void PlayerX::SpawnBullet( PlayerXBullet::Type type, Scene& scene, const Vec2<fl
 
 	const float spawnX = (isFace) ? relativeSpawnPos.x : -relativeSpawnPos.x;
 	const Vec2<float> dir = (isFace) ? dirRight : dirLeft;
-	
+
 
 
 	const Vec2<float> realativeSpawn = { spawnX, relativeSpawnPos.y };
 
-	scene.AccessBulletPtrs().emplace_back(
+	scene.AccessBulletPtrs().push_back( {
 		std::make_unique<PlayerXBullet>(
 			type, dir, GetPos() + realativeSpawn, Vec2<float>{ 0.0f, 0.0f }, isFace
 			)
+		}
 	);
 
 }

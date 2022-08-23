@@ -9,7 +9,6 @@
 #include "DrawManager.h"
 #include "CoordinateTransformer.h"
 #include "Scene.h"
-#include "TestScene.h"
 #include "ActorTestScene.h"
 
 class Game

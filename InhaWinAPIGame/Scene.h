@@ -83,14 +83,13 @@ public:
 		return nullptr;
 	}
 
-
-	const std::unique_ptr<Actor>& FindPlayerPtr() const
+	Actor* FindPlayerPtr() const
 	{
 		for ( const auto& pActor : actorPtrs )
 		{
 			if ( pActor->IsTagSameWith( ActorTag::Player ) )
 			{
-				return pActor;
+				return pActor.get();
 			}
 		}
 		return nullptr;

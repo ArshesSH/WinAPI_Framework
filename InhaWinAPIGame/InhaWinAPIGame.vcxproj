@@ -209,7 +209,6 @@
     <ClInclude Include="ImageCodex.h" />
     <ClInclude Include="Surface.h" />
     <ClInclude Include="targetver.h" />
-    <ClInclude Include="TestScene.h" />
     <ClInclude Include="Vec2.h" />
     <ClInclude Include="Vec2W.h" />
     <ClInclude Include="Vec3.h" />
@@ -252,7 +251,6 @@
     <ClCompile Include="SigmaElectricBall.cpp" />
     <ClCompile Include="SigmaHead.cpp" />
     <ClCompile Include="Surface.cpp" />
-    <ClCompile Include="TestScene.cpp" />
     <ClCompile Include="Wall.cpp" />
   </ItemGroup>
   <ItemGroup>

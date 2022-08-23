@@ -79,7 +79,7 @@ public:
 
 	bool IsEnd() const
 	{
-		return curIdx == frames.size() - 1;
+		return curIdx == (int)frames.size() - 1;
 	}
 
 	bool IsStopped() const
@@ -99,8 +99,8 @@ public:
 	}
 	void PlayGDI(HDC hdc, const Image::ImageGDI<T>& image, const Vec2<T>& topLeft, float power, COLORREF chroma )
 	{
-		const auto curSprite = frames[curIdx].sprite;
-		const auto curPivot = frames[curIdx].pivot;
+		const auto curSprite = frames.at(curIdx).sprite;
+		const auto curPivot = frames.at(curIdx).pivot;
 		const Vec2<T> curTopLeft = (topLeft - curPivot) * (T)power;
 
 		const Vec2<T>& size = { curSprite.GetWidth(), curSprite.GetHeight() };
@@ -108,11 +108,11 @@ public:
 	}
 	void PlayByCamGDI( HDC hdc, const Image::ImageGDI<T>& image, const Vec2<T>& topLeft, float power, COLORREF chroma, bool isFlipped = false )
 	{
-		_Rect<T> curSprite = frames[curIdx].sprite;
+		_Rect<T> curSprite = frames.at(curIdx).sprite;
 
-		const auto curPivotX = isFlipped ? curSprite.GetWidth() -frames[curIdx].pivot.x : frames[curIdx].pivot.x;
+		const auto curPivotX = isFlipped ? curSprite.GetWidth() -frames.at(curIdx).pivot.x : frames.at(curIdx).pivot.x;
 
-		auto curPivot = (Vec2<T>{ curPivotX, curSprite.GetHeight() - frames[curIdx].pivot.y })* (T)power;
+		auto curPivot = (Vec2<T>{ curPivotX, curSprite.GetHeight() - frames.at(curIdx).pivot.y })* (T)power;
 
 		const Vec2<T> curTopLeft = (topLeft - curPivot);
 		if ( isFlipped )
@@ -130,8 +130,8 @@ public:
 	}
 	void PlayByCamGDIFlip( HDC hdc, const Image::ImageGDI<T>& image, const Vec2<T>& topLeft, float power, COLORREF chroma )
 	{
-		const auto curSprite = frames[curIdx].sprite;
-		const auto curPivot = (Vec2<T>{ curSprite.GetWidth() - frames[curIdx].pivot.x, curSprite.GetHeight() - frames[curIdx].pivot.y })* (T)power;
+		const auto curSprite = frames.at(curIdx).sprite;
+		const auto curPivot = (Vec2<T>{ curSprite.GetWidth() - frames.at(curIdx).pivot.x, curSprite.GetHeight() - frames.at(curIdx).pivot.y })* (T)power;
 		const Vec2<T> curTopLeft = Mat3<T>::ScaleIndependent( -1, 1 ) *
 			Mat3<T>::Translation( { (T)(image.GetImageSize().x / 2), (T)0 } ) * (topLeft - curPivot);
 		const Vec2<T>& size = { curSprite.GetWidth(), curSprite.GetHeight() };
@@ -146,7 +146,7 @@ public:
 
 private:
 	Surface<T> surf;
-	SpriteType spriteType;
+	SpriteType spriteType = SpriteType::GDI;
 	std::vector<Frame> frames;
 	float playTime = 0.0f;
 	int curIdx = 0;
