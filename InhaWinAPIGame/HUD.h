@@ -16,12 +16,12 @@ public:
 		lifeCountLeft( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/UI/HudNumbers.anim" ),
 		lifeCountRight( Animation<int>::SpriteType::GDI, L"Images/RockmanX5/UI/HudNumbers.anim" ),
 		hpBarImage( L"Images/RockmanX5/UI/hpBar.bmp"),
-		eachSegmentHeight(int( std::abs( (brPos - tlPos).y ) / maxHP )),
+		eachSegmentHeight(int( (std::abs( (brPos - tlPos).y ) / maxHP ) + 1 ) ),
 		eachSegmentWidth( std::abs( (brPos - tlPos).x ))
 	{
 		for ( auto i = 0; i < maxHP; ++i )
 		{
-			hpSegmentPositions.emplace_back( tlPos.x, eachSegmentHeight * i );
+			hpSegmentPositions.emplace_back( brPos.x, brPos.y - eachSegmentHeight * i + 104);
 		}
 		
 	}

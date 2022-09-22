@@ -43,7 +43,7 @@ public:
 	}
 
 public:
-	RECT screenRECT;
+	RECT screenRECT = {0,0,0,0};
 
 private:
 	HBITMAP hDoubleBufferImage = nullptr;

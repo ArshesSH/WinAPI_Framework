@@ -65,7 +65,7 @@ public:
 		transform = (Mat3<float>::Scale( scale ) * Mat3<float>::Translation( pos * ct.GetFactorY() ) * Mat3<float>::Rotation( angle ) );
 		ct.Draw( hdc, transform, originPos, std::move(drawFunc) );
 	}
-	const RectF& GetScreenRect(int screenWidth, int screenHeight) const
+	RectF GetScreenRect(int screenWidth, int screenHeight) const
 	{
 		const float zoom = 1.0f / scale;
 

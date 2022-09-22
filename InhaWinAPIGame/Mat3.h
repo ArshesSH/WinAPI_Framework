@@ -8,7 +8,9 @@ class Mat3
 public:
 	Vec2<T> operator*( const Vec2<T>& v )const
 	{
-		return Vec2<T>( *this * (Vec3<T>)v );
+		const Vec3<T> transed = (Vec3<T>)v;
+		const Vec2<T> val = Vec2<T>( *this * transed );
+		return  val;
 	}
 	Vec3<T> operator*( const Vec3<T>& v ) const
 	{
