@@ -17,8 +17,15 @@ public:
 		HBITMAP hOldBitmap;
 
 		hMemDC = CreateCompatibleDC( hdc );
-		if ( hDoubleBufferImage == nullptr || isClientSizeChanged )
+		if ( hDoubleBufferImage == nullptr  )
 		{
+			// Create Bitmap Image for Double buffering
+			hDoubleBufferImage = CreateCompatibleBitmap( hdc, clientRECT.right, clientRECT.bottom );
+		}
+		if ( isClientSizeChanged )
+		{
+			SelectObject( hMemDC, hDoubleBufferImage );
+			DeleteObject( hMemDC );
 			// Create Bitmap Image for Double buffering
 			hDoubleBufferImage = CreateCompatibleBitmap( hdc, clientRECT.right, clientRECT.bottom );
 		}
@@ -27,9 +34,6 @@ public:
 
 		FillRect( hMemDC, &clientRECT, (HBRUSH)GetStockObject( BLACK_BRUSH ) );
 
-		/*Surface a;
-		a.DrawString( hMemDC, L"Hello", pos, {255,255,0,0} );*/
-
 		// Call Actual Draw functions
 		drawFunc(hMemDC);
 
@@ -37,6 +41,9 @@ public:
 		SelectObject( hMemDC, hOldBitmap );
 		DeleteObject( hMemDC );
 	}
+
+public:
+	RECT screenRECT = {0,0,0,0};
 
 private:
 	HBITMAP hDoubleBufferImage = nullptr;

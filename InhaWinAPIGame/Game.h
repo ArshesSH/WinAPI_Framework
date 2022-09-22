@@ -2,51 +2,46 @@
 
 #include "framework.h"
 
-#include "FrameTimer.h"
-#include "SceneStage.h"
-#include "DrawManager.h"
+#include <memory>
+#include <vector>
 
-// Test Things
-//#include "TestTriangulationScene.h"
+#include "FrameTimer.h"
+#include "DrawManager.h"
+#include "CoordinateTransformer.h"
+#include "Scene.h"
+#include "ActorTestScene.h"
 
 class Game
 {
-public:
-	enum class SceneType
-	{
-		SceneStart,
-		SceneStage,
-		SceneTest,
-		SceneResult
-	};
 public:
 	Game();
 	void ComposeFrame( HDC hdc );
 	void UpdateModel();
 
 	void RefreshScreen();
+	void SetScreenSize( HWND hWnd )
+	{
+		GetClientRect( hWnd, &screenRect );
+	}
+	void SetClientSize( HWND hWnd, int width = screenWidth, int height = screenHeight );
 
-	bool IsInitialGame() const;
-	bool IsGameFinished() const;
-	bool IsScreenChanged() const;
+private:
+	void CycleScenes();
+	void ReverseCycleScenes();
 
 public:
 	RECT screenRect;
 private:
+	static constexpr int screenWidth = 1600;
+	static constexpr int screenHeight = 900;
+
 	RECT oldScreenSize = screenRect;
 	FrameTimer ft;
-	SceneStage stage;
 	DrawManager drawManager;
+	CoordinateTransformer ct;
 
 	bool isScreenChanged = true;
-	float time = 0.0f;
-	SceneType sceneType = SceneType::SceneStage;
 
-	bool isFinishedResult = false;
-
-
-
-
-	// for Test
-	//TestTriangulationScene testTriangulationScene;
+	std::vector<std::unique_ptr<Scene>> pScenes;
+	std::vector<std::unique_ptr<Scene>>::iterator curScene;
 };

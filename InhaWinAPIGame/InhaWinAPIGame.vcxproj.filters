@@ -58,26 +58,59 @@
     <Filter Include="소스 파일\GameObjects\StaticActor">
       <UniqueIdentifier>{a38026e6-e478-44f3-a7d2-baf01ef29b6a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="헤더 파일\GameObjects\DynamicActor">
-      <UniqueIdentifier>{50dc631d-5d3c-4073-969e-04aa6b826b03}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="헤더 파일\GameObjects\StaticActor">
-      <UniqueIdentifier>{8dea5ae6-778e-4a01-96e6-394d8ec808f5}</UniqueIdentifier>
-    </Filter>
     <Filter Include="헤더 파일\Engine\Scene">
       <UniqueIdentifier>{0dd70e61-ae7d-4a0e-b7f3-6d09a3a852fb}</UniqueIdentifier>
     </Filter>
-    <Filter Include="헤더 파일\Scene">
-      <UniqueIdentifier>{e6e3537f-1686-4f40-aa17-84a3a4245ed1}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="소스 파일\Scene">
-      <UniqueIdentifier>{928bb001-9a17-4d2f-ba20-e76146f001b1}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="헤더 파일\Engine\Physics\GeometricObject">
-      <UniqueIdentifier>{51c8f122-48a1-49fc-977a-58cff67c0168}</UniqueIdentifier>
-    </Filter>
     <Filter Include="소스 파일\Engine\Actor">
       <UniqueIdentifier>{aad163b2-003d-4531-81aa-f111508c2b07}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Contents">
+      <UniqueIdentifier>{1904eed3-ac9c-477b-ba96-f90d4fca5e79}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Editors">
+      <UniqueIdentifier>{d361524e-7b37-46c0-bebb-5bc84ab0bca4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Editors\SpriteEditor">
+      <UniqueIdentifier>{90e84c48-7aa5-4f06-95dd-1dc919387c5a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\GameObjects\Scene">
+      <UniqueIdentifier>{e6e3537f-1686-4f40-aa17-84a3a4245ed1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\GameObjects\Actor">
+      <UniqueIdentifier>{ed4312ca-fcf5-45c9-8bc5-1ef63c4e1651}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\GameObjects\Actor\StaticActor">
+      <UniqueIdentifier>{8dea5ae6-778e-4a01-96e6-394d8ec808f5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\GameObjects\Actor\DynamicActor">
+      <UniqueIdentifier>{50dc631d-5d3c-4073-969e-04aa6b826b03}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\GameObjects\Scene">
+      <UniqueIdentifier>{928bb001-9a17-4d2f-ba20-e76146f001b1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\GameObjects\Actor\DynamicActor\PlayerX">
+      <UniqueIdentifier>{cacb8d47-d20a-47f5-ac50-5f5f9135339e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\GameObjects\Actor\DynamicActor\PlayerX\Behavior">
+      <UniqueIdentifier>{0b2a5d83-5774-406c-9957-dca655568e3c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\GameObjects\DynamicActor\PlayerX">
+      <UniqueIdentifier>{ab9576cd-0d14-4606-b57a-52483cf1226d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\GameObjects\DynamicActor\PlayerX\Behavior">
+      <UniqueIdentifier>{11fb8af2-ccaa-47a1-8d3f-df8c4fa37031}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\GameObjects\Actor\DynamicActor\SigmaHead">
+      <UniqueIdentifier>{3896bc04-fffc-480a-86f2-661134218c8b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\GameObjects\Actor\DynamicActor\SigmaHead\Behavior">
+      <UniqueIdentifier>{cb03a08e-9170-413a-9c8f-ed23492742d5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\GameObjects\DynamicActor\Sigma">
+      <UniqueIdentifier>{bbc4f8d9-cd86-43e9-bf36-88d1b059c30a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\GameObjects\DynamicActor\Sigma\Behavior">
+      <UniqueIdentifier>{9743efb5-050c-440c-915c-000525f65007}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -120,31 +153,16 @@
     <ClInclude Include="FrameTimer.h">
       <Filter>헤더 파일\Engine\Utilities</Filter>
     </ClInclude>
-    <ClInclude Include="Vec2W.h">
-      <Filter>헤더 파일\Engine\Utilities\Vec</Filter>
-    </ClInclude>
-    <ClInclude Include="PhysicsEntity.h">
-      <Filter>헤더 파일\Engine\Physics</Filter>
-    </ClInclude>
-    <ClInclude Include="PhysicsEntityTypeTraits.h">
-      <Filter>헤더 파일\Engine\Physics</Filter>
-    </ClInclude>
-    <ClInclude Include="CollisionManager.h">
-      <Filter>헤더 파일\Engine\Physics</Filter>
-    </ClInclude>
     <ClInclude Include="DrawManager.h">
       <Filter>헤더 파일\Engine\Graphics</Filter>
     </ClInclude>
-    <ClInclude Include="FileManager.h">
+    <ClInclude Include="TextFileManager.h">
       <Filter>헤더 파일\Engine\Utilities</Filter>
     </ClInclude>
     <ClInclude Include="GDIPlusManager.h">
       <Filter>헤더 파일\Engine\Graphics</Filter>
     </ClInclude>
     <ClInclude Include="ImageCodex.h">
-      <Filter>헤더 파일\Engine\Utilities</Filter>
-    </ClInclude>
-    <ClInclude Include="PatternMatchingListener.h">
       <Filter>헤더 파일\Engine\Utilities</Filter>
     </ClInclude>
     <ClInclude Include="Surface.h">
@@ -156,47 +174,161 @@
     <ClInclude Include="Scene.h">
       <Filter>헤더 파일\Engine\Scene</Filter>
     </ClInclude>
-    <ClInclude Include="GeometricObject.h">
-      <Filter>헤더 파일\Engine\Physics\GeometricObject</Filter>
-    </ClInclude>
-    <ClInclude Include="Circle.h">
-      <Filter>헤더 파일\Engine\Physics\GeometricObject</Filter>
-    </ClInclude>
-    <ClInclude Include="Rect.h">
-      <Filter>헤더 파일\Engine\Physics\GeometricObject</Filter>
-    </ClInclude>
-    <ClInclude Include="Star.h">
-      <Filter>헤더 파일\Engine\Physics\GeometricObject</Filter>
-    </ClInclude>
-    <ClInclude Include="Physics.h">
-      <Filter>헤더 파일\Engine\Physics</Filter>
-    </ClInclude>
-    <ClInclude Include="DynamicActor.h">
-      <Filter>헤더 파일\Engine\Actor</Filter>
-    </ClInclude>
-    <ClInclude Include="SceneStage.h">
-      <Filter>헤더 파일\Scene</Filter>
-    </ClInclude>
-    <ClInclude Include="PanicPlayer.h">
-      <Filter>헤더 파일\GameObjects\DynamicActor</Filter>
-    </ClInclude>
-    <ClInclude Include="PlayerArea.h">
-      <Filter>헤더 파일\GameObjects\StaticActor</Filter>
-    </ClInclude>
     <ClInclude Include="CoordinateTransformer.h">
       <Filter>헤더 파일\Engine\Utilities</Filter>
     </ClInclude>
     <ClInclude Include="Polygon.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="IndexedLineList.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="TestTriangulationScene.h">
-      <Filter>헤더 파일\Scene</Filter>
+      <Filter>헤더 파일\Engine\Physics</Filter>
     </ClInclude>
     <ClInclude Include="Ray.h">
-      <Filter>헤더 파일</Filter>
+      <Filter>헤더 파일\Engine\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="CoordSH.h">
+      <Filter>헤더 파일\Engine\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="Image.h">
+      <Filter>헤더 파일\Engine\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>헤더 파일\Engine\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Vec2W.h">
+      <Filter>헤더 파일\Engine\Utilities\Vec</Filter>
+    </ClInclude>
+    <ClInclude Include="Gravity.h">
+      <Filter>헤더 파일\Engine\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="Jump.h">
+      <Filter>헤더 파일\Contents</Filter>
+    </ClInclude>
+    <ClInclude Include="PatternMatching.h">
+      <Filter>헤더 파일\Engine\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="Collider.h">
+      <Filter>헤더 파일\Engine\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="CollisionManager.h">
+      <Filter>헤더 파일\Engine\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="Rect.h">
+      <Filter>헤더 파일\Engine\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="Circle.h">
+      <Filter>헤더 파일\Engine\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="Line.h">
+      <Filter>헤더 파일\Engine\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="ColliderTypeTrait.h">
+      <Filter>헤더 파일\Engine\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="CollisionPatternMatching.h">
+      <Filter>헤더 파일\Engine\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="Character.h">
+      <Filter>헤더 파일\Engine\Actor</Filter>
+    </ClInclude>
+    <ClInclude Include="Animation.h">
+      <Filter>헤더 파일\Engine\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="EditorFrame.h">
+      <Filter>헤더 파일\Editors</Filter>
+    </ClInclude>
+    <ClInclude Include="SpriteCuttingEditor.h">
+      <Filter>헤더 파일\Editors\SpriteEditor</Filter>
+    </ClInclude>
+    <ClInclude Include="PivotGizmo.h">
+      <Filter>헤더 파일\Editors\SpriteEditor</Filter>
+    </ClInclude>
+    <ClInclude Include="FileManager.h">
+      <Filter>헤더 파일\Engine\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="ActorTag.h">
+      <Filter>헤더 파일\Engine\Actor</Filter>
+    </ClInclude>
+    <ClInclude Include="Wall.h">
+      <Filter>헤더 파일\GameObjects\Actor\StaticActor</Filter>
+    </ClInclude>
+    <ClInclude Include="ActorTestScene.h">
+      <Filter>헤더 파일\GameObjects\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerController.h">
+      <Filter>헤더 파일\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerX.h">
+      <Filter>헤더 파일\GameObjects\Actor\DynamicActor\PlayerX</Filter>
+    </ClInclude>
+    <ClInclude Include="BvPlayerXIdle.h">
+      <Filter>헤더 파일\GameObjects\Actor\DynamicActor\PlayerX\Behavior</Filter>
+    </ClInclude>
+    <ClInclude Include="Ground.h">
+      <Filter>헤더 파일\GameObjects\Actor\StaticActor</Filter>
+    </ClInclude>
+    <ClInclude Include="BvPlayerXDash.h">
+      <Filter>헤더 파일\GameObjects\Actor\DynamicActor\PlayerX\Behavior</Filter>
+    </ClInclude>
+    <ClInclude Include="BvPlayerXJump.h">
+      <Filter>헤더 파일\GameObjects\Actor\DynamicActor\PlayerX\Behavior</Filter>
+    </ClInclude>
+    <ClInclude Include="BvPlayerXAirbone.h">
+      <Filter>헤더 파일\GameObjects\Actor\DynamicActor\PlayerX\Behavior</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerXBullet.h">
+      <Filter>헤더 파일\GameObjects\Actor\DynamicActor\PlayerX</Filter>
+    </ClInclude>
+    <ClInclude Include="BvPlayerXWalk.h">
+      <Filter>헤더 파일\GameObjects\Actor\DynamicActor\PlayerX\Behavior</Filter>
+    </ClInclude>
+    <ClInclude Include="BvPlayerXHover.h">
+      <Filter>헤더 파일\GameObjects\Actor\DynamicActor\PlayerX\Behavior</Filter>
+    </ClInclude>
+    <ClInclude Include="BvPlayerXWallSlide.h">
+      <Filter>헤더 파일\GameObjects\Actor\DynamicActor\PlayerX\Behavior</Filter>
+    </ClInclude>
+    <ClInclude Include="BvPlayerXCrouch.h">
+      <Filter>헤더 파일\GameObjects\Actor\DynamicActor\PlayerX\Behavior</Filter>
+    </ClInclude>
+    <ClInclude Include="Enemy.h">
+      <Filter>헤더 파일\GameObjects\Actor\DynamicActor</Filter>
+    </ClInclude>
+    <ClInclude Include="SigmaHead.h">
+      <Filter>헤더 파일\GameObjects\Actor\DynamicActor\SigmaHead</Filter>
+    </ClInclude>
+    <ClInclude Include="BvSigmaHeadReady.h">
+      <Filter>헤더 파일\GameObjects\Actor\DynamicActor\SigmaHead\Behavior</Filter>
+    </ClInclude>
+    <ClInclude Include="BvSigmaHeadFade.h">
+      <Filter>헤더 파일\GameObjects\Actor\DynamicActor\SigmaHead\Behavior</Filter>
+    </ClInclude>
+    <ClInclude Include="BvSigmaHeadOpen.h">
+      <Filter>헤더 파일\GameObjects\Actor\DynamicActor\SigmaHead\Behavior</Filter>
+    </ClInclude>
+    <ClInclude Include="BvSigmaHeadElectricAttack.h">
+      <Filter>헤더 파일\GameObjects\Actor\DynamicActor\SigmaHead\Behavior</Filter>
+    </ClInclude>
+    <ClInclude Include="SigmaElectricBall.h">
+      <Filter>헤더 파일\GameObjects\Actor\DynamicActor\SigmaHead</Filter>
+    </ClInclude>
+    <ClInclude Include="BvSigmaHeadDecide.h">
+      <Filter>헤더 파일\GameObjects\Actor\DynamicActor\SigmaHead\Behavior</Filter>
+    </ClInclude>
+    <ClInclude Include="BvSigmaHeadDamaged.h">
+      <Filter>헤더 파일\GameObjects\Actor\DynamicActor\SigmaHead\Behavior</Filter>
+    </ClInclude>
+    <ClInclude Include="HUD.h">
+      <Filter>헤더 파일\GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerXHUD.h">
+      <Filter>헤더 파일\GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="BvPlayerXHurt.h">
+      <Filter>헤더 파일\GameObjects\Actor\DynamicActor\PlayerX\Behavior</Filter>
+    </ClInclude>
+    <ClInclude Include="Bullet.h">
+      <Filter>헤더 파일\GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="Keyboard.h">
+      <Filter>헤더 파일\Engine\Utilities</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -218,26 +350,92 @@
     <ClCompile Include="Surface.cpp">
       <Filter>소스 파일\Engine\Graphics</Filter>
     </ClCompile>
-    <ClCompile Include="PhysicsEntity.cpp">
-      <Filter>소스 파일\Engine\Physics</Filter>
-    </ClCompile>
-    <ClCompile Include="CollisionManager.cpp">
-      <Filter>소스 파일\Engine\Physics</Filter>
-    </ClCompile>
-    <ClCompile Include="DynamicActor.cpp">
-      <Filter>소스 파일\Engine\Actor</Filter>
-    </ClCompile>
-    <ClCompile Include="SceneStage.cpp">
-      <Filter>소스 파일\Scene</Filter>
-    </ClCompile>
-    <ClCompile Include="PanicPlayer.cpp">
-      <Filter>소스 파일\GameObjects\DynamicActor</Filter>
-    </ClCompile>
-    <ClCompile Include="PlayerArea.cpp">
-      <Filter>소스 파일\GameObjects\StaticActor</Filter>
-    </ClCompile>
     <ClCompile Include="Scene.cpp">
       <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="CoordinateTransformer.cpp">
+      <Filter>소스 파일\Engine\Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="ActorTestScene.cpp">
+      <Filter>소스 파일\GameObjects\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Wall.cpp">
+      <Filter>소스 파일\GameObjects\StaticActor</Filter>
+    </ClCompile>
+    <ClCompile Include="Character.cpp">
+      <Filter>소스 파일\Engine\Actor</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerX.cpp">
+      <Filter>소스 파일\GameObjects\DynamicActor\PlayerX</Filter>
+    </ClCompile>
+    <ClCompile Include="BvPlayerXIdle.cpp">
+      <Filter>소스 파일\GameObjects\DynamicActor\PlayerX\Behavior</Filter>
+    </ClCompile>
+    <ClCompile Include="Ground.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="BvPlayerXDash.cpp">
+      <Filter>소스 파일\GameObjects\DynamicActor\PlayerX\Behavior</Filter>
+    </ClCompile>
+    <ClCompile Include="BvPlayerXAirbone.cpp">
+      <Filter>소스 파일\GameObjects\DynamicActor\PlayerX\Behavior</Filter>
+    </ClCompile>
+    <ClCompile Include="BvPlayerXWalk.cpp">
+      <Filter>소스 파일\GameObjects\DynamicActor\PlayerX\Behavior</Filter>
+    </ClCompile>
+    <ClCompile Include="BvPlayerXWallSlide.cpp">
+      <Filter>소스 파일\GameObjects\DynamicActor\PlayerX\Behavior</Filter>
+    </ClCompile>
+    <ClCompile Include="BvPlayerXJump.cpp">
+      <Filter>소스 파일\GameObjects\DynamicActor\PlayerX\Behavior</Filter>
+    </ClCompile>
+    <ClCompile Include="BvPlayerXHover.cpp">
+      <Filter>소스 파일\GameObjects\DynamicActor\PlayerX\Behavior</Filter>
+    </ClCompile>
+    <ClCompile Include="BvPlayerXCrouch.cpp">
+      <Filter>소스 파일\GameObjects\DynamicActor\PlayerX\Behavior</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerXHUD.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="BvPlayerXHurt.cpp">
+      <Filter>소스 파일\GameObjects\DynamicActor\PlayerX\Behavior</Filter>
+    </ClCompile>
+    <ClCompile Include="BvSigmaHeadDamaged.cpp">
+      <Filter>소스 파일\GameObjects\DynamicActor\Sigma\Behavior</Filter>
+    </ClCompile>
+    <ClCompile Include="BvSigmaHeadDecide.cpp">
+      <Filter>소스 파일\GameObjects\DynamicActor\Sigma\Behavior</Filter>
+    </ClCompile>
+    <ClCompile Include="BvSigmaHeadElectricAttack.cpp">
+      <Filter>소스 파일\GameObjects\DynamicActor\Sigma\Behavior</Filter>
+    </ClCompile>
+    <ClCompile Include="BvSigmaHeadFade.cpp">
+      <Filter>소스 파일\GameObjects\DynamicActor\Sigma\Behavior</Filter>
+    </ClCompile>
+    <ClCompile Include="BvSigmaHeadOpen.cpp">
+      <Filter>소스 파일\GameObjects\DynamicActor\Sigma\Behavior</Filter>
+    </ClCompile>
+    <ClCompile Include="BvSigmaHeadReady.cpp">
+      <Filter>소스 파일\GameObjects\DynamicActor\Sigma\Behavior</Filter>
+    </ClCompile>
+    <ClCompile Include="SigmaElectricBall.cpp">
+      <Filter>소스 파일\Engine\Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="ColliderTypeTrait.cpp">
+      <Filter>소스 파일\GameObjects\DynamicActor\Sigma</Filter>
+    </ClCompile>
+    <ClCompile Include="SigmaHead.cpp">
+      <Filter>소스 파일\GameObjects\DynamicActor\Sigma</Filter>
+    </ClCompile>
+    <ClCompile Include="Bullet.cpp">
+      <Filter>소스 파일\GameObjects\DynamicActor</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerXBullet.cpp">
+      <Filter>소스 파일\GameObjects\DynamicActor\PlayerX</Filter>
+    </ClCompile>
+    <ClCompile Include="Keyboard.cpp">
+      <Filter>소스 파일\Engine\Utility</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -65,4 +65,19 @@ namespace UtilSH
 			return end;
 		}
 	}
+
+
+	template<class Container>
+	int GetSafeIndex(const Container& container, int i)
+	{
+		if ( i >= (int)container.size() )
+		{
+			i %= (int)container.size();
+		}
+		else if ( i < 0 )
+		{
+			i = GetSafeIndex( container, (int)container.size() + i );
+		}
+		return i;
+	}
 }

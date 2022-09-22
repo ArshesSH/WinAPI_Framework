@@ -51,7 +51,10 @@ public:
 	{
 		return T( x * rhs.x + y * rhs.y );
 	}
-
+	Vec2	operator-() const
+	{
+		return Vec2( -x, -y );
+	}
 	Vec2 operator-( const Vec2& rhs ) const
 	{
 		return Vec2( x - rhs.x, y - rhs.y );
@@ -129,6 +132,30 @@ public:
 	Vec2	GetRotated( T angle ) const
 	{
 		return Vec2W( *this ).Rotate( angle );
+	}
+	Vec2 GetScaleIndependent( T scaleX, T scaleY ) const
+	{
+		return { scaleX * x, scaleY * y };
+	}
+	Vec2& AddToX( T rhs )
+	{
+		x += rhs;
+		return *this;
+	}
+	Vec2& AddToY( T rhs )
+	{
+		y += rhs;
+		return *this;
+	}
+	Vec2& MulToX( T rhs )
+	{
+		x *= rhs;
+		return *this;
+	}
+	Vec2& MulToY( T rhs )
+	{
+		y *= rhs;
+		return *this;
 	}
 public:
 	T x;

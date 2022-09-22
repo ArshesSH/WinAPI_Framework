@@ -25,6 +25,11 @@ public:
 		const T modded = fmod( theta, (T)360 );
 		return (modded > (T)360) ? (modded - (T)360) : modded;
 	}
+	template<typename T>
+	static auto sq( T x )
+	{
+		return x * x;
+	}
 
 private:
 public:

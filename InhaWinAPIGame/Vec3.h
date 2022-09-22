@@ -7,6 +7,11 @@ class Vec3 : public Vec2<T>
 {
 public:
 	Vec3() { z = 0; }
+	Vec3( T x, T y )
+		:
+		Vec2<T>(x, y),
+		z(T(1))
+	{}
 	Vec3( T x, T y, T z )
 		:
 		Vec2<T>( x, y ),
@@ -16,6 +21,15 @@ public:
 		:
 		Vec3( vect.x, vect.y, vect.z )
 	{}
+	explicit Vec3( const Vec2<T>& v2 )
+		:
+		Vec3( v2.x, v2.y )
+	{
+	}
+	explicit operator Vec2<T>() const
+	{
+		return { this->x, this->y };
+	}
 	template <typename T2>
 	explicit operator Vec3<T2>() const
 	{
